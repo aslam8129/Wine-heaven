@@ -1,0 +1,133 @@
+/* Basic styles */
+body {
+    font-family: Arial, sans-serif; /* Set font family */
+    margin: 0; /* Remove default margin */
+    padding: 0; /* Remove default padding */
+    background-color: #f4f4f4; /* Light gray background */
+    color: #333; /* Dark text color */
+    display: flex; /* Use flexbox for layout */
+}
+/* 
+.sidebar {
+    width: 250px; 
+    background-color: #3c3c3c; 
+    padding: 20px; 
+    height: 100vh; 
+    position: fixed; 
+    overflow-y: auto; 
+}
+
+.sidebar a {
+    color: #fff; 
+    text-decoration: none; 
+    display: block; 
+    padding: 10px; 
+    transition: background-color 0.3s; 
+}
+
+.sidebar a:hover {
+    background-color: #575757; 
+} */
+
+.main-content {
+    margin-left: 250px; 
+    padding: 20px; 
+    flex-grow: 1; 
+}
+
+h1 {
+    text-align: center; /* Center align heading */
+    margin: 20px 0; /* Top and bottom margin */
+}
+
+/* Link styling */
+a {
+    color: #007BFF; /* Primary color for links */
+    text-decoration: none; /* Remove underline */
+}
+
+a:hover {
+    text-decoration: underline; /* Underline on hover */
+}
+
+/* Add New Category Button */
+a[href="/category/add"] {
+    display: block; /* Block display */
+    text-align: center; /* Center align text */
+    padding: 10px; /* Padding for button */
+    background-color: #007BFF; /* Primary button color */
+    color: white; /* White text */
+    border-radius: 5px; /* Rounded corners */
+    margin: 20px auto; /* Center with margin */
+    width: 150px; /* Fixed width */
+}
+
+/* Unordered List Styles */
+ul {
+    list-style-type: none; /* Remove bullets */
+    padding: 0; /* Remove default padding */
+    max-width: 800px; /* Max width for the list */
+    margin: 0 auto; /* Center the list */
+}
+
+li {
+    background: white; /* White background for items */
+    padding: 15px; /* Padding for items */
+    margin: 10px 0; /* Vertical margin */
+    border: 1px solid #ddd; /* Light border */
+    border-radius: 5px; /* Rounded corners */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+
+/* Divider styles */
+hr {
+    border: none; /* Remove default border */
+    height: 1px; /* Height for line */
+    background-color: #eee; /* Light gray color */
+    margin: 15px 0; /* Vertical margin */
+}
+
+/* Button styling for Delete */
+button {
+    background-color: #dc3545; /* Danger button color */
+    color: white; /* White text */
+    border: none; /* Remove default border */
+    padding: 5px 10px; /* Padding for button */
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor */
+    transition: background-color 0.3s; /* Smooth transition */
+}
+
+button:hover {
+    background-color: #c82333; /* Darker red on hover */
+}
+
+/* Responsive styling */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 100%; /* Full width for sidebar on mobile */
+        position: relative; /* Relative positioning */
+        height: auto; /* Auto height for mobile */
+    }
+
+    .main-content {
+        margin-left: 0; /* No margin for mobile */
+    }
+
+    h1 {
+        font-size: 1.8em; /* Smaller heading on mobile */
+    }
+
+    a[href="/category/add"] {
+        width: 100%; /* Full width on mobile */
+        margin: 20px 0; /* Margin for spacing */
+    }
+
+    ul {
+        padding: 10px; /* Add padding for mobile */
+    }
+
+    li {
+        margin: 10px 5%; /* Margin adjustment for mobile */
+    }
+}

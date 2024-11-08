@@ -1,0 +1,84 @@
+/* styles.css */
+
+/* General Reset */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* Body Styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: white;
+    color: black;
+    line-height: 1.6;
+    padding: 20px;
+}
+
+/* Container for the form */
+form {
+    max-width: 400px;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid lightgray;
+    border-radius: 5px;
+    background-color: rgba(0, 0, 0, 0.05); /* Light black background */
+}
+
+/* Form Element Styles */
+div {
+    margin-bottom: 15px;
+}
+
+/* Labels */
+label {
+    display: block;
+    margin-bottom: 5px;
+    color: black; /* Black text */
+}
+
+/* Input Fields */
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid lightgray;
+    border-radius: 5px;
+    background-color: white;
+    color: black;
+}
+
+/* Button Styles */
+button {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: black; /* Black button */
+    color: white; /* White text */
+    font-size: 16px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: darkgray; /* Light black on hover */
+}
+
+/* Link Styles */
+a {
+    color: black; /* Black links */
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+    form {
+        width: 90%;
+    }
+}

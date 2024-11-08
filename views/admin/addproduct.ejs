@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Product</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css" rel="stylesheet">
+    <style>
+        .preview-container {
+            display: none;
+            position: relative;
+            max-width: 100%;
+            max-height: 400px;
+        }
+        #crop-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            justify-content: center;
+            align-items: center;
+        }
+        #crop-modal .modal-content {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .cropped-image {
+            width: 100px; 
+            height: 100px;
+            object-fit: cover;
+            margin: 5px;
+            position: relative;
+        }
+        .delete-button {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: red;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            width: 20px;
+            height: 20px;
+            text-align: center;
+            line-height: 18px;
+            font-size: 14px;
+        }
+        .img-wrapper {
+            position: relative;
+            display: inline-block;
+        }
+        .hidden {
+            display: none;
+        }
+        .error-message {
+            color: red;
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mx-auto p-6">
+        <h2 class="text-2xl font-semibold mb-4">Add New Product</h2>
+        <form id="productForm" enctype="multipart/form-data">
+            <div class="mb-4">
+                <label for="name" class="block">Product Name</label>
+                <input id="name" type="text" name="name" required class="w-full border p-2">
+                <p id="name-error" class="error-message hidden">Product name must start with an uppercase letter and be at least 4 characters long.</p>
+            </div>
+            <div class="mb-4">
+                <label for="price" class="block">Price</label>
+                <input id="price" type="number" name="price" required class="w-full border p-2">
+                <p id="price-error" class="error-message hidden">Price must be greater than 0.</p>
+            </div>
+            <div class="mb-4">
+                <label for="category" class="block">Category</label>
+                <select id="category" name="category" required class="w-full border p-2">
+                    <option value="">Select a category</option>
+                    <% categories.forEach(category => { %>
+                        <option value="<%= category._id %>"><%= category.name %></option>
+                    <% }) %>
+                </select>
+            </div>
+            <div class="mb-4">
+                <label for="stock" class="block">Stock</label>
+                <input id="stock" type="number" name="stock" required class="w-full border p-2">
+                <p id="stock-error" class="error-message hidden">Stock must be 0 or greater.</p>
+            </div>
+            <div class="mb-4">
+                <label for="discount" class="block">Discount</label>
+                <input id="discount" type="number" name="discount" class="w-full border p-2">
+                <p id="discount-error" class="error-message hidden">Discount must be 0 or greater.</p>
+            </div>
+            <div class="mb-4">
+                <label for="status" class="block">Status</label>
+                <select id="status" name="status" required class="w-full border p-2">
+                    <option value="available">Available</option>
+                    <option value="unavailable">Unavailable</option>
+                </select>
+            </div>
+            <div class="mb-4">
+                <label for="description" class="block">Description</label>
+                <textarea id="description" name="description" rows="4" required class="w-full border p-2"></textarea>
+                <p id="description-error" class="error-message hidden">Description must be at least 10 characters long.</p>
+            </div>
+            <div class="mb-4">
+                <label for="images" class="block">Upload Images (minimum 3)</label>
+                <input type="file" id="imageInput" multiple accept="image/png, image/jpeg" class="w-full border p-2" required>
+                <div id="croppedImageContainer" class="flex flex-wrap mt-4"></div>
+                <p id="image-error" class="text-red-500 text-sm mt-1 hidden">Please upload at least 3 images.</p>
+            </div>
+            <div id="crop-modal" class="flex">
+                <div class="modal-content">
+                    <img id="imagePreview" src="" alt="Image Preview" class="preview-container">
+                    <div class="mt-4 text-right">
+                        <button type="button" onclick="cropImage()" class="bg-blue-500 text-white px-4 py-2 rounded">Crop</button>
+                        <button type="button" onclick="closeCropModal()" class="bg-gray-500 text-white px-4 py-2 rounded">Cancel</button>
+                    </div>
+                </div>
+            </div>
+            <div class="flex">
+                <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Add Product</button>
+            </div>
+        </form>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+    <script>
+        let form = document.getElementById('productForm');
+        let cropper;
+        let croppedImagesArray = [];
+
+        // Handle image upload and cropping
+        document.getElementById('imageInput').addEventListener('change', function(event) {
+            const files = Array.from(event.target.files);
+            if (files.length > 0) {
+                files.forEach(file => {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        openCropModal(e.target.result, file.name);
+                    };
+                    reader.readAsDataURL(file);
+                });
+            }
+        });
+
+        form.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            // Validate form fields
+            let isValid = validateForm();
+            if (!isValid) {
+                return;
+            }
+
+            const formData = new FormData(form);
+            croppedImagesArray.forEach((blob, index) => {
+                formData.append('images', blob, `image${index}.png`);
+            });
+
+            fetch('/admin/products/add', {
+                method: 'POST',
+                body: formData,
+            })
+            .then(response => {
+                if(!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log(data);
+                window.location.href = '/admin/products';
+                // Handle the response data
+            })
+            .catch(error => {
+                console.error(error);
+                // Handle the error
+            });
+        });
+
+        function openCropModal(imageSrc) {
+            const imagePreview = document.getElementById('imagePreview');
+            imagePreview.src = imageSrc;
+            cropper = new Cropper(imagePreview, {
+                aspectRatio: 1,
+                viewMode: 1,
+            });
+            document.getElementById('crop-modal').style.display = 'flex';
+        }
+
+        function cropImage() {
+            const canvas = cropper.getCroppedCanvas();
+            canvas.toBlob(function(blob) {
+                croppedImagesArray.push(blob);
+                const url = URL.createObjectURL(blob);
+                displayCroppedImage(url);
+            });
+            closeCropModal();
+        }
+
+        function displayCroppedImage(src) {
+            const container = document.getElementById('croppedImageContainer');
+            const imgWrapper = document.createElement('div');
+            imgWrapper.classList.add('img-wrapper');
+            imgWrapper.innerHTML = `
+                <img src="${src}" class="cropped-image" alt="Cropped Image">
+                <button class="delete-button" onclick="removeImage(this)">×</button>
+            `;
+            container.appendChild(imgWrapper);
+            validateImageCount();
+        }
+
+        function closeCropModal() {
+            document.getElementById('crop-modal').style.display = 'none';
+            cropper.destroy();
+        }
+
+        function removeImage(button) {
+            const imgWrapper = button.parentNode;
+            imgWrapper.parentNode.removeChild(imgWrapper);
+            validateImageCount();
+        }
+
+        function validateImageCount() {
+            const container = document.getElementById('croppedImageContainer');
+            const errorMessage = document.getElementById('image-error');
+            if (container.children.length < 3) {
+                errorMessage.classList.remove('hidden');
+            } else {
+                errorMessage.classList.add('hidden');
+            }
+        }
+
+        function validateForm() {
+            let isValid = true;
+
+            const name = document.getElementById('name').value;
+            const price = document.getElementById('price').value;
+            const discount = document.getElementById('discount').value;
+            const description = document.getElementById('description').value;
+            const stock = document.getElementById('stock').value;
+
+            const nameError = document.getElementById('name-error');
+            const priceError = document.getElementById('price-error');
+            const discountError = document.getElementById('discount-error');
+            const descriptionError = document.getElementById('description-error');
+            const stockError = document.getElementById('stock-error');
+
+            // Product name validation
+            if (!/^[A-Z]/.test(name) || name.length < 4) {
+                nameError.classList.remove('hidden');
+                isValid = false;
+            } else {
+                nameError.classList.add('hidden');
+            }
+
+            // Price validation
+            if (price <= 0) {
+                priceError.classList.remove('hidden');
+                isValid = false;
+            } else {
+                priceError.classList.add('hidden');
+            }
+
+            // Discount validation
+            if (discount < 0) {
+                discountError.classList.remove('hidden');
+                isValid = false;
+            } else {
+                discountError.classList.add('hidden');
+            }
+
+            // Description validation
+            if (description.length < 10) {
+                descriptionError.classList.remove('hidden');
+                isValid = false;
+            } else {
+                descriptionError.classList.add('hidden');
+            }
+
+            // Stock validation
+            if (stock < 0) {
+                stockError.classList.remove('hidden');
+                isValid = false;
+            } else {
+                stockError.classList.add('hidden');
+            }
+
+            return isValid;
+        }
+    </script>
+</body>
+</html>

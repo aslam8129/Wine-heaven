@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.js"></script>
+</head>
+<body class="bg-gray-50 min-h-screen flex items-center justify-center">
+    <div class="container max-w-md mx-auto p-6 bg-white rounded-lg shadow-xl">
+        <h1 class="text-3xl font-bold text-[#272343] mb-8 text-center">Admin Login</h1>
+        <% if (error_msg) { %>
+            <p style="color: red;"><%= error_msg %></p>
+        <% } %>
+        <% if (success_msg) { %>
+            <p style="color: green;"><%= success_msg %></p>
+        <% } %>
+        
+        <form action="/admin/Dashboard" method="POST" class="space-y-6">
+            <div class="space-y-2">
+                <label for="email" class="block text-sm font-medium text-[#272343]">Email:</label>
+                <input 
+                    type="email" 
+                    id="username" 
+                    name="email" 
+                    value="admin77@gmail.com"
+                    required
+                    class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#272343] focus:border-transparent outline-none transition"
+                >
+            </div>
+            
+            <div class="space-y-2">
+                <label for="password" class="block text-sm font-medium text-[#272343]">Password:</label>
+                <input 
+                    type="password" 
+                    id="password" 
+                    name="password" 
+                    value="admin@aslam12"
+                    required
+                    class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#272343] focus:border-transparent outline-none transition"
+                >
+            </div>
+            
+            <div>
+                <button 
+                    type="submit"
+                    class="w-full bg-[#272343] text-white py-2 px-4 rounded-md hover:bg-opacity-90 transition duration-200 ease-in-out focus:ring-2 focus:ring-offset-2 focus:ring-[#272343]"
+                >
+                    Login
+                </button>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

@@ -1,0 +1,98 @@
+/* style.css */
+body {
+    background-color: #f0f0f0;
+    color: #333;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    flex-direction: column;
+}
+
+h1 {
+    color: #000;
+    font-size: 2em;
+    margin-bottom: 20px;
+}
+
+form, ul {
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 600px;
+    margin: 20px auto;
+}
+
+form label {
+    display: block;
+    margin-top: 10px;
+    color: #333;
+}
+
+form input[type="text"], form textarea {
+    width: calc(100% - 20px);
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #f9f9f9;
+    font-size: 1em;
+}
+
+form button {
+    background-color: #333;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 15px;
+    font-size: 1em;
+}
+
+form button:hover {
+    background-color: #555;
+}
+
+a {
+    color: #000;
+    text-decoration: none;
+    margin: 0 10px;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+ul li {
+    padding: 10px 0;
+    border-bottom: 1px solid #ccc;
+}
+
+ul li:last-child {
+    border-bottom: none;
+}
+
+ul li form {
+    display: inline;
+}
+
+@media (max-width: 600px) {
+    form, ul {
+        width: 90%;
+    }
+
+    h1 {
+        font-size: 1.5em;
+    }
+}

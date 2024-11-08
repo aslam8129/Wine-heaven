@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Signup Page</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <style>
+        .glass-effect {
+            backdrop-filter: blur(10px);
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        .custom-gradient {
+            background: linear-gradient(135deg, #1a0f0f 0%, #600018 50%, #2c1810 100%);
+        }
+        .input-style {
+            background-color: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .input-style:focus {
+            border-color: #800020;
+            outline: none;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        .hover-up:hover {
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body class="custom-gradient min-h-screen font-sans">
+    <div class="min-h-screen flex flex-col items-center justify-center p-4 lg:p-6">
+        <div class="grid md:grid-cols-2 items-center gap-10 max-w-6xl w-full">
+            <!-- Left Side -->
+            <div class="space-y-6 text-white">
+                <img src="/uplods/logo1.jpg" alt="logo" class="w-52 mb-12">
+                <h2 class="text-4xl font-extrabold leading-tight">
+                    Experience Luxury<br>in Every Sip
+                </h2>
+                <p class="text-white/80">
+                    Already have an account? 
+                    <a href="/login" class="text-white underline hover:text-[#800020] transition-colors">Login here</a>
+                </p>
+            </div>
+
+            <!-- Right Side - Form -->
+            <div class="glass-effect rounded-xl p-8 max-w-md w-full">
+                <h3 class="text-3xl font-bold text-white mb-8">Sign Up</h3>
+                <% if (error_msg) { %>
+                    <p style="color: white;"><%= error_msg %></p>
+                <% } %>
+                <% if (success_msg) { %>
+                    <p style="color: green;"><%= success_msg %></p>
+                <% } %>
+                <form id="signup-form" action="/signup" method="POST" class="space-y-6">
+                    <div>
+                        <input type="text" id="name" name="name" placeholder="Full Name" required
+                            class="w-full px-4 py-3 rounded-lg input-style text-white placeholder-white/50 transition-colors">
+                            <p id="username-error" class="text-white hidden">Name must be at least 3 characters long, start with an uppercase letter, and not begin with a space.</p>
+                    </div>
+                    <div>
+                        <input type="email" name="email" placeholder="Email Address" required
+                            class="w-full px-4 py-3 rounded-lg input-style text-white placeholder-white/50 transition-colors">
+                            <p id="email-error" class="text-white hidden">Please enter a valid email address.</p>
+                    </div>
+                    <div>
+                        <input type="password" name="password" placeholder="Password" required
+                            class="w-full px-4 py-3 rounded-lg input-style text-white placeholder-white/50 transition-colors">
+                            <p id="password-error" class="text-white hidden">Password must be at least 6 characters long and contain at least 2 numbers and 3 letters.</p>
+                    </div>
+                    <button type="submit"
+                        class="w-full py-3 rounded-lg bg-[#600018] hover:bg-[#800020] text-white font-semibold transition-all duration-200 hover-up">
+                        Create Account
+                    </button>
+                </form>
+                <!-- Error messages for validation -->
+               
+                
+               
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('signup-form');
+        const nameInput = document.getElementById('name');
+        const emailInput = document.querySelector('input[name="email"]');
+        const passwordInput = document.querySelector('input[name="password"]');
+
+        const usernameError = document.getElementById('username-error');
+        const emailError = document.getElementById('email-error');
+        const passwordError = document.getElementById('password-error');
+
+        form.addEventListener('submit', function (e) {
+            const name = nameInput.value.trim();
+            const email = emailInput.value.trim();
+            const password = passwordInput.value;
+            let isValid = true;
+
+            // Reset error messages
+            usernameError.classList.add('hidden');
+            emailError.classList.add('hidden');
+            passwordError.classList.add('hidden');
+
+            // Validate name
+            if (name.length < 3 || name.charAt(0) === ' ' || name.charAt(0) !== name.charAt(0).toUpperCase()) {
+                usernameError.classList.remove('hidden');
+                isValid = false;
+            }
+
+            // Validate email
+            if (!validateEmail(email)) {
+                emailError.classList.remove('hidden');
+                isValid = false;
+            }
+
+            // Validate password
+            if (!validatePassword(password)) {
+                passwordError.classList.remove('hidden');
+                isValid = false;
+            }
+
+            // Prevent form submission if validation fails
+            if (!isValid) {
+                e.preventDefault();
+            }
+        });
+
+        function validateEmail(email) {
+            const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Basic email validation regex
+            return regex.test(email);
+        }
+
+        function validatePassword(password) {
+            // Check password length
+            if (password.length < 6) return false;
+
+            // Check for at least 2 numbers
+            const numberCount = (password.match(/\d/g) || []).length;
+            // Check for at least 3 letters
+            const letterCount = (password.match(/[a-zA-Z]/g) || []).length;
+
+            return numberCount >= 2 && letterCount >= 3;
+        }
+    </script>
+</body>
+</html>

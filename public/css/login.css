@@ -1,0 +1,97 @@
+/* Basic Reset */
+* {
+    box-sizing: border-box; /* Include padding and border in element's total width and height */
+    margin: 0; /* Remove default margin */
+    padding: 0; /* Remove default padding */
+}
+
+/* Body Styles */
+body {
+    font-family: Arial, sans-serif; /* Set a clean font */
+    background-color: #f4f4f4; /* Light gray background */
+    color: #333; /* Dark text color */
+    display: flex; /* Use flexbox */
+    flex-direction: column; /* Column layout */
+    align-items: center; /* Center items */
+    justify-content: center; /* Center items */
+    height: 100vh; /* Full viewport height */
+    padding: 20px; /* Padding for body */
+}
+
+/* Header Styles */
+h2 {
+    margin-bottom: 20px; /* Space below the heading */
+}
+
+/* Message Styles */
+p {
+    margin: 10px 0; /* Vertical spacing for messages */
+}
+
+/* Form Styles */
+form {
+    background: #fff; /* White background for form */
+    padding: 20px; /* Padding inside the form */
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    width: 100%; /* Full width */
+    max-width: 400px; /* Max width for larger screens */
+}
+
+/* Input and Button Styles */
+div {
+    margin-bottom: 15px; /* Space between fields */
+}
+
+label {
+    margin-bottom: 5px; /* Space below the label */
+    display: block; /* Block display for label */
+}
+
+input {
+    width: 100%; /* Full width */
+    padding: 10px; /* Padding inside input */
+    border: 1px solid #ccc; /* Light gray border */
+    border-radius: 4px; /* Rounded corners */
+}
+
+/* Button Styles */
+button {
+    background-color: #007BFF; /* Primary button color */
+    color: white; /* White text */
+    border: none; /* Remove default border */
+    padding: 10px; /* Padding for button */
+    border-radius: 4px; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: background-color 0.3s; /* Smooth transition */
+    width: 100%; /* Full width */
+}
+
+button:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+}
+
+/* Link Styles */
+a {
+    color: #007BFF; /* Primary color for links */
+    text-decoration: none; /* Remove underline */
+}
+
+a:hover {
+    text-decoration: underline; /* Underline on hover */
+}
+
+/* Responsive Styling */
+@media (max-width: 480px) {
+    h2 {
+        font-size: 1.5em; /* Smaller heading on mobile */
+    }
+
+    form {
+        padding: 15px; /* Less padding on mobile */
+    }
+
+    button {
+        padding: 8px; /* Less padding for buttons on mobile */
+    }
+}

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Category</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet">
+    <style>
+        #cropperContainer {
+            display: none;
+        }
+        #croppedImagePreviewContainer {
+            display: none;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+    <div class="bg-white shadow-md rounded-lg p-6 w-full max-w-md">
+        <h2 class="text-2xl font-semibold text-gray-800 mb-4">Edit Category</h2>
+        <form id="categoryform" action="/category/edit/<%= category._id %>" method="POST" enctype="multipart/form-data" onsubmit="return validateForm()">
+            <div class="mb-4">
+                <label for="name" class="block text-gray-700">Category Name:</label>
+                <input type="text" id="name" name="name" value="<%= category.name %>" class="border border-gray-300 rounded-md p-2 w-full">
+                <p id="name-error" class="text-red-500 text-sm mt-1 hidden">Category name must be at least 3 characters long, cannot start with a space, and must start with an uppercase letter.</p>
+            </div>
+            <div class="mb-4">
+                <label for="image" class="block text-gray-700">Category Image:</label>
+                <input type="file" id="image" name="image" class="border border-gray-300 rounded-md p-2 w-full" accept="image/*">
+                
+                <p class="mt-2 text-gray-600">Current Image:</p>
+                <img id="currentImage" src="<%= category.imageUrl %>" alt="<%= category.name %>" width="100" class="mt-2 rounded-md">
+                
+                <div class="mt-2">
+                    <button type="button" id="deleteImageButton" class="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-500">Delete Image</button>
+                </div>
+                <p id="image-error" class="text-red-500 text-sm mt-1 hidden">Please upload an image for the category.</p>
+            </div>
+            <div id="cropperContainer" class="mb-4">
+                <h3 class="text-gray-700">Crop Image:</h3>
+                <img id="cropperImage" style="max-width: 100%;"/>
+                <button type="button" onclick="cropImage()" class="bg-gray-800 text-white px-4 py-2 rounded-md hover:bg-gray-700 mt-2">Crop Image</button>
+            </div>
+            <div id="croppedImagePreviewContainer" class="mb-4">
+                <h3 class="text-gray-700">Cropped Image Preview:</h3>
+                <img id="croppedImagePreview" style="max-width: 100%; border: 1px solid #ccc; padding: 5px;"/>
+            </div>
+            <input type="hidden" id="croppedImage" name="croppedImage">
+            <input type="hidden" name="deleteImage" id="deleteImage" value="false">
+            <button type="submit" class="bg-gray-800 text-white px-4 py-2 rounded-md hover:bg-gray-700">Update Category</button>
+        </form>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+    <script>
+        let cropper;
+
+        const nameInput = document.getElementById('name');
+        const imageInput = document.getElementById('image');
+        const nameError = document.getElementById('name-error');
+        const imageError = document.getElementById('image-error');
+        const cropperImage = document.getElementById('cropperImage');
+        const cropperContainer = document.getElementById('cropperContainer');
+        const currentImage = document.getElementById('currentImage');
+        const deleteImageButton = document.getElementById('deleteImageButton');
+        const deleteImageInput = document.getElementById('deleteImage');
+        const croppedImagePreviewContainer = document.getElementById('croppedImagePreviewContainer');
+        const croppedImagePreview = document.getElementById('croppedImagePreview');
+
+        function validateForm() {
+            let isValid = true;
+
+            // Reset error messages
+            nameError.classList.add('hidden');
+            imageError.classList.add('hidden');
+
+            // Validate category name
+            const nameValue = nameInput.value.trim();
+            if (nameValue.length < 3 || nameValue.charAt(0) === ' ' || nameValue.charAt(0) !== nameValue.charAt(0).toUpperCase()) {
+                nameError.classList.remove('hidden');
+                isValid = false;
+            }
+
+            // Validate image upload (if no current image or if delete is true)
+            if (!currentImage.src && (!imageInput.files || imageInput.files.length === 0) && deleteImageInput.value === "false") {
+                imageError.classList.remove('hidden');
+                isValid = false;
+            }
+
+            return isValid; // Prevent form submission if validation fails
+        }
+
+        imageInput.addEventListener('change', function (e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (event) {
+                    cropperImage.src = event.target.result;
+                    cropperContainer.style.display = 'block';
+                    croppedImagePreviewContainer.style.display = 'none';
+                    if (cropper) {
+                        cropper.destroy();
+                    }
+                    cropper = new Cropper(cropperImage, {
+                        aspectRatio: 1,
+                        viewMode: 1,
+                        autoCropArea: 0.8,
+                    });
+                };
+                reader.readAsDataURL(file);
+                deleteImageInput.value = "false"; // Reset delete image flag
+            }
+        });
+
+        deleteImageButton.addEventListener('click', function () {
+            if (confirm("Are you sure you want to delete this image?")) {
+                currentImage.src = ""; // Clear current image
+                imageInput.value = ""; // Clear file input
+                cropperContainer.style.display = 'none';
+                croppedImagePreviewContainer.style.display = 'none';
+                deleteImageInput.value = "true"; // Set delete image flag
+                if (cropper) {
+                    cropper.destroy();
+                    cropper = null;
+                }
+            }
+        });
+
+        function cropImage() {
+            if (cropper) {
+                const canvas = cropper.getCroppedCanvas({
+                    width: 300,
+                    height: 300,
+                });
+                canvas.toBlob((blob) => {
+                    const reader = new FileReader();
+                    reader.onloadend = () => {
+                        const base64data = reader.result;
+                        document.getElementById('croppedImage').value = base64data;
+                        croppedImagePreview.src = base64data;
+                        croppedImagePreviewContainer.style.display = 'block'; // Show cropped image preview
+                    };
+                    reader.readAsDataURL(blob);
+                });
+            }
+        }
+
+        document.getElementById('categoryform').addEventListener('submit', function(event) {
+            if (!validateForm()) {
+                event.preventDefault();
+            }
+        });
+    </script>
+</body>
+</html>
