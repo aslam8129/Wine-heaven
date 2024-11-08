@@ -257,6 +257,7 @@
             // Product name validation
             if (!/^[A-Z]/.test(name) || name.length < 4) {
                 nameError.classList.remove('hidden');
+                
                 isValid = false;
             } else {
                 nameError.classList.add('hidden');
