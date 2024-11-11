@@ -25,6 +25,9 @@ router.get('/addresses',authController.getALLaddress)
 router.get('/address-edit/:id',authController.renderEditAddress);
 router.post('/addres/edit/:id',authController.editAddressPost)
 router.get('/allproducts',authController.Allproducts)
-
+router.get('/forgot-password',authController.forgetpassword);
+router.post('/forgot-password',authController.forgetpasswordPost)
+router.get('reset-password',authController.resetPasswordGet)
+router.post('/reset-password',authController.resentPasswordPost)
 module.exports = router;
    

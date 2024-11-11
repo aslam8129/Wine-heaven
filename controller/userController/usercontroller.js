@@ -3,6 +3,7 @@ const bcrypt = require('bcryptjs');
 const nodemailer = require('nodemailer');
 const flash = require('connect-flash');
 require('dotenv').config();
+const crypto = require('crypto')
 const Product = require('../../model/prodectSchema');
 const Categories = require('../../model/Category');
 const Address = require('../../model/userAddress')
@@ -340,20 +341,19 @@ exports.GetuserDeatiolsHome = async (req,res)=>{
 // Display user details
 exports.GetUserdetails = async (req, res) => {
     try {
-        // Fetch the user using session's userId
+      
         const user = await User.findById(req.session.userId);
         
-        // If user is not found, redirect to login or handle the error
+     
         if (!user) {
             console.log('User not found');
-            return res.redirect('/login'); // Redirect to login if the user is not found
+            return res.redirect('/login');
         }
 
-        // Retrieve the update success message from the session (if it exists)
+        
         const updateSuccess = req.session.updateSuccess;
-        delete req.session.updateSuccess; // Clear the success message after reading it
-
-        // Render the user details page with the user data and success message
+        delete req.session.updateSuccess; 
+        
         res.render('user/user details', { user, updateSuccess });
     } catch (error) {
         console.log(`Error in GetUserdetails: ${error}`);
@@ -406,16 +406,16 @@ console.log(`error in addAddress ${error}`);
 
 exports.addAddressPost = async (req, res) => {
   try {
-    // Create a new instance of the Address model
+   
     const newAddress = new Address();
-    // Assign the request body properties to the newAddress instance
+  
     Object.assign(newAddress, req.body);
-    // Save the newAddress instance to the database
+   
     await newAddress.save();
-    // Send a success response
+   
     return res.redirect('/addresses');
   } catch (error) {
-    // Handle any errors that occur during the save process
+    
     res.status(500).send(error.message);
   }
 };
@@ -457,9 +457,13 @@ exports.editAddressPost = async (req,res)=>{
     }
 }
 
+
+
+
+
 exports.Allproducts = async (req, res) => {
     try {
-        const sortOption = req.query.sort || 'priceAsc';  // Default sort by price ascending
+        const sortOption = req.query.sort || 'priceAsc';  
         let sortField = {};
 
         switch (sortOption) {
@@ -477,11 +481,11 @@ exports.Allproducts = async (req, res) => {
                 break;
         }
 
-        // Search logic
-        const query = req.query.search || '';  // Use the search parameter
+      
+        const query = req.query.search || '';  
         let searchCriteria = { isDeleted: false };
 
-        // Apply search filters if query exists
+       
         if (query) {
             searchCriteria = {
                 ...searchCriteria,
@@ -492,20 +496,142 @@ exports.Allproducts = async (req, res) => {
             };
         }
 
-        // Category filtering
-        const category = req.query.category || '';  // Get the selected category
+        const category = req.query.category || ''; 
         if (category) {
-            searchCriteria.category = category;  // Filter products by selected category
+            searchCriteria.category = category; 
         }
 
-        // Fetch categories and products
+     
         const categories = await Categories.find({ isBlocked: false, isDeleted: false });
         const products = await Product.find(searchCriteria).sort(sortField).exec();
 
-        // Render the template, passing the products, categories, and query params
-        res.render('user/Allproducts', { products, query, sortOption, categories, category });  // Pass category to the view
+       
+        res.render('user/Allproducts', { products, query, sortOption, categories, category }); 
     } catch (error) {
         console.log(`Error in Allproducts: ${error}`);
         res.status(500).send('Internal Server Error');
     }
 };
+
+
+
+
+exports.forgetpassword = async(req,res)=>{
+    try{
+       res.render('user/forgotpassword')
+    }catch(error){
+console.log(`error in forgetpassword :${error}`);
+
+    }
+}
+
+
+
+exports.forgetpasswordPost = async(req,res)=>{
+    try{
+       const {email} = req.body;
+       const user = await User.findOne({email});
+
+       if(!user){
+        return res.status(404).send('Email not found');
+
+       }
+
+       const token = crypto.randomBytes(20).toString('hex')
+       user.resetPasswordToken = token;
+       user.resetPasswordExpires = Date.now() +3600000  // 1 house
+       await user.save();
+       const PORT =process.env.PORT||3005;
+       const resetLink = `http://localhost:${PORT}/reset-password?token=${token}&email=${email}`;
+
+
+       console.log(resetLink);
+       
+
+
+       const transporter = nodemailer.createTransport({
+        service :"Gmail",
+        auth :{
+            user: process.env.EMAIL_USER,
+            pass: process.env.EMAIL_PASS,
+        }
+       });
+
+
+       const mailOptions = {
+        from :process.env.EMAIL_USER,
+        to:email,
+        subject: 'password reset',
+        text: `click the following link to reset your password: ${resetLink}`
+       };
+
+       transporter.sendMail(mailOptions,(error,info)=>{
+        if(error){
+            return res.status(500).send('Error sending email')
+        }
+          req.flash('success', 'you check youer email forgot passwork link sending ');
+        res.redirect('/forgot-password')
+       })
+    }catch(error){
+console.log(`error in forgetpassswordpost ${error}`);
+
+    }
+}
+
+
+
+
+exports.resetPasswordGet = async (req,res) =>{
+    try{
+      const {token,email} = req.query;
+      const user = await User.findOne({
+        email,
+        resetPasswordToken :token,
+        resetPasswordExpires :{$gt :Date.now()}
+      });
+
+      if(!user){
+        return res.status(400).send('password reset token is invalid')
+      }
+
+      res.render('user/resetpassWord',{token ,email});
+
+    }catch(error){
+         console.log(`error in reset password ${error}`);
+         
+    }
+}
+
+
+
+exports.resentPasswordPost = async (req,res)=>{
+    try{
+       const {token,email,password} = req.body;
+       const user = await User.findOne({
+        email,
+        resetPasswordToken:token,
+        resetPasswordExpires:{$gt:Date.now()}
+       });
+
+       if(!user){
+        return res.status(400).send('password reset token is invalid');
+
+       }
+
+       const hashedPassword = await bcrypt.hash(password,10);
+
+
+       user.password = hashedPassword;
+       user.resetPasswordToken = undefined;
+       user.resetPasswordExpires = undefined;
+
+
+
+       await user.save();
+       req.flash('success', 'password changed ');
+       res.redirect('login')
+    }catch(error){
+        console.log(`error in resentpassword post :${error}`);
+        
+    }
+}
