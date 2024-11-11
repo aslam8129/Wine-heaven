@@ -5,7 +5,7 @@ const flash = require('connect-flash');
 require('dotenv').config();
 const Product = require('../../model/prodectSchema');
 const Categories = require('../../model/Category');
-
+const Address = require('../../model/userAddress')
 // Function to send OTP
 async function sendOtp(email, otp) {
     try {
@@ -322,5 +322,190 @@ exports.Getproducts = async (req, res) => {
     } catch (error) {
         console.error(error);
         res.redirect('/');
+    }
+};
+
+
+
+
+exports.GetuserDeatiolsHome = async (req,res)=>{
+    try{
+         res.render('user/userdetailsHome')
+    }catch(error){
+         console.log(`error in GetuserDetiolsHome`);
+         
+    }
+}
+
+// Display user details
+exports.GetUserdetails = async (req, res) => {
+    try {
+        // Fetch the user using session's userId
+        const user = await User.findById(req.session.userId);
+        
+        // If user is not found, redirect to login or handle the error
+        if (!user) {
+            console.log('User not found');
+            return res.redirect('/login'); // Redirect to login if the user is not found
+        }
+
+        // Retrieve the update success message from the session (if it exists)
+        const updateSuccess = req.session.updateSuccess;
+        delete req.session.updateSuccess; // Clear the success message after reading it
+
+        // Render the user details page with the user data and success message
+        res.render('user/user details', { user, updateSuccess });
+    } catch (error) {
+        console.log(`Error in GetUserdetails: ${error}`);
+        res.status(500).send("Internal Server Error");
+    }
+};
+
+// Update user details
+exports.UpdateDetails = async (req, res) => {
+    try {
+        const { name, phone } = req.body;
+        const updateData = {};
+
+        // Add name and phone to updateData if provided
+        if (name) updateData.name = name;
+        if (phone) updateData.phone = phone;
+
+        // Update the user details in the database
+        await User.findByIdAndUpdate(req.session.userId, updateData);
+
+        // Set success message in session and redirect
+        req.session.updateSuccess = true;
+        res.redirect('/userprofile');
+    } catch (error) {
+        console.log(`Error in UpdateDetails: ${error}`);
+        res.status(500).send("Internal Server Error");
+    }
+};
+
+
+
+exports.addAddress = async (req,res)=>{
+    try{
+        const addressId = req.params.id;
+        let addressData = null;
+            
+        if (addressId) {
+            addressData = await Address.findById(addressId).exec();
+        }
+    
+        res.render('user/Addaddress', { address: addressData });
+    }catch(error){
+console.log(`error in addAddress ${error}`);
+
+    }
+}
+
+
+
+
+exports.addAddressPost = async (req, res) => {
+  try {
+    // Create a new instance of the Address model
+    const newAddress = new Address();
+    // Assign the request body properties to the newAddress instance
+    Object.assign(newAddress, req.body);
+    // Save the newAddress instance to the database
+    await newAddress.save();
+    // Send a success response
+    return res.redirect('/addresses');
+  } catch (error) {
+    // Handle any errors that occur during the save process
+    res.status(500).send(error.message);
+  }
+};
+  
+
+exports.getALLaddress = async(req,res)=>{
+    try{
+        const addresses = await Address.find()
+        res.render('user/showAddress',{addresses})
+
+    }catch(error){
+
+    }
+}  
+
+
+
+exports.renderEditAddress = async(req,res)=>{
+    try{
+       const address = await Address.findById(req.params.id);
+       return res.render('user/addressEdit',{address})
+    }catch(error){
+console.log(`error in renderEditAddress :${error}`);
+
+    }
+}
+
+
+exports.editAddressPost = async (req,res)=>{
+    try{
+     const addressId = req.params.id;
+
+     await Address.findByIdAndUpdate(addressId,req.body)
+        return res.redirect('/addresses');
+    }catch(error){
+        console.log(`error in editAddressPost :${error}`);
+        res.status(500).send("Internal Server Error");
+        
+    }
+}
+
+exports.Allproducts = async (req, res) => {
+    try {
+        const sortOption = req.query.sort || 'priceAsc';  // Default sort by price ascending
+        let sortField = {};
+
+        switch (sortOption) {
+            case 'priceAsc':
+                sortField = { price: 1 };
+                break;
+            case 'priceDesc':
+                sortField = { price: -1 };
+                break;
+            case 'nameAsc':
+                sortField = { name: 1 };
+                break;
+            case 'nameDesc':
+                sortField = { name: -1 };
+                break;
+        }
+
+        // Search logic
+        const query = req.query.search || '';  // Use the search parameter
+        let searchCriteria = { isDeleted: false };
+
+        // Apply search filters if query exists
+        if (query) {
+            searchCriteria = {
+                ...searchCriteria,
+                $or: [
+                    { name: { $regex: query, $options: 'i' } },
+                    { description: { $regex: query, $options: 'i' } }
+                ]
+            };
+        }
+
+        // Category filtering
+        const category = req.query.category || '';  // Get the selected category
+        if (category) {
+            searchCriteria.category = category;  // Filter products by selected category
+        }
+
+        // Fetch categories and products
+        const categories = await Categories.find({ isBlocked: false, isDeleted: false });
+        const products = await Product.find(searchCriteria).sort(sortField).exec();
+
+        // Render the template, passing the products, categories, and query params
+        res.render('user/Allproducts', { products, query, sortOption, categories, category });  // Pass category to the view
+    } catch (error) {
+        console.log(`Error in Allproducts: ${error}`);
+        res.status(500).send('Internal Server Error');
     }
 };

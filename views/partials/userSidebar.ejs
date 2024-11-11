@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        /* Sidebar Container */
+        .sidebar {
+            width: 18rem; /* w-72 */
+            padding: 1.5rem; /* p-6 */
+            background-color: #0a0202; /* Charcoal background */
+            position: fixed; /* Fixed sidebar */
+            height: 100vh; /* Full height of the viewport */
+            top: 5;
+            left: 0;
+            z-index: 10; /* Ensure sidebar stays on top */
+        }
+
+        /* Profile Section */
+        .profile-section {
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .profile-image-container {
+            position: relative;
+            margin: 0 auto;
+        }
+
+        .profile-image-wrapper {
+            width: 6rem; /* w-24 */
+            height: 6rem; /* h-24 */
+            margin: 0 auto;
+            border-radius: 9999px;
+            overflow: hidden;
+            border: 4px solid white;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        .profile-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .edit-button {
+            position: absolute;
+            bottom: 0;
+            right: 33.333333%;
+            background-color: white;
+            border-radius: 9999px;
+            padding: 0.375rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .edit-icon {
+            width: 1rem;
+            height: 1rem;
+            color: #600018; /* Gold accent for icon */
+        }
+
+        .profile-name {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-top: 1rem;
+            color: #600018; /* Wine red */
+        }
+
+        .profile-subtitle {
+            color: rgb(36, 79, 143); /* A blue tone for subtitle */
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
+
+        /* Navigation */
+        .nav-container {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            color: white; /* White text */
+            text-decoration: none;
+            border-left: 4px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-link:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-left-color: #600018; /* Wine red hover effect */
+            padding-left: 1.5rem;
+        }
+
+        .sidebar-link.active {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-left-color: #600018; /* Wine red active link */
+        }
+
+        .sidebar-link svg {
+            width: 1.25rem;
+            height: 1.25rem;
+            margin-right: 0.75rem;
+        }
+
+        /* Main Content Area */
+        .main-content {
+            margin-left: 18rem; /* Allow space for the sidebar */
+            padding: 1rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%; /* Full width on mobile */
+                height: auto; /* Remove full height on mobile */
+                position: relative; /* Allow it to scroll with the content */
+            }
+            .main-content {
+                margin-left: 0; /* No margin for mobile */
+            }
+        }
+
+        /* Custom Properties */
+        :root {
+            --primary-color: #600018; /* Wine red for primary color */
+        }
+    </style>
+</head>
+<body>
+    
+<div class="sidebar">
+
+    <div class="profile-section">
+        <div class="profile-image-container">
+            <div class="profile-image-wrapper">
+                <img src="/api/placeholder/96/96" alt="Profile" class="profile-image"/>
+            </div>
+            <div class="edit-button">
+                <svg class="edit-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
+                </svg>
+            </div>
+        </div>
+        <h2 class="profile-name">Muhammad Aslam</h2>
+        <p class="profile-subtitle">Member since 2024</p>
+    </div>
+
+    <nav class="nav-container">
+        <a href="#" class="sidebar-link active flex items-center space-x-3">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+            </svg>
+            <span>Profile Information</span>
+        </a>
+
+        <a href="#" class="sidebar-link flex items-center space-x-3">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
+            </svg>
+            <span>My Orders</span>
+        </a>
+
+        <a href="#" class="sidebar-link flex items-center space-x-3">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+            </svg>
+            <span>Manage Addresses</span>
+        </a>
+
+        <a href="#" class="sidebar-link flex items-center space-x-3">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
+            </svg>
+            <span>Gift Cards</span>
+        </a>
+
+        <a href="#" class="sidebar-link flex items-center space-x-3">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
+            </svg>
+            <span>Saved Cards</span>
+        </a>
+    </nav>
+</div>
+
+<div class="main-content">
+    <!-- Main content here -->
+</div>
+
+</body>
+</html>

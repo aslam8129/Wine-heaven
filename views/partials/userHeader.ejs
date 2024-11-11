@@ -15,7 +15,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Italianno&display=swap" rel="stylesheet">
 </head>
 <body class="bg-gray-100">
-    <header class="bg-burgundy text-white py-4">
+    <header class="bg-burgundy text-white py-4 fixed top-0 left-0 right-0 z-50 border-b-2 border-white">
         <div class="container mx-auto flex items-center justify-between">
             <!-- Logo -->
             <div class="flex items-center">
@@ -30,11 +30,12 @@
             </div>
             <!-- Navigation Links -->
             <nav class="hidden lg:flex space-x-9">
-                <a href="#" class="text-white hover:text-gray-300">Home</a>
+                <a href="/" class="text-white hover:text-gray-300">Home</a>
                 <a href="#" class="text-white hover:text-gray-300">About</a>
-                <a href="#" class="text-white hover:text-gray-300">Services</a>
+                <a href='/allproducts' class="text-white hover:text-gray-300">All Wine</a>
                 <a href="#" class="text-white hover:text-gray-300">Contact</a>
             </nav>
+
             <!-- Search Bar and Dropdown Button -->
             <div class="relative hidden lg:flex items-center space-x-2">
                 
@@ -43,16 +44,14 @@
                     <span class="material-icons">account_circle</span> <!-- Icon -->
                 </button>
             </div>
-                <!-- Dropdown Menu -->
-                <div id="dropdownMenu" class="absolute right-0 mt-10 w-48 bg-white rounded-md shadow-lg hidden z-10">
-
-                    <a href="/login" class="block px-7 py-5 text-gray-800 hover:bg-gray-200">Login</a>
-                    <a href="#" class="block px-4 py-2 text-gray-800 hover:bg-gray-200">Register</a>
-                    <a href="#" class="block px-4 py-2 text-gray-800 hover:bg-gray-200">User Details</a>
-                    <a href="/logout" class="block px-4 py-2 text-gray-800 hover:bg-gray-200">Logout</a>
-                </div>
+            <!-- Dropdown Menu -->
+            <div id="dropdownMenu" class="absolute right-0 mt-10 w-48 bg-white rounded-md shadow-lg hidden z-10">
+                <a href="/login" class="block px-7 py-5 text-gray-800 hover:bg-gray-200">Login</a>
+                <a href="/userdetails" class="block px-4 py-2 text-gray-800 hover:bg-gray-200">User Details</a>
+                <a href="/logout" class="block px-4 py-2 text-gray-800 hover:bg-gray-200">Logout</a>
             </div>
-       
+        </div>
+
         <!-- Mobile Menu -->
         <div id="mobileMenu" class="lg:hidden bg-burgundy text-white py-2 hidden">
             <nav class="space-y-2">
@@ -74,6 +73,10 @@
             </nav>
         </div>
     </header>
+
+    <main class="pt-20"> <!-- Added padding to avoid content being hidden behind the fixed header -->
+        <!-- Your main content here -->
+    </main>
 
     <script>
         // Dropdown functionality

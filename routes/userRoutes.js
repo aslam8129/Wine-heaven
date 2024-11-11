@@ -16,5 +16,15 @@ router.get('/categorys/:id',checkuser.userActive, authController.Getcategories);
 router.get('/products/:id',checkuser.userActive,authController.Getproducts); 
 router.get('/',checkuser.blockuser,checkuser.userActive,authController.home);
 router.get('/logout', authController.logout);
+router.get('/userdetails',authController.GetuserDeatiolsHome)
+router.get('/userprofile',authController.GetUserdetails)
+router.post("/updateDetails",authController.UpdateDetails)
+router.get('/addAddress',authController.addAddress);
+router.post('/add-address',authController.addAddressPost)
+router.get('/addresses',authController.getALLaddress) 
+router.get('/address-edit/:id',authController.renderEditAddress);
+router.post('/addres/edit/:id',authController.editAddressPost)
+router.get('/allproducts',authController.Allproducts)
 
 module.exports = router;
+   

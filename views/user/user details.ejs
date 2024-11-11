@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Details</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        .bg-gold {
+            background-color:#600018;
+            color: rgb(252, 247, 247);
+        }
+        /* .bg-gold:hover {
+            background-color: #800020;
+            transform: translateY(-2px);
+        } */
+        .bg-charcoal {
+            background-color:#600018;
+            color: white;
+        }
+        .overlay {
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <%-include('../partials/userHeader.ejs')%>
+
+    <div class="flex min-h-screen">
+        <!-- Sidebar -->
+        <%- include('../partials/userSidebar.ejs') %>
+
+        <!-- Main Content -->
+        <div class="flex-1 flex flex-col items-center justify-center p-6">
+            <div class="bg-white shadow-md rounded-lg p-6 w-full max-w-2xl">
+                <h2 class="text-2xl font-semibold text-gray-800 mb-4">User Details</h2>
+
+                <!-- Name Section -->
+                <div class="mb-4">
+                    <label class="block text-gray-700">Name:</label>
+                    <% if (user) { %>
+                        <input type="text" value="<%= user.name %>" id="nameInput" class="border border-gray-300 rounded-md p-2 w-full" disabled>
+                        <span id="nameError" class="text-red-500 hidden">Invalid name: must be at least 3 characters, start with a capital letter, and not start with a space.</span>
+                        <button id="editNameButton" class="bg-charcoal text-white px-4 py-2 rounded-md mt-2" onclick="enableEditName()">Edit</button>
+                        <form action="/updateDetails" method="POST" id="editNameForm" onsubmit="return validateName()" class="hidden mt-4">
+                            <input type="text" name="name" id="editNameInput" class="border border-gray-300 rounded-md p-2 w-full" value="<%= user.name %>">
+                            <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded-md mt-2">Save Changes</button>
+                        </form>
+                    <% } else { %>
+                        <form action="/updateDetails" method="POST" onsubmit="return validateName()" class="flex flex-col md:flex-row">
+                            <input type="text" name="name" placeholder="Enter name" class="border border-gray-300 rounded-md p-2 w-full md:w-auto">
+                            <button type="submit" class="bg-blue-500 text-white px-4 py-2 ml-0 md:ml-2 mt-2 md:mt-0 rounded-md hover:bg-blue-600">Save</button>
+                        </form>
+                    <% } %>
+                </div>
+
+                <!-- Email Section -->
+                <% if (user) { %>
+                    <div class="mb-4">
+                        <label class="block text-gray-700">Email:</label>
+                        <input type="text" value="<%= user.email %>" class="border border-gray-300 rounded-md p-2 w-full" disabled>
+                    </div>
+                <% } %>
+
+                <!-- Phone Section -->
+                <div class="mb-4">
+                    <label class="block text-gray-700">Phone:</label>
+                    <% if (user && user.phone) { %>
+                        <input type="text" value="<%= user.phone %>" id="phoneInput" class="border border-gray-300 rounded-md p-2 w-full" disabled>
+                        <span id="phoneError" class="text-red-500 hidden">Invalid phone number: must be 10 digits and cannot start with 0.</span>
+                        <button id="editPhoneButton" class="bg-charcoal text-white px-4 py-2 rounded-md mt-2" onclick="enableEditPhone()">Edit</button>
+                        <form action="/updateDetails" method="POST" id="editPhoneForm" onsubmit="return validatePhone()" class="hidden mt-4">
+                            <input type="text" name="phone" id="editPhoneInput" class="border border-gray-300 rounded-md p-2 w-full" value="<%= user.phone %>">
+                            <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded-md mt-2">Save Changes</button>
+                        </form>
+                    <% } else { %>
+                        <form action="/updateDetails" method="POST" onsubmit="return validatePhone()" class="flex flex-col md:flex-row">
+                            <input type="text" name="phone" placeholder="Enter phone number" class="border border-gray-300 rounded-md p-2 w-full md:w-auto">
+                            <button type="submit" class="bg-blue-500 text-white px-4 py-2 ml-0 md:ml-2 mt-2 md:mt-0 rounded-md hover:bg-blue-600">Save</button>
+                        </form>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Message Popup -->
+    <% if (updateSuccess) { %>
+        <script>
+            Swal.fire({
+                title: 'Updated Successfully!',
+                text: 'Your profile has been updated.',
+                icon: 'success',
+                confirmButtonText: 'OK'
+            });
+        </script>
+    <% } %>
+
+    <script>
+        function enableEditName() {
+            document.getElementById('nameInput').disabled = false;
+            document.getElementById('editNameButton').style.display = 'none';
+            document.getElementById('editNameForm').style.display = 'block';
+        }
+
+        function enableEditPhone() {
+            document.getElementById('phoneInput').disabled = false;
+            document.getElementById('editPhoneButton').style.display = 'none';
+            document.getElementById('editPhoneForm').style.display = 'block';
+        }
+
+        function validateName() {
+            const nameInput = document.getElementById('editNameInput').value.trim();
+            const nameError = document.getElementById('nameError');
+            nameError.classList.add('hidden');
+
+            if (nameInput.length < 3 || nameInput.charAt(0) === ' ' || nameInput.charAt(0) !== nameInput.charAt(0).toUpperCase()) {
+                nameError.classList.remove('hidden');
+                return false;
+            }
+            return true;
+        }
+
+        function validatePhone() {
+            const phoneInput = document.getElementById('editPhoneInput').value.trim();
+            const phoneError = document.getElementById('phoneError');
+            phoneError.classList.add('hidden');
+
+            const phonePattern = /^[1-9][0-9]{9}$/;
+            if (!phonePattern.test(phoneInput)) {
+                phoneError.classList.remove('hidden');
+                return false;
+            }
+            return true;
+        }
+    </script>
+</body>
+</html>
