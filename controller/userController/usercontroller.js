@@ -1,12 +1,12 @@
 const User = require('../../model/userSchema');
 const bcrypt = require('bcryptjs');
 const nodemailer = require('nodemailer');
-const flash = require('connect-flash');
 require('dotenv').config();
 const crypto = require('crypto')
 const Product = require('../../model/prodectSchema');
 const Categories = require('../../model/Category');
-const Address = require('../../model/userAddress')
+const Address = require('../../model/userAddress');
+
 // Function to send OTP
 async function sendOtp(email, otp) {
     try {
@@ -209,8 +209,6 @@ exports.loginGet = (req, res) => {
 
 
 
-
-
 exports.loginPost = async (req, res) => {
     try {
         const { email, password } = req.body;
@@ -222,9 +220,7 @@ exports.loginPost = async (req, res) => {
         }
 
         if (user.isBlocked) {
-
-            req.flash('error','Your account has been blocked.')
-            
+            req.flash('error','Your account has been blocked.');
             return res.redirect('/login'); 
         }
 
@@ -235,12 +231,15 @@ exports.loginPost = async (req, res) => {
         }
 
         if(!user.isVerified){
-           req.flash('error','Please verify your email before logging in.')
-           return res.redirect('/verify-otp')
+           req.flash('error','Please verify your email before logging in.');
+           return res.redirect('/verify-otp');
         }
    
+        // Store only the user ID in the session
         req.session.userId = user._id;
-        // req.flash('success', 'Login successful!');
+        req.session.user_email = user.email;
+        
+        // No need to set res.locals.user here as the middleware will handle it
         return res.redirect('/'); 
     } catch (error) {
         console.error('Error during login:', error);
@@ -248,9 +247,6 @@ exports.loginPost = async (req, res) => {
         return res.redirect('/login'); 
     }
 };
-
-
-
 
 
 
@@ -274,244 +270,6 @@ exports.logout = (req, res) => {
 
 
 
-
-
-// Render home page
-exports.home = async (req, res) => {
-    try {
-        const categories = await Categories.find({ isDeleted: false, isBlocked:false});
-        const products = await Product.find({ isDeleted: false });
-       
-      return  res.render('user/home', { categories, products });
-    } catch (error) {
-        console.error('Error rendering home page:', error);
-        req.flash('error', 'Something went wrong. Please try again later.');
-       return res.redirect('/login');
-    }
-};
-
-
-
-
-
-
-exports.Getcategories = async (req, res) => {
-    try {
-        const { id } = req.params;
-        const products = await Product.find({  category: id,isDeleted:false }).populate('category');
-        const category = await Categories.find({isBlocked:false,isBlocked:false})
-        res.render('user/category', { products,category });
-    } catch (error) {
-        console.error(error);
-        res.redirect('/');
-    }
-};
-
-
-
-
-
-exports.Getproducts = async (req, res) => {
-    try {
-        const { id } = req.params;
-        const product = await Product.findById(id).populate('category');
-        const products = await Product.find({ isDeleted: false ,category:product.category._id,_id:{$ne:id}});
-        if (!product) {
-            return res.redirect('/');
-        }
-        res.render('user/product', { product, products });
-    } catch (error) {
-        console.error(error);
-        res.redirect('/');
-    }
-};
-
-
-
-
-exports.GetuserDeatiolsHome = async (req,res)=>{
-    try{
-         res.render('user/userdetailsHome')
-    }catch(error){
-         console.log(`error in GetuserDetiolsHome`);
-         
-    }
-}
-
-// Display user details
-exports.GetUserdetails = async (req, res) => {
-    try {
-      
-        const user = await User.findById(req.session.userId);
-        
-     
-        if (!user) {
-            console.log('User not found');
-            return res.redirect('/login');
-        }
-
-        
-        const updateSuccess = req.session.updateSuccess;
-        delete req.session.updateSuccess; 
-        
-        res.render('user/user details', { user, updateSuccess });
-    } catch (error) {
-        console.log(`Error in GetUserdetails: ${error}`);
-        res.status(500).send("Internal Server Error");
-    }
-};
-
-// Update user details
-exports.UpdateDetails = async (req, res) => {
-    try {
-        const { name, phone } = req.body;
-        const updateData = {};
-
-        // Add name and phone to updateData if provided
-        if (name) updateData.name = name;
-        if (phone) updateData.phone = phone;
-
-        // Update the user details in the database
-        await User.findByIdAndUpdate(req.session.userId, updateData);
-
-        // Set success message in session and redirect
-        req.session.updateSuccess = true;
-        res.redirect('/userprofile');
-    } catch (error) {
-        console.log(`Error in UpdateDetails: ${error}`);
-        res.status(500).send("Internal Server Error");
-    }
-};
-
-
-
-exports.addAddress = async (req,res)=>{
-    try{
-        const addressId = req.params.id;
-        let addressData = null;
-            
-        if (addressId) {
-            addressData = await Address.findById(addressId).exec();
-        }
-    
-        res.render('user/Addaddress', { address: addressData });
-    }catch(error){
-console.log(`error in addAddress ${error}`);
-
-    }
-}
-
-
-
-
-exports.addAddressPost = async (req, res) => {
-  try {
-   
-    const newAddress = new Address();
-  
-    Object.assign(newAddress, req.body);
-   
-    await newAddress.save();
-   
-    return res.redirect('/addresses');
-  } catch (error) {
-    
-    res.status(500).send(error.message);
-  }
-};
-  
-
-exports.getALLaddress = async(req,res)=>{
-    try{
-        const addresses = await Address.find()
-        res.render('user/showAddress',{addresses})
-
-    }catch(error){
-
-    }
-}  
-
-
-
-exports.renderEditAddress = async(req,res)=>{
-    try{
-       const address = await Address.findById(req.params.id);
-       return res.render('user/addressEdit',{address})
-    }catch(error){
-console.log(`error in renderEditAddress :${error}`);
-
-    }
-}
-
-
-exports.editAddressPost = async (req,res)=>{
-    try{
-     const addressId = req.params.id;
-
-     await Address.findByIdAndUpdate(addressId,req.body)
-        return res.redirect('/addresses');
-    }catch(error){
-        console.log(`error in editAddressPost :${error}`);
-        res.status(500).send("Internal Server Error");
-        
-    }
-}
-
-
-
-
-
-exports.Allproducts = async (req, res) => {
-    try {
-        const sortOption = req.query.sort || 'priceAsc';  
-        let sortField = {};
-
-        switch (sortOption) {
-            case 'priceAsc':
-                sortField = { price: 1 };
-                break;
-            case 'priceDesc':
-                sortField = { price: -1 };
-                break;
-            case 'nameAsc':
-                sortField = { name: 1 };
-                break;
-            case 'nameDesc':
-                sortField = { name: -1 };
-                break;
-        }
-
-      
-        const query = req.query.search || '';  
-        let searchCriteria = { isDeleted: false };
-
-       
-        if (query) {
-            searchCriteria = {
-                ...searchCriteria,
-                $or: [
-                    { name: { $regex: query, $options: 'i' } },
-                    { description: { $regex: query, $options: 'i' } }
-                ]
-            };
-        }
-
-        const category = req.query.category || ''; 
-        if (category) {
-            searchCriteria.category = category; 
-        }
-
-     
-        const categories = await Categories.find({ isBlocked: false, isDeleted: false });
-        const products = await Product.find(searchCriteria).sort(sortField).exec();
-
-       
-        res.render('user/Allproducts', { products, query, sortOption, categories, category }); 
-    } catch (error) {
-        console.log(`Error in Allproducts: ${error}`);
-        res.status(500).send('Internal Server Error');
-    }
-};
 
 
 

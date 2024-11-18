@@ -10,6 +10,7 @@ address:{type:String,required:true},
 city:{type:String,required:true},
 state:{type:String,required:true},
 addressType: { type: String, enum: ['Home', 'Work'], required: true },
+isDeleted : {type :Boolean},
 
 
 

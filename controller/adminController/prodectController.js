@@ -1,7 +1,7 @@
 const Product = require('../../model/prodectSchema');
 const Category = require('../../model/Category')
 const path = require('path');
-
+const Cart = require('../../model/cartSchema')
 
 const fs = require('fs')
 
@@ -66,7 +66,7 @@ exports.addProductPost = async (req, res) => {
     console.log('Checking if req.files is an array: ' + Array.isArray(req.files));
     const imagePaths = req.files.map(file => file.filename); 
     console.log('Image paths: ' + imagePaths);
-
+    const priceAfterDiscount =    (discount/ 100) *  price;
 
     const product = new Product({
       name,
@@ -76,7 +76,8 @@ exports.addProductPost = async (req, res) => {
       discount,
       status,
       description,
-      images: imagePaths 
+      images: imagePaths,
+      priceAfterDiscount:priceAfterDiscount 
     });
 
     await product.save();
@@ -114,71 +115,123 @@ exports.editProductGet = async (req, res) => {
 };
 
 
+
+const updateCartsWithNewPrices = async (productId) => {
+    const product = await Product.findById(productId);
+    if (!product) return;
+
+    const carts = await Cart.find({ 'items.productId': productId });
+    for (const cart of carts) {
+        for (const item of cart.items) {
+            if (item.productId.toString() === productId.toString()) {
+                item.productPrice = product.price;
+                item.productDiscountPrice = product.priceAfterDiscount;
+            }
+        }
+        await cart.save();
+    }
+};
+
 exports.updateProductPost = async (req, res) => {
     const productId = req.params.id;
     const deletedImages = JSON.parse(req.body.deletedImages || '[]');
-    const croppedImages = req.files;
+    const croppedImages = req.files; // Assuming you're using multer
 
     try {
-        let product = await Product.findById(productId);
+        const product = await Product.findById(productId);
         if (!product) {
             req.flash('error_msg', 'Product not found');
             return res.redirect('/admin/products');
         }
 
-        // Update product fields
-        Object.assign(product, req.body);
+        // Calculate price after discount
+        const { price, discount } = req.body;
+        let priceAfterDiscount = price;
+        if (discount && discount > 0) {
+            priceAfterDiscount = (price * (100 - discount)) / 100;
+        }
+
+        // Update all fields from req.body and add priceAfterDiscount
+        const updatedFields = {
+            ...req.body,
+            priceAfterDiscount,
+        };
+        
+        // Update product fields except images
+        Object.keys(updatedFields).forEach(key => {
+            if (key !== 'images') { // Skip images array as we'll handle it separately
+                product[key] = updatedFields[key];
+            }
+        });
 
         // Handle deleted images
-        if (deletedImages.length > 0) {
-            product.images = product.images.filter(img => !deletedImages.includes(img));
+        if (deletedImages && deletedImages.length > 0) {
+            // First, create a backup of current images
+            const currentImages = [...product.images];
+            
+            // Filter out deleted images
+            product.images = currentImages.filter(img => !deletedImages.includes(img));
 
-            deletedImages.forEach(image => {
-                const filePath = path.join('uploads', image);
-                // if (fs.existsSync(filePath)) {
-                //     fs.unlinkSync(filePath);
-                // }
-            });
+            // Delete physical files
+            try {
+                deletedImages.forEach(image => {
+                    const filePath = path.join(__dirname, '../uploads', image);
+                    if (fs.existsSync(filePath)) {
+                        fs.unlinkSync(filePath);
+                    }
+                });
+            } catch (error) {
+                console.error('Error deleting images:', error);
+                // Continue execution even if file deletion fails
+            }
         }
 
-        // Handle new cropped images
+        // Handle new images
         if (croppedImages && croppedImages.length > 0) {
-            croppedImages.forEach(file => {
-                product.images.push(file.filename);
-            });
+            const newImageFiles = croppedImages.map(file => file.filename);
+            product.images.push(...newImageFiles);
         }
 
-        await product.save();
-        req.flash('success_msg', 'Product updated successfully');
-        return res.redirect('/admin/products'); 
-    } catch (err) {
-        console.error(err);
-        if (!res.headersSent) {
-            req.flash('error_msg', 'Server Error');
-            return res.status(500).redirect('/admin/products');
+        // Validate that we have exactly 3 images
+        if (product.images.length !== 3) {
+            req.flash('error_msg', 'Product must have exactly 3 images');
+            return res.redirect(`/admin/products/edit/${productId}`);
         }
+
+        // Save the updated product
+        await product.save();
+
+        // Update cart prices if necessary
+        await updateCartsWithNewPrices(productId);
+
+        req.flash('success_msg', 'Product updated successfully');
+        return res.redirect('/admin/products');
+
+    } catch (error) {
+        console.error('Error updating product:', error);
+        req.flash('error_msg', 'Error updating product');
+        return res.redirect('/admin/products');
     }
 };
 
-
-
-
-exports.deleteproduct = async (req, res) => {
-    try {  
-        const { id } = req.params;
-        const product = await Product.findById(id); 
-
+exports.Blockedproduct = async (req, res) => {
+  try {
+        const product = await Product.findById(req.params.id);
         if (!product) {
-            return res.status(404).send('Product not found'); 
+            req.flash('error_msg', 'Product not found');
+            return res.redirect('/admin/products');
         }
 
-        product.isDeleted = true; 
-        await product.save(); 
+        // Toggle the isBlocked status
+        product.isBlocked = !product.isBlocked;
+        await product.save();
 
-        res.redirect('/admin/products'); 
+        req.flash('success_msg', `Product has been ${product.isBlocked ? 'blocked' : 'unblocked'} successfully`);
+        res.redirect('/admin/products');
     } catch (error) {
-        console.error(error); 
-        res.status(500).send('Server error'); 
+        console.error(error);
+        req.flash('error_msg', 'Something went wrong');
+        res.redirect('/admin/products');
     }
 };
 

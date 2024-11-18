@@ -66,6 +66,8 @@
     </style>
 </head>
 <body>
+    <%- include('../partials/adminSidebar.ejs') %>
+    <div class="ml-64">
     <div class="container mx-auto p-6">
         <h2 class="text-2xl font-semibold mb-4">Add New Product</h2>
         <form id="productForm" enctype="multipart/form-data">
@@ -99,13 +101,6 @@
                 <p id="discount-error" class="error-message hidden">Discount must be 0 or greater.</p>
             </div>
             <div class="mb-4">
-                <label for="status" class="block">Status</label>
-                <select id="status" name="status" required class="w-full border p-2">
-                    <option value="available">Available</option>
-                    <option value="unavailable">Unavailable</option>
-                </select>
-            </div>
-            <div class="mb-4">
                 <label for="description" class="block">Description</label>
                 <textarea id="description" name="description" rows="4" required class="w-full border p-2"></textarea>
                 <p id="description-error" class="error-message hidden">Description must be at least 10 characters long.</p>
@@ -130,6 +125,7 @@
             </div>
         </form>
     </div>
+</div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
     <script>

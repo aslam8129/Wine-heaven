@@ -3,10 +3,16 @@ const User = require('../../model/userSchema');
 require('dotenv').config();
 
 
-// Render the login page
+
 exports.loginGet = async (req, res) => {
-  
+  try{
     res.render('admin/Adlogin',);
+  }catch(error){
+    console.log(`error in adminlogin ${error}`);
+    
+  }
+  
+    
 };
 
 exports.dashbordGet =async (req,res)=>{
@@ -18,7 +24,7 @@ try{
 }
 }
 
-// Handle login logic
+
 exports.loginPost = async (req, res) => {
     const EMAIL = process.env.EMAIL_ADMIN ;
     const PASSWORD = process.env.PASSWORD_ADMIN ;

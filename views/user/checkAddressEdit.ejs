@@ -21,7 +21,7 @@
     <%- include('../partials/userHeader.ejs') %>
     <div class="flex flex-1 mt-20">
         <%- include('../partials/userSidebar.ejs') %>
-        <div class="flex-grow bg-gray-100 flex  p-4 ml-64">
+        <div class="flex-grow bg-gray-100 flex  p-4">
             <div class="bg-white shadow-md rounded-lg p-8  w-full mt-10">
                 <h1 class="text-2xl font-semibold mb-6 text-gray-800">Edit Address</h1>
                 <form id="editAddressForm" action="/addres/edit/<%= address._id %>" method="POST" class="space-y-4" onsubmit="return validateForm()">

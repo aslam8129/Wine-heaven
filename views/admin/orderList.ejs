@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Management</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+    <div class="flex">
+        <!-- Sidebar -->
+        <%- include('../partials/adminSidebar') %>
+
+        <!-- Main Content -->
+        <div class="flex-1 ml-64 p-6">
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h1 class="text-2xl font-bold mb-6">Order Management</h1>
+
+                <div class="overflow-x-auto">
+                    <table class="min-w-full bg-white border border-gray-200">
+                        <thead>
+                            <tr class="bg-gray-50">
+                                <th class="border px-4 py-2">Order ID</th>
+                                <th class="border px-4 py-2">User Name</th>
+                                <th class="border px-4 py-2">Products</th>
+                                <th class="border px-4 py-2">Total Price</th>
+                                <th class="border px-4 py-2">Current Status</th>
+                                <th class="border px-4 py-2">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% orders.forEach(order => { %>
+                                <tr class="hover:bg-gray-50">
+                                    <td class="border px-4 py-2">
+                                        #<%= order.orderId %>
+                                    </td>
+                                    <td class="border px-4 py-2">
+                                        <%= order.userId.name %>
+                                    </td>
+                                    <td class="border px-4 py-2">
+                                        <% order.items.forEach(item => { %>
+                                            <div class="mb-1">
+                                                <%= item.productId.name %> × <%= item.productCount %>
+                                            </div>
+                                        <% }) %>
+                                    </td>
+                                    <td class="border px-4 py-2">
+                                        ₹<%= order.totalPrice %>
+                                    </td>
+                                    <td class="border px-4 py-2">
+                                        <span class="px-2 py-1 rounded-full text-sm
+                                            <% if (order.orderStatus === 'Pending') { %>
+                                                bg-yellow-100 text-yellow-800
+                                            <% } else if (order.orderStatus === 'Confirmed') { %>
+                                                bg-blue-100 text-blue-800
+                                            <% } else if (order.orderStatus === 'Shipped') { %>
+                                                bg-purple-100 text-purple-800
+                                            <% } else if (order.orderStatus === 'Delivered') { %>
+                                                bg-green-100 text-green-800
+                                            <% } else if (order.orderStatus === 'Cancelled') { %>
+                                                bg-red-100 text-red-800
+                                            <% } %>">
+                                            <%= order.orderStatus %>
+                                        </span>
+                                    </td>
+                                    <td class="border px-4 py-2">
+                                        <% if (availableStatusUpdates[order.orderStatus] && availableStatusUpdates[order.orderStatus].length > 0) { %>
+                                            <form action="/admin/update-order-status" method="POST" class="flex gap-2">
+                                                <input type="hidden" name="orderId" value="<%= order._id %>">
+                                                <select name="newStatus" class="border rounded px-2 py-1 text-sm">
+                                                    <% availableStatusUpdates[order.orderStatus].forEach(status => { %>
+                                                        <option value="<%= status %>"><%= status %></option>
+                                                    <% }) %>
+                                                </select>
+                                                <button type="submit" 
+                                                    class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-sm">
+                                                    Update
+                                                </button>
+                                            </form>
+                                        <% } else { %>
+                                            <span class="text-gray-500 text-sm">No further actions</span>
+                                        <% } %>
+                                    </td>
+                                </tr>
+                            <% }) %>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination Controls -->
+                <div class="flex justify-center mt-6">
+                    <% if (currentPage > 1) { %>
+                        <a href="?page=<%= currentPage - 1 %>" class="px-4 py-2 bg-blue-500 text-white rounded mr-2">Previous</a>
+                    <% } %>
+                    <% for (let i = 1; i <= totalPages; i++) { %>
+                        <a href="?page=<%= i %>" class="px-4 py-2 <%= currentPage === i ? 'bg-gray-500' : 'bg-blue-500' %> text-white rounded mx-1"><%= i %></a>
+                    <% } %>
+                    <% if (currentPage < totalPages) { %>
+                        <a href="?page=<%= currentPage + 1 %>" class="px-4 py-2 bg-blue-500 text-white rounded ml-2">Next</a>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

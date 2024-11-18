@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Details</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        .order-card {
+            background: white;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s;
+        }
+
+        .order-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .product-image {
+            transition: transform 0.3s;
+        }
+
+        .product-image:hover {
+            transform: scale(1.05);
+        }
+
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .status-paid {
+            background-color: #10B981;
+            color: white;
+        }
+
+        .status-pending {
+            background-color: #F59E0B;
+            color: white;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50">
+    <%- include('../partials/userHeader.ejs') %>
+    <div class="mt-20">
+        <%- include('../partials/userSidebar.ejs') %>
+    </div>
+
+    <div class="main-content p-6 max-w-7xl mx-auto">
+        <h1 class="text-3xl font-bold mb-4 text-gray-800">My Orders</h1>
+
+        <% orders.forEach(order => { %>
+        <div class="order-card mb-8 p-6 border border-gray-200">
+            <div class="flex items-center justify-between mb-3">
+                <div>
+                    <h2 class="text-xl font-semibold">Order #<%= order.orderId %></h2>
+                    <p class="text-gray-600"><%= new Date(order.createdAt).toLocaleDateString('en-US', { 
+                        year: 'numeric', 
+                        month: 'long', 
+                        day: 'numeric' 
+                    }) %></p>
+                </div>
+                <span class="status-badge <%= order.paymentStatus === 'paid' ? 'status-paid' : 'status-pending' %>">
+                    <%= order.paymentStatus %>
+                </span>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="space-y-4">
+                    <% order.items.forEach(item => { %>
+                    <div class="bg-white p-4 rounded-lg border border-gray-200">
+                        <div class="flex items-center space-x-4">
+                            <img src="/uploads/<%= item.productimages[0] %>" 
+                                 alt="<%= item.productName %>" 
+                                 class="w-24 h-24 object-cover rounded-lg product-image">
+                            <div class="flex-1">
+                                <h3 class="font-semibold text-lg"><%= item.productName %></h3>
+                                <p class="text-gray-600"><i class="fa-solid fa-indian-rupee-sign"></i><%= order.totalPrice.toFixed(2) %></p>
+                                <p class="text-sm text-gray-500">Category: <%= item.productCategory %></p>
+                                <p class="text-sm text-green-500"><%= order.orderStatus %></p>
+                            </div>
+                            <% if (order.orderStatus !== 'Delivered') { %>
+                            <button class="cancel-btn bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition-colors"
+                                    data-order-id="<%= order._id %>"
+                                    data-product-id="<%= item.productId %>">
+                                Cancel Order
+                            </button>
+                            <% } else { %>
+                            <button class="view-btn bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg transition-colors"
+                                    data-order-id="<%= order._id %>"
+                                    data-product-id="<%= item.productId %>">
+                                 Return Order
+                            </button>
+                            <% } %>
+                        </div>
+                    </div>
+                    <% }); %>
+                </div>
+
+                <div class="bg-gray-50 p-6 rounded-lg">
+                    <h3 class="text-lg font-semibold mb-4">Order Summary</h3>
+                    <div class="space-y-3">
+                        <div class="flex justify-between">
+                            <span>Price </span>
+                            <span><i class="fa-solid fa-indian-rupee-sign"></i><%= order.totalPrice.toFixed(2) %></span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Quantity </span>
+                            <span><%= order.totalQuantity %></span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Shipping</span>
+                            <span><i class="fa-solid fa-indian-rupee-sign"></i> 100.00</span>
+                        </div>
+                          <% order.items.forEach(item => { %>
+                        <div class="flex justify-between text-green-600">
+                            <span>Discount</span>
+                            <span><%= item.productDiscountPrice %> Off</span>
+                        </div>
+                        <div class="border-t pt-3 mt-3">
+                            <div class="flex justify-between font-bold">
+                                <span>Total</span>
+                                <span><i class="fa-solid fa-indian-rupee-sign"></i><%= %></span>
+                            </div>
+                        </div>
+                       <% }) %>
+                    </div>
+
+                    <div class="mt-6">
+                        <h3 class="text-lg font-semibold mb-4">Shipping Address</h3>
+                        <div class="bg-white p-4 rounded-lg border border-gray-200">
+                            <p class="font-semibold"><%= order.address.contactName %></p>
+                            <p><%= order.address.street %></p>
+                            <p><%= order.address.city %>, <%= order.address.state %> </p>
+                            <p>Pincode: <%= order.address.pincode %></p>
+                            <p>Phone: <%= order.address.mobile %></p>
+                            <p><%= order.address.country %></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <% }); %>
+
+        <!-- Pagination -->
+        <div class="mt-8 flex justify-between items-center">
+            <% if (currentPage > 1) { %>
+            <a href="?page=<%= currentPage - 1 %>&limit=<%= limit %>" class="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600">
+                Previous
+            </a>
+            <% } %>
+
+            <div class="flex items-center space-x-2">
+                <% for (let i = 1; i <= totalPages; i++) { %>
+                <a href="?page=<%= i %>&limit=<%= limit %>" class="px-4 py-2 rounded-md <%= currentPage === i ? 'bg-red-500 text-white' : 'bg-gray-200' %>">
+                    <%= i %>
+                </a>
+                <% } %>
+            </div>
+
+            <% if (currentPage < totalPages) { %>
+            <a href="?page=<%= currentPage + 1 %>&limit=<%= limit %>" class="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600">
+                Next
+            </a>
+            <% } %>
+        </div>
+    </div>
+
+    <!-- Cancel Order Modal -->
+    <div id="cancel-modal" class="fixed inset-0 z-50 hidden">
+        <div class="absolute inset-0 bg-gray-500 bg-opacity-75"></div>
+        <div class="relative z-10 mx-auto max-w-md mt-20">
+            <div class="bg-white rounded-lg shadow-xl p-6">
+                <h2 class="text-xl font-semibold mb-4">Cancel Order</h2>
+                <form id="cancel-form" method="POST" action="/cancelOrder">
+                    <input type="hidden" name="orderId" id="cancel-order-id">
+                    <input type="hidden" name="productId" id="cancel-product-id">
+                    <div class="mb-4">
+                        <label for="cancel-reason" class="block text-sm font-medium text-gray-700 mb-2">
+                            Please provide a reason for cancellation
+                        </label>
+                        <textarea 
+                            id="cancel-reason" 
+                            name="reason" 
+                            rows="3" 
+                            class="w-full border border-gray-300 rounded-md p-2 focus:ring-2 focus:ring-blue-500"
+                            required
+                        ></textarea>
+                    </div>
+                    <div class="flex justify-end space-x-3">
+                        <button 
+                            type="button" 
+                            onclick="closeCancelModal()"
+                            class="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-md transition-colors"
+                        >
+                            Cancel
+                        </button>
+                        <button 
+                            type="submit"
+                            class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-md transition-colors"
+                        >
+                            Confirm Cancellation
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openCancelModal(orderId, productId) {
+            document.getElementById('cancel-order-id').value = orderId;
+            document.getElementById('cancel-product-id').value = productId;
+            document.getElementById('cancel-modal').classList.remove('hidden');
+        }
+
+        function closeCancelModal() {
+            document.getElementById('cancel-modal').classList.add('hidden');
+        }
+
+        document.querySelectorAll('.cancel-btn').forEach(button => {
+            button.addEventListener('click', (e) => {
+                const orderId = e.target.getAttribute('data-order-id');
+                const productId = e.target.getAttribute('data-product-id');
+                openCancelModal(orderId, productId);
+            });
+        });
+
+        document.querySelectorAll('.view-btn').forEach(button => {
+            button.addEventListener('click', (e) => {
+                const orderId = e.target.getAttribute('data-order-id');
+                const productId = e.target.getAttribute('data-product-id');
+                // Open view return order functionality here
+            });
+        });
+    </script>
+</body>
+
+</html>

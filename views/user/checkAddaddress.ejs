@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Address</title>
+    <title>Add New Address</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <style>
         .error-message {
@@ -21,42 +21,42 @@
     <%- include('../partials/userHeader.ejs') %>
     <div class="flex flex-1 mt-20">
         <%- include('../partials/userSidebar.ejs') %>
-        <div class="flex-grow bg-gray-100 flex  p-4 ml-64">
-            <div class="bg-white shadow-md rounded-lg p-8  w-full mt-10">
-                <h1 class="text-2xl font-semibold mb-6 text-gray-800">Edit Address</h1>
-                <form id="editAddressForm" action="/addres/edit/<%= address._id %>" method="POST" class="space-y-4" onsubmit="return validateForm()">
+        <div class="flex-grow bg-gray-100 p-4 mt-5 ml-64">
+            <div class="bg-white shadow-md rounded-lg p-8 max-w-500 w-full">
+                <h1 class="text-2xl font-semibold mb-6 text-gray-800">Add a New Address</h1>
+                <form id="addressForm" action="/add-addres" method="POST" class="space-y-4" onsubmit="return validateForm()">
                     <div>
                         <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
-                        <input type="text" id="name" name="name" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" value="<%= address.name %>" required>
+                        <input type="text" id="name" name="name" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" required>
                         <p id="name-error" class="error-message hidden">Name must be at least 3 characters long, cannot start with a space, and must start with an uppercase letter.</p>
                     </div>
                     <div>
                         <label for="mobile" class="block text-sm font-medium text-gray-700">10-digit mobile number</label>
-                        <input type="text" id="mobile" name="mobile" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" value="<%= address.mobile %>" required>
+                        <input type="text" id="mobile" name="mobile" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" required >
                         <p id="mobile-error" class="error-message hidden">Mobile number must be exactly 10 digits and cannot start with 0.</p>
                     </div>
                     <div>
                         <label for="pincode" class="block text-sm font-medium text-gray-700">Pincode</label>
-                        <input type="text" id="pincode" name="pincode" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" value="<%= address.pincode %>" required>
+                        <input type="text" id="pincode" name="pincode" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" required >
                         <p id="pincode-error" class="error-message hidden">Pincode must be exactly 6 digits and cannot start with 0.</p>
                     </div>
                     <div>
                         <label for="address" class="block text-sm font-medium text-gray-700">Address (Area and Street)</label>
-                        <input type="text" id="address" name="address" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" value="<%= address.address %>" required>
+                        <input type="text" id="address" name="address" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" required>
                         <p id="address-error" class="error-message hidden">Address must be at least 5 characters long.</p>
                     </div>
                     <div>
                         <label for="city" class="block text-sm font-medium text-gray-700">City/District/Town</label>
-                        <input type="text" id="city" name="city" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" value="<%= address.city %>" required>
+                        <input type="text" id="city" name="city" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" required>
                         <p id="city-error" class="error-message hidden">City/District/Town must be at least 3 characters long.</p>
                     </div>
                     <div>
                         <label for="state" class="block text-sm font-medium text-gray-700">State</label>
                         <select id="state" name="state" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" required>
-                            <option value="" disabled>--Select State--</option>
-                            <option value="State1" <%= address.state === 'State1' ? 'selected' : '' %>>State1</option>
-                            <option value="State2" <%= address.state === 'State2' ? 'selected' : '' %>>State2</option>
-                            <!-- Add more states as needed -->
+                            <option value="">--Select State--</option>
+                            <option value="New York">New York</option>
+                            <option value="Florida">Florida</option>
+                            <option value="California">California</option>
                         </select>
                         <p id="state-error" class="error-message hidden">Please select a state.</p>
                     </div>
@@ -64,17 +64,17 @@
                         <label class="block text-sm font-medium text-gray-700">Address Type</label>
                         <div class="mt-2 space-x-4">
                             <label class="inline-flex items-center">
-                                <input type="radio" id="home" name="addressType" value="Home" class="form-radio text-indigo-600" <%= address.addressType === 'Home' ? 'checked' : '' %> required>
+                                <input type="radio" id="home" name="addressType" value="Home" class="form-radio text-indigo-600" required>
                                 <span class="ml-2">Home</span>
                             </label>
                             <label class="inline-flex items-center">
-                                <input type="radio" id="work" name="addressType" value="Work" class="form-radio text-indigo-600" <%= address.addressType === 'Work' ? 'checked' : '' %> required>
+                                <input type="radio" id="work" name="addressType" value="Work" class="form-radio text-indigo-600" required>
                                 <span class="ml-2">Work</span>
                             </label>
                         </div>
                         <p id="addressType-error" class="error-message hidden">Please select an address type.</p>
                     </div>
-                    <button type="submit" class="w-full py-2 px-4 bg-indigo-600 text-white font-semibold rounded-md shadow-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500">Update</button>
+                    <button type="submit" class="w-full py-2 px-4 bg-indigo-600 text-white font-semibold rounded-md shadow-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500">Save</button>
                 </form>
             </div>
         </div>
@@ -153,8 +153,8 @@
 
             // Validate the address type field
             let addressTypeSelected = false;
-            for (let i = 0; i < addressTypeInputs.length; i++) {
-                if (addressTypeInputs[i].checked) {
+            for (const addressTypeInput of addressTypeInputs) {
+                if (addressTypeInput.checked) {
                     addressTypeSelected = true;
                     break;
                 }
@@ -173,7 +173,7 @@
 
             Swal.fire({
                 title: 'Success!',
-                text: 'Address updated successfully.',
+                text: 'Address added successfully.',
                 icon: 'success',
                 confirmButtonText: 'OK'
             });

@@ -134,9 +134,9 @@
 
     <!-- Main Product Section -->
     <div class="container mx-auto px-4 py-8">
-        <div class="flex flex-col lg:flex-row gap-12">
+        <div class="flex flex-col lg:flex-row gap-12 mt-10 ml-20">
             <!-- Left Column - Images -->
-            <div class="lg:w-2/5">
+            <div class="lg:w-5/10">
                 <!-- Main Image with Zoom -->
                 <div class="zoom-container bg-white rounded-xl shadow-lg overflow-hidden">
                     <% if (product.images && product.images.length > 0) { %>
@@ -171,7 +171,26 @@
                 <h1 class="text-4xl md:text-5xl font-bold main-font mb-4"><%= product.name %></h1>
 
                 <!-- Rating & Reviews -->
-                <div class="flex items-center mb-6">
+              
+
+                <!-- Price -->
+                <div class="flex justify-between items-center mb-8 space-x-2">
+           
+                    <span class="text-2xl font-bold text-red-500 line-through">$<%= product.price.toFixed(2) %></span>
+                    <span class="text-4xl font-bold text-green-500">$<%= product.priceAfterDiscount.toFixed(0) %>.00</span>
+                    <span class="text-2xl font-bold text-red-500"><%= product.discount %>% Off</span>
+                </div>
+                
+                
+                <% if (product.status=='available') { %>
+                    <h4 class="text-xl md:text-xl font-bold text-green-500 main-font mb-4"><%=product.status %></h4>
+                <% } %>
+                <% if (product.status=='unavailable') { %>
+                    <h4 class="text-xl md:text-xl font-bold text-red-900 main-font mb-4"><%=product.status %></h4>
+                <% } %>
+                
+                <h4 class="text-xl md:text-xl font-bold main-font mb-4"><%=product.description %></h4>
+                  <div class="flex items-center mb-6">
                     <div class="flex">
                         <% for(let i = 1; i <= 5; i++) { %>
                             <svg class="w-5 h-5 <%= i <= product.rating ? 'text-yellow-400' : 'text-gray-300' %>" 
@@ -184,22 +203,6 @@
                         <%= product.rating %> (<%= product.reviews %> reviews)
                     </span>
                 </div>
-
-                <!-- Price -->
-                <div class="mb-8">
-                    <span class="text-2xl font-bold text-gray-900"><%= product.discount %>%</span>
-                </div>
-                <div class="mb-8">
-                    <span class="text-4xl font-bold text-gray-900">$<%= product.price.toFixed(2) %></span>
-                </div>
-                <% if (product.status=='available') { %>
-                    <h4 class="text-xl md:text-xl font-bold text-green-500 main-font mb-4"><%=product.status %></h4>
-                <% } %>
-                <% if (product.status=='unavailable') { %>
-                    <h4 class="text-xl md:text-xl font-bold text-red-900 main-font mb-4"><%=product.status %></h4>
-                <% } %>
-                
-                <h4 class="text-xl md:text-xl font-bold main-font mb-4"><%=product.description %></h4>
                 <!-- Quantity Selector -->
                 <!-- <div class="flex items-center mb-6">
                     <button onclick="decrementQuantity()" class="bg-gray-200 text-gray-600 rounded-lg px-4 py-2">-</button>
@@ -208,14 +211,27 @@
                 </div> -->
                
                 <!-- Add to Cart Form -->
-                <form action="/add-to-cart" method="POST" onsubmit="handleSubmit(event, 'cart')">
-                    <input type="hidden" name="productId" value="<%= product.id %>">
-                    <input type="hidden" name="cart-quantity" id="cart-quantity" value="">
+               
+              <% if (product.stock >0) {%>
+
+                <% if (isInCart) { %>
+                    <a href="/cart"><button type="submit" class="w-full bg-gold text-white py-3 rounded-lg hover:bg-gold-hover transition-colors">
+                        <span class="button-text">Go to Cart</span>
+                        <span class="loading-spinner hidden">⏳</span>
+                    </button> </a>
+                <% } else { %>
+                   <form action="/cart/update" method="POST" >
+                    <input type="hidden" name="productId" value="<%= product._id %>">
+                    <input type="hidden" name="quantity" id="cart-quantity" value="1" min="1">
                     <button type="submit" class="w-full bg-gold text-white py-3 rounded-lg hover:bg-gold-hover transition-colors">
                         <span class="button-text">Add to Cart</span>
                         <span class="loading-spinner hidden">⏳</span>
                     </button>
                 </form>
+                <% } %>
+                
+               
+                <% } %>
 
                 <!-- Checkout Form -->
                 <form action="/checkout" method="POST" onsubmit="handleSubmit(event, 'checkout')">
@@ -261,16 +277,16 @@
 
     <script>
         function changeMainImage(imagePath, buttonElement) {
-            // Update the main image src
+  
             const mainImage = document.getElementById('main-image');
             mainImage.src = imagePath;
 
-            // Change the active thumbnail border
+        
             const thumbnails = document.querySelectorAll('.thumbnail-btn');
             thumbnails.forEach(thumbnail => {
-                thumbnail.classList.remove('border-gold'); // Remove border from all thumbnails
+                thumbnail.classList.remove('border-gold'); 
             });
-            buttonElement.classList.add('border-gold'); // Add border to the active thumbnail
+            buttonElement.classList.add('border-gold');
         }
 
         function incrementQuantity() {
@@ -285,22 +301,41 @@
             }
         }
 
+
+        function handleSubmit(event) {
+    event.preventDefault(); 
+    const form = event.target; 
+
+    const button = form.querySelector('button');
+    const buttonText = button.querySelector('.button-text');
+    const loadingSpinner = button.querySelector('.loading-spinner');
+
+    
+    buttonText.classList.add('hidden');
+    loadingSpinner.classList.remove('hidden');
+
+    
+}
+
+
+
+        
         function handleSubmit(event, action) {
             event.preventDefault();
             const quantityInput = document.getElementById(action === 'checkout' ? 'checkout-quantity' : 'cart-quantity');
             const quantity = document.getElementById('quantity').value;
-            quantityInput.value = quantity; // Set the hidden input value to the current quantity
+            quantityInput.value = quantity;
 
-            // Optionally, show the loading spinner and change button text
+
             const buttonText = event.target.querySelector('.button-text');
             const loadingSpinner = event.target.querySelector('.loading-spinner');
             buttonText.classList.add('hidden');
             loadingSpinner.classList.remove('hidden');
 
-            // Submit the form after a brief delay to show loading spinner
+         
             setTimeout(() => {
                 event.target.submit();
-            }, 500); // Change the timeout as needed
+            }, 500);
         }
     </script>
 </body>

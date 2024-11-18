@@ -37,12 +37,7 @@ const orderSchema = new mongoose.Schema({
         },
         productDiscount: {
             type: Number
-        },
-        productStatus: {
-            type: String,
-            enum: ['Paid', 'Shipped', 'Pending', 'Delivered', 'Returned', 'Cancelled'],
-            default: 'Pending'
-        }
+        },        
     }],
     totalQuantity: {
         type: Number
@@ -57,24 +52,39 @@ const orderSchema = new mongoose.Schema({
         city: String,
         state: String,
         country: String,
-        pincode: Number
-    },
-    paymentId: {
-        type: String
+        pincode: Number,
+        mobile:Number,
     },
     paymentMethod: {
         type: String,
-        required: true,
-        enum: ['Cash on delivery']
+        enum: ['Cash on Delivery', 'Wallet', 'UPI'],
+        required: true
     },
-    paymentStatus: {
+    orderStatus: {
         type: String,
-        enum: ['Pending', 'Shipped', 'Paid', 'Delivered', 'Cancelled', 'Returned']
+        enum: ['Pending', 'Confirmed', 'Shipped', 'Out for Delivery', 'Delivered', 'Cancelled'],
+        default: 'Pending'
     },
+    statusHistory: [{
+        status: String,
+        timestamp: {
+            type: Date,
+            default: Date.now
+        }
+    }],
+
+    // paymentStatus: {
+    //     type: String,
+    //     enum: ['Pending', 'Shipped', 'Paid', 'Delivered', 'Cancelled', 'Returned']
+    // },
     createdAt: {
         type: Date,
         default: Date.now
+    },
+    cancellationReason:{
+        type:String
     }
+
 });
 
 module.exports = mongoose.model('Orders', orderSchema);

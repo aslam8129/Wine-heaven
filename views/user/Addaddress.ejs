@@ -19,9 +19,9 @@
 </head>
 <body class="bg-gray-100 min-h-screen flex flex-col">
     <%- include('../partials/userHeader.ejs') %>
-    <div class="flex flex-1">
+    <div class="flex flex-1 mt-20">
         <%- include('../partials/userSidebar.ejs') %>
-        <div class="flex-grow bg-gray-100 p-4">
+        <div class="flex-grow bg-gray-100 p-4 mt-5 ml-64">
             <div class="bg-white shadow-md rounded-lg p-8 max-w-500 w-full">
                 <h1 class="text-2xl font-semibold mb-6 text-gray-800">Add a New Address</h1>
                 <form id="addressForm" action="/add-address" method="POST" class="space-y-4" onsubmit="return validateForm()">
@@ -54,8 +54,9 @@
                         <label for="state" class="block text-sm font-medium text-gray-700">State</label>
                         <select id="state" name="state" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" required>
                             <option value="">--Select State--</option>
-                            <option value="State1">State1</option>
-                            <option value="State2">State2</option>
+                            <option value="New York">New York</option>
+                            <option value="Florida">Florida</option>
+                            <option value="California">California</option>
                         </select>
                         <p id="state-error" class="error-message hidden">Please select a state.</p>
                     </div>
