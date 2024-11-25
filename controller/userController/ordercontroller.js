@@ -3,13 +3,7 @@ const Cart = require('../../model/cartSchema')
 const  Product = require('../../model/prodectSchema')
 const   Address = require('../../model/userAddress')
 const User = require('../../model/userSchema')
-
-
-
-
-
-
-
+const Wallet = require('../../model/walletModel')
 
 
 
@@ -99,79 +93,95 @@ exports.editAddressPostcheckout = async (req,res)=>{
 
 
 
-
-
 exports.ordersList = async (req, res) => {
     try {
         const userId = req.session.userId;
-        console.log("User ID from session:", userId); 
 
+    
         if (!userId) {
             return res.redirect('/login');
         }
 
         const page = parseInt(req.query.page) || 1;
-        const limit = parseInt(req.query.limit) || 1;
-        const ordersCount = await Order.countDocuments({ userId: userId });
+        const limit = parseInt(req.query.limit) || 1; 
+        const skip = (page - 1) * limit;
+
+        
+        const ordersCount = await Order.countDocuments({ userId });
+
+        if (ordersCount === 0) {
+            return res.render('user/listOrder', {
+                orders: [],
+                noOrders: true,
+                currentPage: page,
+                totalPages: 0,
+            });
+        }
 
 
-        const totalPages = Math.ceil(ordersCount / limit);
-
-        const orders = await Order.find({ userId: userId })
-            .populate({
-                path: 'items.productId',
-                populate: {
-                    path: 'category',
-                    model: 'Category'
-                }
-            })
-            .skip((page - 1) * limit)
+        const orders = await Order.find({ userId }) .populate('shippingAddress').populate('items.productId')
+           
+           
+            .skip(skip)
             .limit(limit)
             .exec();
 
-console.log('odersss   :',orders);
+    
 
+        const totalPages = Math.ceil(ordersCount / limit);
 
-       
-        console.log("Orders retrieved:", orders);
-
-        if (!orders || orders.length === 0) {
-            return res.render('user/listOrder', { orders: [], noOrders: true, currentPage: page, totalPages: 0 });
-        }
-
-        const populatedOrders = orders.map(order => {
-            return {
-                ...order.toObject(),
-                items: order.items.map(item => {
-                    return {
-                        ...item,
-                        productImage: item.productId.imageUrl,
-                        productName: item.productId.name,
-                        productCategory: item.productId.category ? item.productId.category.name : null,
-                        productPrice: item.productId.price,
-                        productimages: item.productId.images,
-                        productDiscountPrice: item.productId.discount,
-                        productcount :item.productId.productcount,
-                        
-                    };
-                })
-            };
-        });
-
-      
-
+        
         res.render('user/listOrder', {
-            orders: populatedOrders,
+            orders,
             noOrders: false,
             currentPage: page,
-            totalPages: totalPages,
+            totalPages,
             limit,
         });
-
     } catch (error) {
-        console.log(`Error in ordersList: ${error}`);
+        console.error(`Error in ordersList: ${error.message}`);
         res.status(500).send('Internal Server Error');
     }
 };
 
 
+
+exports.getWallet = async (req, res) => {
+    try {
+        const userId = req.session.userId;
+        
+     console.log(`userid ${userId}`);
+     
+
+        const wallet = await Wallet.findOne({ userID: userId });
+
+        console.log(`wallet  ${wallet}`);
+        
+        
+        if (!wallet) {
+            return res.render('user/Wallat', { 
+                wallet: { 
+                    balance: 0, 
+                    transactions: [] 
+                },
+                message: 'No wallet found. Create your first transaction!'
+            });
+        }
+      
+        res.render('user/Wallat', { 
+            wallet: wallet,
+            error: null,
+            message: null
+        });
+
+    } catch(error) {
+        console.error('Wallet Retrieval Error:', error);
+        res.render('user/Wallat', { 
+            wallet: { 
+                balance: 0, 
+                transactions: [] 
+            },
+            error: 'An error occurred while retrieving wallet information'
+        });
+    }
+}

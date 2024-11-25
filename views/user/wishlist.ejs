@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Wishlist</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        .bg-gold {
+            background-color: #600018;
+            color: white;
+            transition: all 0.3s ease;
+        }
+        .bg-gold:hover {
+            background-color: #800020;
+            transform: translateY(-2px);
+        }
+        .product-card {
+            transition: all 0.3s ease;
+        }
+        .product-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen flex flex-col">
+    <%-include('../partials/userHeader.ejs')%>
+    
+    <div class="container mx-auto px-4 py-8 flex-grow">
+        <h1 class="text-4xl font-bold mb-8 text-center text-[#600018]">My Wishlist</h1>
+
+        <% if (!hasWishlistItems) { %>
+            <div class="text-center py-16 bg-white rounded-lg shadow">
+                <i class="fas fa-heart-broken text-6xl text-[#600018]/30 mb-4"></i>
+                <p class="text-xl text-gray-600">Your wishlist is empty</p>
+                <a href="/products" class="mt-4 inline-block bg-gold px-6 py-3 rounded-lg">
+                    Continue Shopping
+                </a>
+            </div>
+        <% } else { %>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                <% wishlist.forEach(product => { %>
+                    <div class="product-card bg-white rounded-xl shadow-lg overflow-hidden">
+                        <div class="relative">
+                            <img 
+                                src="/uploads/<%= product.firstImage %>" 
+                                alt="<%= product.name %>" 
+                                class="w-full h-64 object-cover"
+                            >
+                            <button 
+                                onclick="removeFromWishlist('<%= product._id %>')"
+                                class="absolute top-4 right-4 bg-gold w-10 h-10 rounded-full flex items-center justify-center"
+                                title="Remove from Wishlist"
+                            >
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                        <div class="p-4">
+                            <h3 class="text-xl font-bold text-[#600018] mb-4 truncate">
+                                <%= product.name %>
+                            </h3>
+                            
+                            <div class="grid grid-cols-2 gap-2">
+                                <a 
+                                    href="/products/<%= product._id %>" 
+                                    class="bg-gold py-2 rounded text-center flex items-center justify-center"
+                                >
+                                    <i class="fas fa-eye mr-2"></i>View Details
+                                </a>
+                                <% if (product.isAvailable) { %>
+                                    <form action="/cart/update" method="POST" class="contents">
+                                        <input type="hidden" name="productId" value="<%= product._id %>">
+                                        <input type="hidden" name="quantity" value="1">
+                                        <button 
+                                            type="submit" 
+                                            class="w-full bg-gold py-2 rounded flex items-center justify-center"
+                                        >
+                                            <i class="fas fa-shopping-cart mr-2"></i>Add to Cart
+                                        </button>
+                                    </form>
+                                <% } else { %>
+                                    <button 
+                                        disabled 
+                                        class="w-full bg-gray-400 text-white py-2 rounded cursor-not-allowed flex items-center justify-center"
+                                    >
+                                        <i class="fas fa-ban mr-2"></i>Out of Stock
+                                    </button>
+                                <% } %>
+                            </div>
+                        </div>
+                    </div>
+                <% }); %>
+            </div>
+        <% } %>
+    </div>
+
+    <script>
+        async function removeFromWishlist(productId) {
+            try {
+                const response = await fetch('/wishlist/remove', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ productId })
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    const productCard = document.querySelector(`[onclick="removeFromWishlist('${productId}')"]`).closest('.product-card');
+                    productCard.style.transform = 'scale(0.95)';
+                    productCard.style.opacity = '0';
+                    
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 300);
+                } else {
+                    throw new Error(result.message);
+                }
+            } catch (error) {
+                console.error('Wishlist Remove Error:', error);
+                alert(error.message || 'Failed to remove from wishlist');
+            }
+        }
+    </script>
+</body>
+</html>

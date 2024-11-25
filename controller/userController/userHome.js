@@ -5,15 +5,21 @@ const Categories = require('../../model/Category');
 const Cart = require('../../model/cartSchema')
 exports.home = async (req, res) => {
     try {
+       
         const categories = await Categories.find({ isDeleted: false, isBlocked: false });
 
         
-        const products = await Product.find({ isDeleted: false,isBlocked:false }).limit(8);
+        const products = await Product.find({ isDeleted: false, isBlocked: false })
+            .populate('category')
+            .limit(8);
 
-      
+    
+        const validProducts = products.filter(product => product.category && !product.category.isBlocked && !product.category.isDeleted);
+
+     
         return res.render('user/home', {
             categories,
-            products,
+            products: validProducts,
             showAllButton: true, 
         });
     } catch (error) {
@@ -40,24 +46,35 @@ exports.Getcategories = async (req, res) => {
 };
 
 
-
 exports.Getproducts = async (req, res) => {
     try {
         const { id } = req.params;
-        const userId = req.session.userId;
-        const product = await Product.findById(id).populate('category');
-        const products = await Product.find({ isDeleted: false,isBlocked:false, category: product.category._id, _id: { $ne: id } });
-        const cart = await Cart.findOne({ userId });
+        const userId = req.session.userId; 
 
-        // Assuming each cart item has a 'productId' field
-        const isInCart = cart ? cart.items.some(item => item.productId.toString() === id) : false;
+
+        const product = await Product.findOne({ _id: id, isDeleted: false, isBlocked: false }).populate('category');
 
         if (!product) {
+       
             return res.redirect('/');
         }
-        res.render('user/product', { product, products, isInCart });
+
+       
+        const products = await Product.find({
+            isDeleted: false,
+            isBlocked: false,
+            category: product.category._id,
+            _id: { $ne: id },
+        });
+
+        const cart = await Cart.findOne({ userId });
+
+        const isInCart = cart ? cart.items.some(item => item.productId.toString() === id) : false;
+        const validProducts = products.filter(product => product.category && !product.category.isBlocked && !product.category.isDeleted);
+
+        res.render('user/product', { product, products:validProducts , isInCart });
     } catch (error) {
-        console.error(error);
+        console.error('Error fetching products:', error);
         res.redirect('/');
     }
 };
@@ -66,7 +83,7 @@ exports.Getproducts = async (req, res) => {
 exports.Allproducts = async (req, res) => {
     try {
        
-        const sortOption = req.query.sort || 'priceAsc';
+        const sortOption = req.query.sort
         let sortField = {};
 
         switch (sortOption) {
@@ -108,7 +125,9 @@ exports.Allproducts = async (req, res) => {
         const categories = await Categories.find({ isBlocked: false, isDeleted: false });
 
         
-        const products = await Product.find(searchCriteria).sort(sortField).exec();
+        let  products = await Product.find(searchCriteria).populate('category').sort(sortField).exec();
+
+          products = products.filter(product => product.category && !product.category.isBlocked && !product.category.isDeleted);
 
       
         res.render('user/Allproducts', { 

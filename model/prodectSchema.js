@@ -7,14 +7,16 @@ const ProductSchema = new mongoose.Schema({
   stock: { type: Number, required: true },
   discount: { type: Number, default: 0 },
   status: { type: String, enum: ['available', 'unavailable'], default: 'available' },
-  priceAfterDiscount: { type: Number },
   images: [String],
   isBlocked: { type: Boolean, default: false },
   isDeleted: { type: Boolean, default: false },
   category: { type: mongoose.Schema.Types.ObjectId, ref: 'Category', required: true },
+  priceAfterDiscount:{
+    type:Number
+  }
 }, { timestamps: true });
 
-// Middleware to set the status based on stock
+
 ProductSchema.pre('save', function (next) {
   if (this.stock <= 0) {
     this.status = 'unavailable';

@@ -4,6 +4,7 @@ const flash = require('connect-flash');
 const bodyParser = require('body-parser');
 const connectDB = require('./config/db');
 const passport = require('passport');
+const Razorpay = require('razorpay')
 require('./config/passport')(passport);
 
 const authRoutes = require('./routes/userRoutes');
@@ -16,8 +17,8 @@ const nocache = require('nocache');
 
 const app = express();
 connectDB();
-
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/uploads', express.static('uploads'));
 app.set('view engine', 'ejs');
@@ -47,6 +48,9 @@ app.use('/', authRoutes);
 app.use('/admin', adminRoutes);
 app.use('/category', categoryRoutes);
 app.use(isuser)
+app.use('*',(req,res)=>{
+    res.send('404')
+})
 
 const PORT = process.env.PORT || 3005;
 app.listen(PORT, () => console.log(`Server started on port http://localhost:${PORT}`));

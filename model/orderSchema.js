@@ -6,9 +6,6 @@ const orderSchema = new mongoose.Schema({
         ref: 'Myuser',
         required: true
     },
-    orderId: {
-        type: Number
-    },
     items: [{
         productId: {
             type: mongoose.Schema.Types.ObjectId,
@@ -16,10 +13,8 @@ const orderSchema = new mongoose.Schema({
             required: true
         },
         productName: {
-            type: String
-        },
-        productCategory: {
-            type: String
+            type: String,
+            required: true
         },
         productCount: {
             type: Number,
@@ -32,37 +27,53 @@ const orderSchema = new mongoose.Schema({
         productImage: {
             type: String
         },
-        productDiscountPrice: {
-            type: Number
+        productDiscount:{
+             type:Number
         },
-        productDiscount: {
-            type: Number
-        },        
+        productStatus:{
+            type:String,
+             enum: ['Pending', 'Confirmed', 'Shipped', 'Out for Delivery', 'Delivered', 'Cancelled','Send Return Request','Returned'],
+        default: 'Pending'
+        }
+        
     }],
-    totalQuantity: {
-        type: Number
+    shippingAddress: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Address',
+        required: true
     },
-    totalPrice: {
+    totalAmount: {
         type: Number,
         required: true
     },
-    address: {
-        contactName: String,
-        street: String,
-        city: String,
-        state: String,
-        country: String,
-        pincode: Number,
-        mobile:Number,
+    discount: {
+        type: Number,
+        default: 0
+    },
+    couponCode: {
+        type: String
     },
     paymentMethod: {
         type: String,
-        enum: ['Cash on Delivery', 'Wallet', 'UPI'],
+        enum: ['Cash on Delivery', 'Razorpay', 'Wallet'],
         required: true
+    },
+    paymentDetails: {
+        razorpay_payment_id: String,
+        razorpay_order_id: String,
+        razorpay_signature: String
+    },
+    orderReturnReason:{
+type:String
     },
     orderStatus: {
         type: String,
-        enum: ['Pending', 'Confirmed', 'Shipped', 'Out for Delivery', 'Delivered', 'Cancelled'],
+        enum: ['Pending', 'Confirmed', 'Shipped', 'Out for Delivery', 'Delivered', 'Cancelled','Send Return Request','Returned'],
+        default: 'Pending'
+    },
+    paymentStatus: {
+        type: String,
+        enum: ['Pending', 'Paid', 'Returned'],
         default: 'Pending'
     },
     statusHistory: [{
@@ -72,19 +83,14 @@ const orderSchema = new mongoose.Schema({
             default: Date.now
         }
     }],
-
-    // paymentStatus: {
-    //     type: String,
-    //     enum: ['Pending', 'Shipped', 'Paid', 'Delivered', 'Cancelled', 'Returned']
-    // },
     createdAt: {
         type: Date,
         default: Date.now
     },
-    cancellationReason:{
-        type:String
+    paid:{
+        type:Boolean,
+        default:false
     }
-
 });
 
-module.exports = mongoose.model('Orders', orderSchema);
+module.exports = mongoose.model('Order', orderSchema);

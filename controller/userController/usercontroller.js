@@ -38,6 +38,10 @@ async function sendOtp(email, otp) {
 
 exports.signupGet = (req, res) => {
     try {
+        const userId = req.session.userId;
+        if (userId) {
+            return res.redirect('/');
+        }
         res.render('user/signup');
     } catch (error) {
         console.error('Error rendering signup page:', error);
@@ -181,15 +185,7 @@ exports.resendOtp = async (req, res) => {
     }
 };
 
-// // Password validation function
-// function validatePassword(password) {
-//     // Check password length
-//     if (password.length < 6) return false;
 
-//     // Check for at least 2 numbers
-//     const numberCount = (password.match(/\d/g) || []).length;
-//     return numberCount >= 2;
-//}
 
 
 
@@ -197,7 +193,12 @@ exports.resendOtp = async (req, res) => {
 
 
 exports.loginGet = (req, res) => {
+
     try {
+        const userId = req.session.userId;
+        if (userId) {
+            return res.redirect('/');
+        }
         res.render('user/login');
     } catch (error) {
         console.error('Error rendering login page:', error);
@@ -239,7 +240,7 @@ exports.loginPost = async (req, res) => {
         req.session.userId = user._id;
         req.session.user_email = user.email;
         
-        // No need to set res.locals.user here as the middleware will handle it
+        
         return res.redirect('/'); 
     } catch (error) {
         console.error('Error during login:', error);

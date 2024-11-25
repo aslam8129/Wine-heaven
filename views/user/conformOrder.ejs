@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Success</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50">
+    <%-include('../partials/userHeader.ejs')%>
+    <div class="min-h-screen flex items-center justify-center p-4 mt-10">
+        <div class="max-w-3xl w-full bg-white rounded-lg shadow-lg p-6 md:p-8">
+            <!-- Success Header -->
+            <div class="text-center mb-8">
+                <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-12 h-12 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                </div>
+                <h1 class="text-3xl font-bold text-gray-800">Order Successful!</h1>
+                <p class="text-gray-600 mt-2">Order ID: #<%= order._id %></p>
+            </div>
+
+            <!-- Order Summary -->
+            <div class="border-t border-b border-gray-200 py-6 mb-6">
+                <h2 class="text-xl font-semibold mb-4">Order Summary</h2>
+                
+                <!-- Items List -->
+                <div class="space-y-4">
+                    <% order.items.forEach(item => { %>
+                        <div class="flex items-center space-x-4">
+                            <img src="/uploads/<%= item.productId.images[0] %>" alt="<%= item.productName %>" class="w-16 h-16 object-cover rounded">
+                            <div class="flex-1">
+                                <h3 class="font-medium"><%= item.productName %></h3>
+                                <p class="text-gray-800">category :<%= item.productId.category.name %></p>
+                                <p class="text-gray-600">Quantity: <%= item.productCount %></p>
+                                <p class="text-gray-800">₹<%= item.productPrice + 100 %></p>
+                            </div>
+                            <div class="text-sm px-3 py-1 rounded-full <%= item.productStatus === 'Pending' ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800' %>">
+                                <%= item.productStatus %>
+                            </div>
+                        </div>
+                    <% }); %>
+                </div>
+            </div>
+
+            <!-- Payment Details -->
+            <div class="space-y-3 mb-6">
+                <div class="flex justify-between">
+                    <span class="text-gray-600">Subtotal</span>
+                    <span class="font-medium">₹<%= order.totalAmount + order.discount %></span>
+                </div>
+                <% if(order.discount > 0) { %>
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">Discount</span>
+                        <span class="font-medium text-green-600">-₹<%= order.discount %></span>
+                    </div>
+                <% } %>
+                <div class="flex justify-between text-lg font-semibold">
+                    <span>Total</span>
+                    <span>₹<%= order.totalAmount %></span>
+                </div>
+            </div>
+
+            <!-- Order Details -->
+            <div class="grid md:grid-cols-2 gap-6">
+                <div>
+                    <h3 class="font-semibold mb-2">Payment Information</h3>
+                    <p class="text-gray-600">Method: <%= order.paymentMethod %></p>
+                    <p class="text-gray-600">Status: <%= order.paymentStatus %></p>
+                </div>
+                <div>
+                    <h3 class="font-semibold mb-2">Shipping Information</h3>
+                    <!-- <p class="text-gray-600">Status: <%= order.orderStatus %></p> -->
+                    <% if(order.shippingAddress) { %>
+                        <p class="text-gray-600">name: <%= order.shippingAddress.name %></p>
+                        <p class="text-gray-600">state: <%= order.shippingAddress.state %></p>
+                        <p class="text-gray-600">city: <%= order.shippingAddress.city %></p>
+                        <p class="text-gray-600">address: <%= order.shippingAddress.address %></p>
+                        <p class="text-gray-600">pincode: <%= order.shippingAddress.pincode %></p>
+                        <p class="text-gray-600">mobile: <%= order.shippingAddress.mobile %></p>
+                    <% } %>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="mt-8 space-x-4 flex justify-center">
+                <a href="/orders" class="bg-gold px-6 py-3 rounded-lg font-medium transition-all duration-200">
+                    View Orders
+                </a>
+                <a href="/wines" class="bg-gray-200 text-gray-800 px-6 py-3 rounded-lg font-medium hover:bg-gray-300 transition-all duration-200">
+                    Continue Shopping
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -7,7 +7,8 @@ const addToCart = require('../controller/userController/addToCart')
 const Order = require('../controller/userController/ordercontroller') ;
 const isuser = require('../middlware/user')
 const inlogin = require('../middlware/userr')
-
+const wishlist = require('../controller/userController/wishlist')
+const paymentController = require('../controller/userController/paymentController')
 
 
 router.get('/signup',authController.signupGet);
@@ -50,16 +51,33 @@ router.get('/cart',isuser,addToCart.addtoCartGet)
 router.post('/cart/update',addToCart.updateQuantity);
 router.post('/cart/remove',addToCart.removeFromCart)
 router.get('/checkout',isuser,inlogin.ensureAuthenticated,addToCart.getcheckout)
-router.post('/placeOrder',addToCart.placeOrder)
+router.post('/placeOrder/:address/:payment',isuser,paymentController.placeOrder)
 router.get('/newaddress',isuser,inlogin.ensureAuthenticated,Order.checkAddaddress);
 router.post('/add-addres',Order.checkaddAddressPost);
-router.get('/addres-edit/:id',isuser,inlogin.ensureAuthenticated,Order.renderEditAddrescheckout);
+router.get('/editAddress/:id',isuser,inlogin.ensureAuthenticated,Order.renderEditAddrescheckout);
 router.post('/address/edit/:id',Order.editAddressPostcheckout)
+
+router.post('/wishlist',wishlist.updateWishlist);
+router.get('/wishlist',isuser,wishlist.renderWishlistPage)
+ router.post('/wishlist/remove',wishlist.postWishlist)
+
+
+
+
+
+ router.post('/payment-render/:totalAmount',paymentController.initiatePayment);
+router.post('/api/place-order',paymentController.placeOrder)
+router.post('/api/verify-payment',paymentController.verifyPayment)
+router.get('/order-confirmation',isuser,paymentController.getorder)
+router.post('/api/coupons/validate',paymentController.validateCoupon)
 // address/edit
 // newaddress
 
 
 router.get('/orders',isuser,Order.ordersList);
+router.post('/orders/cancel',paymentController.cancelOrder)
+router.post('/orders/return',paymentController.returnOrder)
+router.get('/wallet',isuser,Order.getWallet)
 
 
 module.exports = router;

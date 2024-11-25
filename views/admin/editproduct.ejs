@@ -92,7 +92,8 @@
             </div>
             <div class="mb-4">
                 <label for="discount" class="block">Discount</label>
-                <input type="number" name="discount" id="discount" value="<%= product.discount %>" class="w-full border p-2" min="0">
+                <input id="discount" value="<%= product.discount %>" type="number" name="discount" class="w-full border p-2">
+                <p id="discount-error" class="error-message hidden">Discount must be 0 or greater.</p>
             </div>
             <div class="mb-4">
                 <label for="description" class="block">Description</label>

@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Coupon</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+    <%- include('../partials/adminSidebar.ejs') %>
+    
+    <div class="ml-64 p-8">
+        <div class="max-w-2xl mx-auto bg-white rounded-lg shadow-md">
+            <div class="p-6">
+                <h1 class="text-2xl font-bold mb-6">Add Coupon</h1>
+
+                <% if (errors && errors.length > 0) { %>
+                    <div class="bg-red-50 border-l-4 border-red-500 p-4 mb-6">
+                        <div class="flex">
+                            <div class="flex-shrink-0">
+                                <svg class="h-5 w-5 text-red-500" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+                                </svg>
+                            </div>
+                            <div class="ml-3">
+                                <ul class="list-disc list-inside">
+                                    <% errors.forEach(error => { %>
+                                        <li class="text-red-700"><%= error.msg %></li>
+                                    <% }) %>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                <% } %>
+
+                <form id="couponForm" action="/admin/coupons" method="POST" class="space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Coupon Code -->
+                        <div class="space-y-2">
+                            <label for="code" class="block text-sm font-medium text-gray-700">
+                                Coupon Code
+                                <span class="text-red-500">*</span>
+                            </label>
+                            <input type="text" 
+                                id="code" 
+                                name="code" 
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 sm:text-sm"
+                                required 
+                                minlength="4" 
+                                maxlength="12" 
+                                pattern="[A-Za-z0-9]+"
+                                placeholder="Enter code (letters and numbers only)"
+                            >
+                            <p id="codeError" class="hidden text-red-500 text-sm">Invalid coupon code</p>
+                        </div>
+
+                        <!-- Discount Type -->
+                        <div class="space-y-2">
+                            <label for="discountType" class="block text-sm font-medium text-gray-700">
+                                Discount Type
+                                <span class="text-red-500">*</span>
+                            </label>
+                            <select id="discountType" 
+                                name="discountType" 
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 sm:text-sm"
+                                required
+                            >
+                                <option value="">Select Discount Type</option>
+                                <option value="percentage">Percentage</option>
+                                <option value="fixed">Fixed Amount</option>
+                            </select>
+                            <p id="discountTypeError" class="hidden text-red-500 text-sm">Please select a discount type</p>
+                        </div>
+
+                        <!-- Discount Amount -->
+                        <div class="space-y-2">
+                            <label for="discountAmount" class="block text-sm font-medium text-gray-700">
+                                Discount Amount
+                                <span class="text-red-500">*</span>
+                            </label>
+                            <input type="number" 
+                                id="discountAmount" 
+                                name="discountAmount" 
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 sm:text-sm"
+                                required 
+                                min="1" 
+                                step="0.01"
+                                placeholder="Enter amount"
+                            >
+                            <p id="discountAmountError" class="hidden text-red-500 text-sm">Invalid discount amount</p>
+                        </div>
+
+                        <!-- Minimum Purchase -->
+                        <div class="space-y-2">
+                            <label for="minimumPurchase" class="block text-sm font-medium text-gray-700">
+                                Minimum Purchase
+                            </label>
+                            <input type="number" 
+                                id="minimumPurchase" 
+                                name="minimumPurchase" 
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 sm:text-sm"
+                                min="0" 
+                                step="0.01"
+                                placeholder="Optional"
+                            >
+                            <p id="minimumPurchaseError" class="hidden text-red-500 text-sm">Must be non-negative</p>
+                        </div>
+
+                        <!-- Maximum Discount -->
+                        <!-- <div class="space-y-2">
+                            <label for="maximumDiscount" class="block text-sm font-medium text-gray-700">
+                                Maximum Discount
+                            </label>
+                            <input type="number" 
+                                id="maximumDiscount" 
+                                name="maximumDiscount" 
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 sm:text-sm"
+                                min="0" 
+                                step="0.01"
+                                placeholder="Optional"
+                            >
+                            <p id="maximumDiscountError" class="hidden text-red-500 text-sm">Must be non-negative</p>
+                        </div> -->
+
+                        <!-- Valid From -->
+                        <div class="space-y-2">
+                            <label for="validFrom" class="block text-sm font-medium text-gray-700">
+                                Valid From
+                                <span class="text-red-500">*</span>
+                            </label>
+                            <input type="date" 
+                                id="validFrom" 
+                                name="validFrom" 
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 sm:text-sm"
+                                required
+                            >
+                            <p id="validFromError" class="hidden text-red-500 text-sm">Select a valid start date</p>
+                        </div>
+
+                        <!-- Valid Until -->
+                        <div class="space-y-2">
+                            <label for="validUntil" class="block text-sm font-medium text-gray-700">
+                                Valid Until
+                                <span class="text-red-500">*</span>
+                            </label>
+                            <input type="date" 
+                                id="validUntil" 
+                                name="validUntil" 
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 sm:text-sm"
+                                required
+                            >
+                            <p id="validUntilError" class="hidden text-red-500 text-sm">Select a valid end date</p>
+                        </div>
+
+                        <!-- Usage Limit -->
+                        <div class="space-y-2">
+                            <label for="usageLimit" class="block text-sm font-medium text-gray-700">
+                                Usage Limit
+                            </label>
+                            <input type="number" 
+                                id="usageLimit" 
+                                name="usageLimit" 
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 sm:text-sm"
+                                min="1"
+                                placeholder="Optional"
+                            >
+                            <p id="usageLimitError" class="hidden text-red-500 text-sm">Must be at least 1</p>
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="flex justify-end mt-6">
+                        <button type="submit" 
+                            class="px-6 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transition-colors"
+                        >
+                            Add Coupon
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('couponForm');
+            const inputs = form.querySelectorAll('input, select');
+
+            function showError(input, show) {
+                const errorElement = document.getElementById(`${input.id}Error`);
+                if (errorElement) {
+                    errorElement.classList.toggle('hidden', !show);
+                }
+                input.classList.toggle('border-red-500', show);
+            }
+
+            function validateField(input) {
+                let isValid = true;
+
+                switch(input.id) {
+                    case 'code':
+                        isValid = /^[A-Za-z0-9]{4,12}$/.test(input.value);
+                        break;
+                    case 'discountAmount':
+                        const type = document.getElementById('discountType').value;
+                        if (type === 'percentage') {
+                            isValid = input.value > 0 && input.value <= 99;
+                        } else {
+                            isValid = input.value > 0;
+                        }
+                        break;
+                    case 'validUntil':
+                        const validFrom = document.getElementById('validFrom').value;
+                        if (validFrom && input.value) {
+                            isValid = new Date(input.value) >= new Date(validFrom);
+                        }
+                        break;
+                    default:
+                        isValid = input.checkValidity();
+                }
+
+                showError(input, !isValid);
+                return isValid;
+            }
+
+            // Set up date constraints
+            const validFrom = document.getElementById('validFrom');
+            const validUntil = document.getElementById('validUntil');
+
+            validFrom.addEventListener('change', function() {
+                validUntil.min = this.value;
+                validateField(validUntil);
+            });
+
+            validUntil.addEventListener('change', function() {
+                validFrom.max = this.value;
+                validateField(validFrom);
+            });
+
+            // Set up discount type constraints
+            const discountType = document.getElementById('discountType');
+            const discountAmount = document.getElementById('discountAmount');
+
+            discountType.addEventListener('change', function() {
+                if (this.value === 'percentage') {
+                    discountAmount.max = '99';
+                    discountAmount.setAttribute('title', 'Percentage must be between 1-99');
+                } else {
+                    discountAmount.removeAttribute('max');
+                    discountAmount.setAttribute('title', 'Enter a positive discount amount');
+                }
+                validateField(discountAmount);
+            });
+
+            // Real-time validation
+            inputs.forEach(input => {
+                input.addEventListener('input', () => validateField(input));
+                input.addEventListener('blur', () => validateField(input));
+            });
+
+            // Form submission validation
+            form.addEventListener('submit', function(event) {
+                let isValid = true;
+                
+                inputs.forEach(input => {
+                    if (!validateField(input)) {
+                        isValid = false;
+                    }
+                });
+
+                if (!isValid) {
+                    event.preventDefault();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

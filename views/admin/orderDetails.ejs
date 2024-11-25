@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Summary</title>
+    <!-- Tailwind CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <%- include('../partials/adminSidebar') %>
+
+    <div class="container mx-auto px-4 py-8">
+        <div class="bg-white rounded-lg shadow p-6 max-w-screen-md mx-auto">
+
+            <!-- Order Summary -->
+            <div class="border-t border-b border-gray-200 py-6 mb-6">
+                <h2 class="text-xl font-semibold mb-4">Order Summary</h2>
+
+                <!-- Items List -->
+                <div class="space-y-4">
+                    <% order.items.forEach(item => { %>
+                        <div class="flex items-center space-x-4">
+                            <img src="/uploads/<%= item.productId.images[0] %>" alt="<%= item.productName %>" class="w-16 h-16 object-cover rounded">
+                            <div class="flex-1">
+                                <h3 class="font-medium"><%= item.productName %></h3>
+                                <p class="text-gray-800">Category: <%= item.productId.category.name %></p>
+                                <p class="text-gray-600">Quantity: <%= item.productCount %></p>
+                                <p class="text-gray-800">₹<%= item.productPrice + 100 %></p>
+                            </div>
+                            <div class="text-sm px-3 py-1 rounded-full <%= item.productStatus === 'Pending' ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800' %>">
+                                <%= item.productStatus %>
+                            </div>
+                        </div>
+                    <% }); %>
+                </div>
+            </div>
+
+            <!-- Payment Details -->
+            <div class="space-y-3 mb-6">
+                <div class="flex justify-between">
+                    <span class="text-gray-600">Subtotal</span>
+                    <span class="font-medium">₹<%= order.totalAmount + order.discount %></span>
+                </div>
+                <% if(order.discount > 0) { %>
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">Discount</span>
+                        <span class="font-medium text-green-600">-₹<%= order.discount %></span>
+                    </div>
+                <% } %>
+                <div class="flex justify-between text-lg font-semibold">
+                    <span>Total</span>
+                    <span>₹<%= order.totalAmount %></span>
+                </div>
+            </div>
+
+            <!-- Order Details -->
+            <div class="grid md:grid-cols-2 gap-6">
+                <div>
+                    <h3 class="font-semibold mb-2">Payment Information</h3>
+                    <p class="text-gray-600">Method: <%= order.paymentMethod %></p>
+                    <p class="text-gray-600">Status: <%= order.paymentStatus %></p>
+                </div>
+                <div>
+                    <h3 class="font-semibold mb-2">Shipping Information</h3>
+                    <% if(order.shippingAddress) { %>
+                        <p class="text-gray-600">Name: <%= order.shippingAddress.name %></p>
+                        <p class="text-gray-600">State: <%= order.shippingAddress.state %></p>
+                        <p class="text-gray-600">City: <%= order.shippingAddress.city %></p>
+                        <p class="text-gray-600">Address: <%= order.shippingAddress.address %></p>
+                        <p class="text-gray-600">Pincode: <%= order.shippingAddress.pincode %></p>
+                        <p class="text-gray-600">Mobile: <%= order.shippingAddress.mobile %></p>
+                    <% } %>
+                </div>
+            </div>
+            <div class="mt-8 space-x-4 flex justify-center">
+                <a href="/admin/orders" class="bg-gold px-6 py-3 rounded-lg font-medium transition-all duration-200">
+                    cancel
+                </a>
+               
+            </div>
+
+        </div>
+    </div>
+   
+   
+
+</body>
+</html>

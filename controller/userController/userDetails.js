@@ -133,22 +133,19 @@ exports.addAddressPost = async (req, res) => {
         return res.redirect('/login');  
       }
   
-      // Find the user and populate the 'addresses' field
       const user = await User.findOne({ email }).populate('addresses');
   
       if (!user) {
         return res.status(404).send('User not found');
       }
   
-      // Filter out addresses that are marked as deleted (isDeleted: true)
-      const activeAddresses = user.addresses.filter(address => !address.isDeleted);  // Use isDeleted here
   
-      // If no active addresses exist, show the "add address" option
+      const activeAddresses = user.addresses.filter(address => !address.isDeleted); 
+  
       if (activeAddresses.length === 0) {
         return res.render('user/showAddress', { addresses: [], showAddAddress: true });
       }
-  
-      // Render the page with active addresses
+ 
       res.render('user/showAddress', { addresses: activeAddresses, showAddAddress: false });
   
     } catch (error) {

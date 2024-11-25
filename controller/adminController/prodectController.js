@@ -47,7 +47,7 @@ exports.GETaddproduct = async (req,res)=>{
 
 exports.addProductPost = async (req, res) => {
   try {
-    const { name, price, category, stock, discount, status, description } = req.body;
+    const { name, price, category, stock, status, description,discount } = req.body;
 
     
     const existingProduct = await Product.findOne({ name });
@@ -62,19 +62,19 @@ exports.addProductPost = async (req, res) => {
       return res.redirect('/admin/products/add');
     }
 
-    // Ensure req.files is an array and get image paths
+  
     console.log('Checking if req.files is an array: ' + Array.isArray(req.files));
     const imagePaths = req.files.map(file => file.filename); 
     console.log('Image paths: ' + imagePaths);
-    const priceAfterDiscount =    (discount/ 100) *  price;
+    const priceAfterDiscount = price-(discount/ 100) *  price;
 
     const product = new Product({
       name,
       price,
       category,
       stock,
-      discount,
       status,
+      discount,
       description,
       images: imagePaths,
       priceAfterDiscount:priceAfterDiscount 
@@ -132,10 +132,13 @@ const updateCartsWithNewPrices = async (productId) => {
     }
 };
 
+
 exports.updateProductPost = async (req, res) => {
     const productId = req.params.id;
-    const deletedImages = JSON.parse(req.body.deletedImages || '[]');
-    const croppedImages = req.files; // Assuming you're using multer
+    const {newImages ,deletedImages} = req.body
+    // const deletedImages = JSON.parse(req.body.deletedImages || '[]');
+
+    
 
     try {
         const product = await Product.findById(productId);
@@ -144,75 +147,122 @@ exports.updateProductPost = async (req, res) => {
             return res.redirect('/admin/products');
         }
 
-        // Calculate price after discount
-        const { price, discount } = req.body;
-        let priceAfterDiscount = price;
-        if (discount && discount > 0) {
-            priceAfterDiscount = (price * (100 - discount)) / 100;
-        }
+        const price = parseFloat(req.body.price);
+        const discount = parseFloat(req.body.discount) || 0;
+        const priceAfterDiscount = price - (price * (discount / 100));
 
-        // Update all fields from req.body and add priceAfterDiscount
+       
         const updatedFields = {
-            ...req.body,
-            priceAfterDiscount,
+            name: req.body.name,
+            description: req.body.description,
+            price: price,
+            discount: req.body.discount,
+            priceAfterDiscount: priceAfterDiscount,
+            category: req.body.category,
+            stock: req.body.stock,
+            status: req.body.status
         };
-        
-        // Update product fields except images
-        Object.keys(updatedFields).forEach(key => {
-            if (key !== 'images') { // Skip images array as we'll handle it separately
-                product[key] = updatedFields[key];
-            }
-        });
 
-        // Handle deleted images
-        if (deletedImages && deletedImages.length > 0) {
-            // First, create a backup of current images
-            const currentImages = [...product.images];
+        Object.assign(product, updatedFields);
+
+    
+        let updatedImages = [...product.images]; 
+
+        if (deletedImages.length > 0) {
             
-            // Filter out deleted images
-            product.images = currentImages.filter(img => !deletedImages.includes(img));
+            updatedImages = updatedImages.filter(img => !deletedImages.includes(img));
 
-            // Delete physical files
-            try {
-                deletedImages.forEach(image => {
+            for (const image of deletedImages) {
+                try {
                     const filePath = path.join(__dirname, '../uploads', image);
                     if (fs.existsSync(filePath)) {
-                        fs.unlinkSync(filePath);
+                        await fs.promises.unlink(filePath);
                     }
-                });
-            } catch (error) {
-                console.error('Error deleting images:', error);
-                // Continue execution even if file deletion fails
+                } catch (error) {
+                    console.error(`Error deleting image ${image}:`, error);
+                 s
+                }
             }
         }
 
-        // Handle new images
-        if (croppedImages && croppedImages.length > 0) {
-            const newImageFiles = croppedImages.map(file => file.filename);
-            product.images.push(...newImageFiles);
-        }
+        // 2. Add new images
+        // if (newImages.length > 0) {
+        //     const newImageFilenames = newImages.map(file => file.filename);
+        //     updatedImages.push(...newImageFilenames);
+        // }
 
-        // Validate that we have exactly 3 images
-        if (product.images.length !== 3) {
+        if (updatedImages.length !== 3) {
+            
+            for (const file of newImages) {
+                try {
+                    const filePath = path.join(__dirname, '../uploads', file.filename);
+                    if (fs.existsSync(filePath)) {
+                        await fs.promises.unlink(filePath);
+                    }
+                } catch (error) {
+                    console.error(`Error cleaning up image ${file.filename}:`, error);
+                }
+            }
+
             req.flash('error_msg', 'Product must have exactly 3 images');
             return res.redirect(`/admin/products/edit/${productId}`);
         }
 
-        // Save the updated product
+     
+        product.images = updatedImages;
+
+        
+        product.updatedAt = new Date();
+
+     
         await product.save();
 
-        // Update cart prices if necessary
-        await updateCartsWithNewPrices(productId);
+   
+        if (product.isModified('priceAfterDiscount')) {
+            await updateCartsWithNewPrice(productId, priceAfterDiscount);
+        }
 
         req.flash('success_msg', 'Product updated successfully');
         return res.redirect('/admin/products');
 
     } catch (error) {
         console.error('Error updating product:', error);
-        req.flash('error_msg', 'Error updating product');
-        return res.redirect('/admin/products');
+        
+        if (newImages.length > 0) {
+            for (const file of newImages) {
+                try {
+                    const filePath = path.join(__dirname, '../uploads', file.filename);
+                    if (fs.existsSync(filePath)) {
+                        await fs.promises.unlink(filePath);
+                    }
+                } catch (err) {
+                    console.error(`Error cleaning up image ${file.filename}:`, err);
+                }
+            }
+        }
+
+        req.flash('error_msg', 'Error updating product. Please try again.');
+        return res.redirect(`/admin/products/edit/${productId}`);
     }
 };
+
+
+async function updateCartsWithNewPrice(productId, newPrice) {
+    try {
+        await Cart.updateMany(
+            { "items.productId": productId },
+            { 
+                $set: { 
+                    "items.$.price": newPrice,
+                    "items.$.total": { $multiply: ["$items.$.quantity", newPrice] }
+                }
+            }
+        );
+    } catch (error) {
+        console.error('Error updating cart prices:', error);
+      
+    }
+}
 
 exports.Blockedproduct = async (req, res) => {
   try {
@@ -222,7 +272,7 @@ exports.Blockedproduct = async (req, res) => {
             return res.redirect('/admin/products');
         }
 
-        // Toggle the isBlocked status
+     
         product.isBlocked = !product.isBlocked;
         await product.save();
 

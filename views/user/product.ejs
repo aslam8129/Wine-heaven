@@ -1,14 +1,18 @@
-<%-include('../partials/userHeader.ejs')%>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><%= product.name %> - Product Detail</title>
+    <!-- Tailwind CSS -->
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
     <style>
         :root {
             --color-gold: #800020;
@@ -27,19 +31,10 @@
             background-color: var(--color-gold);
         }
         
-        .text-gold {
-            color: var(--color-gold);
-        }
-        
-        .border-gold {
-            border-color: var(--color-gold);
-        }
-        
-        .hover\:bg-gold:hover {
-            background-color: var(--color-gold);
+        .hover\:bg-gold-hover:hover {
+            background-color: var(--color-gold-hover);
         }
 
-        /* Image Zoom Effect */
         .zoom-container {
             position: relative;
             overflow: hidden;
@@ -53,7 +48,6 @@
             transform: scale(1.5);
         }
 
-        /* Custom Scrollbar */
         .custom-scrollbar::-webkit-scrollbar {
             width: 6px;
             height: 6px;
@@ -69,96 +63,53 @@
             border-radius: 3px;
         }
 
-        /* Toast Animation */
-        @keyframes slideIn {
-            from {
-                transform: translateY(-100%);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
-
-        .toast {
-            animation: slideIn 0.3s ease-out;
-        }
-
-        /* Loading Spinner */
-        @keyframes spin {
-            to {
-                transform: rotate(360deg);
-            }
-        }
-
-        .loading-spinner {
-            animation: spin 1s linear infinite;
+        .selected-thumbnail {
+            border-color: var(--color-gold);
         }
     </style>
 </head>
-<body class="bg-gray-50 body-font">
-    <!-- Toast Notification -->
-    <!-- <div id="toast" class="hidden fixed top-4 right-4 z-50 toast">
-        <div class="bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg">
-            <p class="flex items-center">
-                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-                </svg>
-                <span id="toast-message"></span>
-            </p>
-        </div>
-    </div> -->
 
-    <!-- Breadcrumb -->
+<body class="bg-gray-50 body-font min-h-screen">
+    <!-- Header Partial -->
+    <%- include('../partials/userHeader.ejs') %>
+
+    <!-- Breadcrumb Navigation -->
     <div class="container mx-auto px-4 py-4">
         <nav class="text-gray-600 text-sm">
             <ol class="list-none p-0 inline-flex items-center">
                 <li class="flex items-center">
-                    <a href="/" class="hover:text-gold transition-colors">Home</a>
+                    <a href="/" class="hover:text-red-900 transition-colors">Home</a>
                     <svg class="w-3 h-3 mx-2" fill="currentColor" viewBox="0 0 20 20">
                         <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"/>
                     </svg>
                 </li>
-                <!-- <li class="flex items-center">
-                    <a href="/wines" class="hover:text-gold transition-colors">Wines</a>
-                    <svg class="w-3 h-3 mx-2" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"/>
-                    </svg>
-                </li> -->
                 <li class="text-red-500"><%= product.name %></li>
-                
             </ol>
         </nav>
     </div>
 
     <!-- Main Product Section -->
-    <div class="container mx-auto px-4 py-8">
-        <div class="flex flex-col lg:flex-row gap-12 mt-10 ml-20">
-            <!-- Left Column - Images -->
-            <div class="lg:w-5/10">
-                <!-- Main Image with Zoom -->
+    <main class="container mx-auto px-4 py-8">
+        <div class="flex flex-col lg:flex-row gap-12 ml-20 mt-20">
+            <!-- Left Column - Product Images -->
+            <div class="lg:w-7/10">
+                <!-- Main Image -->
                 <div class="zoom-container bg-white rounded-xl shadow-lg overflow-hidden">
-                    <% if (product.images && product.images.length > 0) { %>
-                        <img id="main-image" src="/uploads/<%= product.images[0] %>" 
-                             alt="<%= product.name %>" 
-                             class="zoom-image w-full h-[600px] object-cover cursor-zoom-in">
-                    <% } else { %>
-                        <img src="/path/to/default-image.jpg" 
-                             alt="No Image Available" 
-                             class="w-full h-[600px] object-cover">
-                    <% } %>
+                    <img id="mainImage" 
+                         src="/uploads/<%= product.images[0] %>" 
+                         alt="<%= product.name %>" 
+                         class="zoom-image w-full h-[600px] object-cover">
                 </div>
 
                 <!-- Thumbnail Gallery -->
                 <div class="mt-4">
                     <div class="custom-scrollbar flex gap-4 overflow-x-auto py-2">
                         <% product.images.forEach((image, index) => { %>
-                            <button onclick="changeMainImage('/uploads/<%= image %>', this)"
+                            <button onclick="changeImage('/uploads/<%= image %>', this)" 
                                     class="thumbnail-btn flex-shrink-0 focus:outline-none">
                                 <img src="/uploads/<%= image %>" 
-                                     alt="<%= product.name %> - View <%= index + 1 %>"
-                                     class="w-24 h-24 object-cover rounded-lg border-2 border-transparent hover:border-gold transition-colors">
+                                     alt="<%= product.name %> view <%= index + 1 %>"
+                                     class="w-24 h-24 object-cover rounded-lg border-2 border-transparent hover:border-red-900 transition-colors <%= index === 0 ? 'selected-thumbnail' : '' %>">
                             </button>
                         <% }); %>
                     </div>
@@ -166,31 +117,37 @@
             </div>
 
             <!-- Right Column - Product Info -->
-            <div class="lg:w-2/5">
-                <!-- Product Title -->
-                <h1 class="text-4xl md:text-5xl font-bold main-font mb-4"><%= product.name %></h1>
+            <div class="lg:w-1/2">
+                <h1 class="text-4xl md:text-5xl font-bold main-font mb-2"><%= product.name %></h1>
 
-                <!-- Rating & Reviews -->
-              
-
-                <!-- Price -->
-                <div class="flex justify-between items-center mb-8 space-x-2">
-           
-                    <span class="text-2xl font-bold text-red-500 line-through">$<%= product.price.toFixed(2) %></span>
-                    <span class="text-4xl font-bold text-green-500">$<%= product.priceAfterDiscount.toFixed(0) %>.00</span>
-                    <span class="text-2xl font-bold text-red-500"><%= product.discount %>% Off</span>
+                <!-- Price Information -->
+                <div class="flex items-center mb-2">
+                    <div>
+                        <span class="text-xl font-bold text-green-500">
+                            ₹<%= product.price.toFixed(0) %>.00
+                        </span>
+                        
+                    </div>
+                    <span class="text-red-500 font-bold ml-5">
+                        <%= product.discount %>% OFF
+                    </span>
                 </div>
-                
-                
-                <% if (product.status=='available') { %>
-                    <h4 class="text-xl md:text-xl font-bold text-green-500 main-font mb-4"><%=product.status %></h4>
-                <% } %>
-                <% if (product.status=='unavailable') { %>
-                    <h4 class="text-xl md:text-xl font-bold text-red-900 main-font mb-4"><%=product.status %></h4>
-                <% } %>
-                
-                <h4 class="text-xl md:text-xl font-bold main-font mb-4"><%=product.description %></h4>
-                  <div class="flex items-center mb-6">
+
+                <!-- Product Status -->
+                <!-- <div class="mb-6">
+                    <span class="text-xl font-bold <%= product.status === 'available' ? 'text-green-500' : 'text-red-900' %>">
+                        Status: <%= product.status %>
+                    </span>
+                </div> -->
+
+                <!-- Product Description -->
+                <div class="mb-3">
+                    <h2 class="text-2xl font-bold mb-3">Description</h2>
+                    <p class="text-gray-700"><%= product.description %></p>
+                </div>
+
+                <!-- Rating -->
+                <div class="flex items-center mb-2">
                     <div class="flex">
                         <% for(let i = 1; i <= 5; i++) { %>
                             <svg class="w-5 h-5 <%= i <= product.rating ? 'text-yellow-400' : 'text-gray-300' %>" 
@@ -203,64 +160,83 @@
                         <%= product.rating %> (<%= product.reviews %> reviews)
                     </span>
                 </div>
-                <!-- Quantity Selector -->
-                <!-- <div class="flex items-center mb-6">
-                    <button onclick="decrementQuantity()" class="bg-gray-200 text-gray-600 rounded-lg px-4 py-2">-</button>
-                    <input id="quantity" type="number" min="1" value="1" class="mx-4 w-16 text-center border border-gray-300 rounded-lg">
-                    <button onclick="incrementQuantity()" class="bg-gray-200 text-gray-600 rounded-lg px-4 py-2">+</button>
-                </div> -->
-               
-                <!-- Add to Cart Form -->
-               
-              <% if (product.stock >0) {%>
 
-                <% if (isInCart) { %>
-                    <a href="/cart"><button type="submit" class="w-full bg-gold text-white py-3 rounded-lg hover:bg-gold-hover transition-colors">
-                        <span class="button-text">Go to Cart</span>
-                        <span class="loading-spinner hidden">⏳</span>
-                    </button> </a>
-                <% } else { %>
-                   <form action="/cart/update" method="POST" >
-                    <input type="hidden" name="productId" value="<%= product._id %>">
-                    <input type="hidden" name="quantity" id="cart-quantity" value="1" min="1">
-                    <button type="submit" class="w-full bg-gold text-white py-3 rounded-lg hover:bg-gold-hover transition-colors">
-                        <span class="button-text">Add to Cart</span>
-                        <span class="loading-spinner hidden">⏳</span>
-                    </button>
-                </form>
+                <!-- Action Buttons -->
+                <div class="space-y-4">
+                    <% if (product.stock > 0) { %>
+                        <div class="grid grid-cols-3 gap-4">
+                            <% if (isInCart) { %>
+                                <a href="/cart" class="col-span-1">
+                                    <button class="w-full bg-blue-500 text-white py-4 rounded-lg hover:bg-blue-600 transition-colors text-lg font-semibold">
+                                        <i class="fas fa-shopping-cart mr-2"></i>Cart
+                                    </button>
+                                </a>
+                            <% } else { %>
+                                <form action="/cart/update" method="POST" class="col-span-1">
+                                    <input type="hidden" name="productId" value="<%= product._id %>">
+                                    <input type="hidden" name="quantity" value="1">
+                                    <button type="submit" class="w-full bg-blue-500 text-white py-4 rounded-lg hover:bg-blue-600 transition-colors text-lg font-semibold">
+                                        <i class="fas fa-shopping-cart mr-2"></i>Add to Cart
+                                    </button>
+                                </form>
+                            <% } %>
+
+                            <form action="/checkout" method="POST" class="col-span-1">
+                                <input type="hidden" name="productId" value="<%= product._id %>">
+                                <button type="submit" class="w-full bg-green-500 text-white py-4 rounded-lg hover:bg-green-600 transition-colors text-lg font-semibold">
+                                    <i class="fas fa-bolt mr-2"></i>Buy Now
+                                </button>
+                            </form>
+
+                            <form action="/wishlist" method="POST" id="wishlistForm">
+                                <input type="hidden" name="productId" value="<%= product._id %>">
+                                <button id="wishlistButton" type="submit" class="w-full bg-red-500 text-white py-4 rounded-lg hover:bg-red-600 transition-colors text-lg font-semibold">
+                                 
+                                        <i class="fas fa-heart mr-2"></i>Add to Wishlist
+                                
+                                </button>
+                            </form>
+                            
+                            
+                        </div>
+                    <% } else { %>
+                        <button disabled class="w-full bg-gray-400 text-white py-4 rounded-lg text-lg font-semibold cursor-not-allowed">
+                            Out of Stock
+                        </button>
+                    <% } %>
+                </div>
+               
+                
+                <% if (success_msg) { %>
+                    <div id="successAlert" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
+                        <strong class="font-bold"><%= success_msg %></strong>
+                    </div>
                 <% } %>
                 
-               
-                <% } %>
-
-                <!-- Checkout Form -->
-                <form action="/checkout" method="POST" onsubmit="handleSubmit(event, 'checkout')">
-                    <input type="hidden" name="productId" value="<%= product.id %>">
-                    <input type="hidden" name="checkout-quantity" id="checkout-quantity" value="">
-                    <button type="submit" class="w-full bg-green-500 text-white py-3 rounded-lg hover:bg-green-600 transition-colors mt-4">
-                        <span class="button-text">Buy Now</span>
-                        <span class="loading-spinner hidden">⏳</span>
-                    </button>
-                </form>
             </div>
         </div>
-    </div>
-    <div class="bg-white py-16">
-        <div class="container mx-auto xl:max-w-7xl px-4">
-            <h2 class="text-5xl font-bold text-center mb-12">Related Products in <%= product.category.name %></h2>
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-                <% products.forEach(product => { %>
+    </main>
+
+    <!-- Related Products Section -->
+    <section class="bg-white py-16">
+        <div class="container mx-auto xl:max-w-7xl px-4 ml-20" >
+            <h2 class="text-4xl font-bold text-center mb-12">Related Products in <%= product.category.name %></h2>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                <% products.forEach(relatedProduct => { %>
                     <div class="bg-white rounded-xl shadow-lg overflow-hidden transform transition-all duration-300 hover:scale-105">
-                        <div class="relative h-[400px]">
-                            <img src="/uploads/<%= product.images[0]%>" alt="<%= product.name %>" class="h-full w-full object-cover" />
+                        <div class="relative h-[300px]">
+                            <img src="/uploads/<%= relatedProduct.images[0] %>" 
+                                 alt="<%= relatedProduct.name %>" 
+                                 class="h-full w-full object-cover">
                             <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
                             <div class="absolute bottom-0 left-0 right-0 p-6">
-                                <h3 class="text-2xl font-bold text-white mb-2"><%= product.name %></h3>
+                                <h3 class="text-xl font-bold text-white mb-2"><%= relatedProduct.name %></h3>
                             </div>
                         </div>
-                        <div class="p-6">
-                            <a href="/products/<%= product._id %>" class="block">
-                                <button class="bg-gold w-full py-3 rounded-lg text-white font-semibold transition-all duration-300 hover:bg-opacity-90">
+                        <div class="p-4">
+                            <a href="/products/<%= relatedProduct._id %>">
+                                <button class="bg-gold w-full py-3 rounded-lg text-white font-semibold transition-all duration-300 hover:bg-gold-hover">
                                     View Details
                                 </button>
                             </a>
@@ -269,74 +245,44 @@
                 <% }); %>
             </div>
         </div>
-      </div>
-      
+    </section>
 
-    <!-- Footer -->
-    <%-include('../partials/userFooter.ejs')%>
+    <!-- Footer Partial -->
+    <%- include('../partials/userFooter.ejs') %>
 
     <script>
-        function changeMainImage(imagePath, buttonElement) {
+
+
+setTimeout(() => {
+        const errorAlert = document.getElementById('errorAlert');
+        const successAlert = document.getElementById('successAlert');
+        
+        if (errorAlert) errorAlert.style.display = 'none';
+        if (successAlert) successAlert.style.display = 'none';
+    }, 1000);
   
-            const mainImage = document.getElementById('main-image');
-            mainImage.src = imagePath;
-
-        
-            const thumbnails = document.querySelectorAll('.thumbnail-btn');
-            thumbnails.forEach(thumbnail => {
-                thumbnail.classList.remove('border-gold'); 
-            });
-            buttonElement.classList.add('border-gold');
-        }
-
-        function incrementQuantity() {
-            const quantityInput = document.getElementById('quantity');
-            quantityInput.value = parseInt(quantityInput.value) + 1;
-        }
-
-        function decrementQuantity() {
-            const quantityInput = document.getElementById('quantity');
-            if (quantityInput.value > 1) {
-                quantityInput.value = parseInt(quantityInput.value) - 1;
-            }
-        }
-
-
-        function handleSubmit(event) {
-    event.preventDefault(); 
-    const form = event.target; 
-
-    const button = form.querySelector('button');
-    const buttonText = button.querySelector('.button-text');
-    const loadingSpinner = button.querySelector('.loading-spinner');
-
-    
-    buttonText.classList.add('hidden');
-    loadingSpinner.classList.remove('hidden');
-
-    
-}
-
-
-
-        
-        function handleSubmit(event, action) {
-            event.preventDefault();
-            const quantityInput = document.getElementById(action === 'checkout' ? 'checkout-quantity' : 'cart-quantity');
-            const quantity = document.getElementById('quantity').value;
-            quantityInput.value = quantity;
-
-
-            const buttonText = event.target.querySelector('.button-text');
-            const loadingSpinner = event.target.querySelector('.loading-spinner');
-            buttonText.classList.add('hidden');
-            loadingSpinner.classList.remove('hidden');
-
+        function changeImage(newSrc, buttonElement) {
          
-            setTimeout(() => {
-                event.target.submit();
-            }, 500);
+            document.getElementById('mainImage').src = newSrc;
+            
+         
+            document.querySelectorAll('.thumbnail-btn img').forEach(img => {
+                img.classList.remove('selected-thumbnail');
+            });
+            buttonElement.querySelector('img').classList.add('selected-thumbnail');
         }
+
+        // Form Submission Handler
+        document.querySelectorAll('form').forEach(form => {
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const button = form.querySelector('button');
+                button.disabled = true;
+                button.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Processing...';
+                setTimeout(() => form.submit(), 500);
+            });
+        });
+    
     </script>
 </body>
 </html>

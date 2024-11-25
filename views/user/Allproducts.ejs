@@ -5,13 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Wine Listing</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         .bg-wine {
             background-color: #600018;
         }
-        .bg-wine:hover {
-            background-color: #800020;
-        }
+        
         .bg-gold {
             background-color: #600018;
             color: white;
@@ -39,7 +38,6 @@
                                 type="text" 
                                 name="search" 
                                 id="searchInput" 
-                               
                                 class="flex-1 p-2.5 border border-gray-300 rounded-full bg-white focus:ring-2 focus:ring-wine focus:border-wine" 
                                 placeholder="Search products..."
                             >
@@ -106,7 +104,7 @@
                             <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
                             <div class="absolute bottom-0 left-0 right-0 p-6">
                                 <h3 class="text-2xl font-bold text-white mb-2"><%= product.name %></h3>
-                                <p class="text-xl font-bold text-white">$<%= product.price %></p>
+                                <p class="text-xl font-bold text-white"><i class="fa-solid fa-indian-rupee-sign"></i><%= product.price %></p>
                             </div>
                         </div>
                         <a href="/products/<%= product._id %>" class="block">
@@ -121,8 +119,31 @@
     </div>
 
     <script>
+        let lastSelectedCategory = '';
+        let lastSelectedSort = '';
+        let categoryChanged = false;
+        let sortChanged = false;
+
+        document.getElementById('category').addEventListener('change', function() {
+            // Check if the category value has changed
+            if (this.value !== lastSelectedCategory) {
+                categoryChanged = true;
+                lastSelectedCategory = this.value;
+            }
+            if (categoryChanged && sortChanged) {
+                document.getElementById('filterForm').submit();
+            }
+        });
+
         document.getElementById('sortSelect').addEventListener('change', function() {
-            document.getElementById('filterForm').submit();
+            // Check if the sort value has changed
+            if (this.value !== lastSelectedSort) {
+                sortChanged = true;
+                lastSelectedSort = this.value;
+            }
+            if (categoryChanged && sortChanged) {
+                document.getElementById('filterForm').submit();
+            }
         });
     </script>
 

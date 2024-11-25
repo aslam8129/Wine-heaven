@@ -9,7 +9,7 @@
         .sidebar {
             width: 18rem; /* w-72 */
             padding: 1.5rem; /* p-6 */
-            background-color: #0a0202; /* Charcoal background */
+            background-color:#600018 ; /* Charcoal background */
             position: fixed; /* Fixed sidebar */
             height: 100vh; /* Full height of the viewport */
             top: 5;
@@ -134,14 +134,14 @@
 </head>
 <body>
     
-<div class="sidebar ">
+<div class="sidebar border-2 border-black border-t-4">
 
-    <div class="profile-section">
-        <div class="profile-image-container">
-            <div class="profile-image-wrapper">
-                <img src="/api/placeholder/96/96" alt="Profile" class="profile-image"/>
+    <div class="profile-section ">
+        <div class="profile-image-container ">
+            <div class="profile-image-wrapper border-2 border-black">
+                <img src="/api/placeholder/96/96" alt="" class="profile-image"/>
             </div>
-            <div class="edit-button">
+            <div class="edit-button border-2 border-black">
                 <svg class="edit-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
                 </svg>
@@ -150,36 +150,36 @@
       
     </div>
 
-    <nav class="nav-container">
-        <a href="/userprofile" class="sidebar-link active flex items-center space-x-3 mb-2">
+    <nav class="nav-container ">
+        <a href="/userprofile" class="sidebar-link active flex items-center space-x-3 mb-2 border-2 border-black">
             <svg class="w-4 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
             </svg>
             <span>Profile Information</span>
         </a>
 
-        <a href="/orders" class=" active sidebar-link flex items-center space-x-3 mb-2">
+        <a href="/orders" class=" active sidebar-link flex items-center space-x-3 mb-2 border-2 border-black">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
             </svg>
             <span>My Orders</span>
         </a>
 
-        <a href="/addresses" class=" active sidebar-link flex items-center space-x-3 mb-2">
+        <a href="/addresses" class=" active sidebar-link flex items-center space-x-3 mb-2 border-2 border-black">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
             </svg>
             <span>Manage Addresses</span>
         </a>
 
-        <a href="#" class=" active sidebar-link flex items-center space-x-3 mb-2">
+        <a href="/wallet" class=" active sidebar-link flex items-center space-x-3 mb-2 border-2 border-black">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
             </svg>
-            <span>Gift Cards</span>
+            <span>Wallet</span>
         </a>
 
-        <a href="#" class=" active sidebar-link flex items-center space-x-3 mb-2">
+        <a href="#" class=" active sidebar-link flex items-center space-x-3 mb-2 border-2 border-black">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
             </svg>

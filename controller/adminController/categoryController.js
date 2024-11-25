@@ -53,22 +53,18 @@ exports.addCategory = async (req, res) => {
             return res.redirect('/category/add');
         }
 
-        // Handle new cropped image upload
         let imageUrl = '';
         if (croppedImage) {
             const base64Data = croppedImage.replace(/^data:image\/\w+;base64,/, "");
             const buffer = Buffer.from(base64Data, 'base64');
             const tmpFilePath = path.join(__dirname, '../../public/uplods', `${Date.now()}.png`);
 
-            // Save the image temporarily to upload to Cloudinary
             fs.writeFileSync(tmpFilePath, buffer);
 
-            // Upload to Cloudinary
             try {
                 const result = await cloudinary.uploader.upload(tmpFilePath);
                 imageUrl = result.secure_url;
 
-                // Remove the temporary file
                 fs.unlinkSync(tmpFilePath);
             } catch (uploadError) {
             
@@ -130,7 +126,7 @@ exports.editCategory = async (req, res) => {
         
         category.name = name || category.name;
 
-        // Handle image deletion
+       
         if (deleteImage === "true") {
             if (category.imageUrl) {
                 
@@ -145,13 +141,12 @@ exports.editCategory = async (req, res) => {
             const buffer = Buffer.from(base64Data, 'base64');
             const tmpFilePath = path.join(__dirname, '../../public/uplods', `${Date.now()}.png`); 
 
-            // Save the image temporarily to upload to Cloudinary
+          
             fs.writeFileSync(tmpFilePath, buffer);
 
             const result = await cloudinary.uploader.upload(tmpFilePath);
             category.imageUrl = result.secure_url;
 
-            // Remove the temporary file
             fs.unlinkSync(tmpFilePath);
         }
 
