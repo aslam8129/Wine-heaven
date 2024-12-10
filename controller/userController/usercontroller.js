@@ -65,6 +65,7 @@ exports.signuppost = async (req, res) => {
             req.flash('error', 'User already exists');
             return res.redirect('/signup');
         }
+console.log('9090');
 
         const hashedPassword = await bcrypt.hash(password, 12);
         user = new User({
@@ -214,6 +215,8 @@ exports.loginPost = async (req, res) => {
     try {
         const { email, password } = req.body;
         const user = await User.findOne({ email });
+      
+        
 
         if (!user) {
             req.flash('error', 'Invalid email or password');

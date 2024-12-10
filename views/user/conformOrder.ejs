@@ -34,7 +34,11 @@
                                 <h3 class="font-medium"><%= item.productName %></h3>
                                 <p class="text-gray-800">category :<%= item.productId.category.name %></p>
                                 <p class="text-gray-600">Quantity: <%= item.productCount %></p>
-                                <p class="text-gray-800">₹<%= item.productPrice + 100 %></p>
+                                <p class="text-gray-800">
+                                    <span class="line-through text-gray-500">₹<%= item.productId.price %></span>
+                                    <span class="ml-2 text-gray-600">₹<%= item.productPrice.toFixed(0) %>.00</span>
+                                </p>
+                                
                             </div>
                             <div class="text-sm px-3 py-1 rounded-full <%= item.productStatus === 'Pending' ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800' %>">
                                 <%= item.productStatus %>
@@ -48,8 +52,13 @@
             <div class="space-y-3 mb-6">
                 <div class="flex justify-between">
                     <span class="text-gray-600">Subtotal</span>
-                    <span class="font-medium">₹<%= order.totalAmount + order.discount %></span>
+                    <span class="font-medium">₹<%= order.totalAmount + order.discount -100 .toFixed(2)%></span>
                 </div>
+                <div class="space-y-3 mb-6">
+                    <div class="flex justify-between">
+                        <span class="text-red-600">Shipping</span>
+                        <span class="font-medium text-red-600">₹ 100</span>
+                    </div>
                 <% if(order.discount > 0) { %>
                     <div class="flex justify-between">
                         <span class="text-gray-600">Discount</span>
@@ -58,7 +67,7 @@
                 <% } %>
                 <div class="flex justify-between text-lg font-semibold">
                     <span>Total</span>
-                    <span>₹<%= order.totalAmount %></span>
+                    <span>₹<%= order.totalAmount .toFixed(0) %></span>
                 </div>
             </div>
 

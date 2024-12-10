@@ -2,7 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+ 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title><%= product.name %> - Product Detail</title>
     <!-- Tailwind CSS -->
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
@@ -12,6 +14,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.7.32/sweetalert2.min.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.7.32/sweetalert2.min.js"></script>
     
     <style>
         :root {
@@ -19,13 +23,9 @@
             --color-gold-hover: #600018;
         }
         
-        .main-font {
-            font-family: 'Playfair Display', serif;
-        }
+     
         
-        .body-font {
-            font-family: 'Lato', sans-serif;
-        }
+       
         
         .bg-gold {
             background-color: var(--color-gold);
@@ -66,6 +66,71 @@
         .selected-thumbnail {
             border-color: var(--color-gold);
         }
+
+
+        @media (max-width: 1024px) {
+    /* For tablets and small laptops */
+    .lg\:w-7\/10 {
+        width: 100%;
+    }
+    .lg\:w-1\/2 {
+        width: 100%;
+    }
+    .flex-row {
+        flex-direction: column;
+    }
+    .gap-12 {
+        gap: 6px;
+    }
+   
+}
+
+@media (max-width: 768px) {
+    /* For tablets */
+    .text-4xl {
+        font-size: 2rem;
+    }
+    .text-5xl {
+        font-size: 2.5rem;
+    }
+    .gap-12 {
+        gap: 4px;
+    }
+    .ml-20 {
+        margin-left: 0;
+    }
+    .container {
+        padding: 0 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    /* For mobile phones */
+    .text-4xl {
+        font-size: 1.5rem;
+    }
+    .text-2xl {
+        font-size: 1.2rem;
+    }
+    .gap-12 {
+        gap: 2px;
+    }
+    .grid-cols-3 {
+        grid-template-columns: 1fr;
+    }
+   
+    .w-24 {
+        width: 50px;
+        height: 50px;
+    }
+    .text-lg {
+        font-size: 1rem;
+    }
+    .py-4 {
+        padding: 8px 0;
+    }
+}
+
     </style>
 </head>
 
@@ -122,11 +187,11 @@
 
                 <!-- Price Information -->
                 <div class="flex items-center mb-2">
-                    <div>
-                        <span class="text-xl font-bold text-green-500">
-                            ₹<%= product.price.toFixed(0) %>.00
-                        </span>
-                        
+                    <div class="mt-2 font-medium text-green-700">
+                        <span class="line-through text-gray-500">₹<%= product.price %></span>
+                        <i class="fas fa-rupee-sign "></i> 
+
+                        <%= (product.priceAfterDiscount).toFixed(0) %> .00
                     </div>
                     <span class="text-red-500 font-bold ml-5">
                         <%= product.discount %>% OFF
@@ -167,35 +232,35 @@
                         <div class="grid grid-cols-3 gap-4">
                             <% if (isInCart) { %>
                                 <a href="/cart" class="col-span-1">
-                                    <button class="w-full bg-blue-500 text-white py-4 rounded-lg hover:bg-blue-600 transition-colors text-lg font-semibold">
+                                    <button  class="w-full bg-blue-500 text-white py-4 rounded-lg hover:bg-blue-600 transition-colors text-lg font-semibold">
                                         <i class="fas fa-shopping-cart mr-2"></i>Cart
                                     </button>
                                 </a>
                             <% } else { %>
-                                <form action="/cart/update" method="POST" class="col-span-1">
-                                    <input type="hidden" name="productId" value="<%= product._id %>">
+                                <form  method="POST" class="col-span-1">
+                                    <input id="productId" type="hidden" name="productId" value="<%= product._id %>">
                                     <input type="hidden" name="quantity" value="1">
-                                    <button type="submit" class="w-full bg-blue-500 text-white py-4 rounded-lg hover:bg-blue-600 transition-colors text-lg font-semibold">
+                                    <button id="cart-button" type="submit" class="w-full bg-blue-500 text-white py-4 rounded-lg hover:bg-blue-600 transition-colors text-lg font-semibold">
                                         <i class="fas fa-shopping-cart mr-2"></i>Add to Cart
                                     </button>
                                 </form>
                             <% } %>
 
-                            <form action="/checkout" method="POST" class="col-span-1">
+                            <!-- <form action="/products/<%=product._id%>" method="POST" class="col-span-1">
                                 <input type="hidden" name="productId" value="<%= product._id %>">
                                 <button type="submit" class="w-full bg-green-500 text-white py-4 rounded-lg hover:bg-green-600 transition-colors text-lg font-semibold">
                                     <i class="fas fa-bolt mr-2"></i>Buy Now
                                 </button>
-                            </form>
+                            </form> -->
 
-                            <form action="/wishlist" method="POST" id="wishlistForm">
-                                <input type="hidden" name="productId" value="<%= product._id %>">
+                          
+                               
                                 <button id="wishlistButton" type="submit" class="w-full bg-red-500 text-white py-4 rounded-lg hover:bg-red-600 transition-colors text-lg font-semibold">
-                                 
-                                        <i class="fas fa-heart mr-2"></i>Add to Wishlist
+                                    <input type="hidden" name="productId" value="<%= product._id %>">
+                                        <i class="fas fa-heart mr-2"></i> Wishlist
                                 
                                 </button>
-                            </form>
+                          
                             
                             
                         </div>
@@ -208,7 +273,7 @@
                
                 
                 <% if (success_msg) { %>
-                    <div id="successAlert" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
+                    <div id="successAlert" class=" text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
                         <strong class="font-bold"><%= success_msg %></strong>
                     </div>
                 <% } %>
@@ -251,6 +316,91 @@
     <%- include('../partials/userFooter.ejs') %>
 
     <script>
+
+
+document.getElementById('cart-button').addEventListener('click',async()=>{
+    event.preventDefault();
+    const productId = document.getElementById('productId').value;
+
+try{
+    const response = await fetch('/cartt',{
+        method:'POST',
+        headers:{
+            'Content-Type': 'application/json',
+        },
+        body:JSON.stringify({productId})
+    })
+     if (response.ok) {
+            Swal.fire({
+                icon: 'success',
+                title: 'Added to Cart!',
+                text: 'Product was successfully added to your cart.',
+                confirmButtonColor: '#600018',
+            })
+        .then(() => {
+                
+                location.reload();
+            });
+        } else {
+            const errorData = await response.json();
+            Swal.fire({
+                icon: 'info',
+                title: 'Failed to Add to Cart',
+                text: errorData.message || 'An error occurred.',
+                confirmButtonColor: '#600018',
+            });
+        }
+
+}catch(error){
+
+}
+
+})
+
+
+document.getElementById('wishlistButton').addEventListener('click', async () => {
+    const productId = document.getElementById('productId').value;
+
+    try {
+        const response = await fetch('/wishlistt', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ productId }),
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            Swal.fire({
+                icon: data.action === 'added' ? 'success' : 'info',
+                title: data.action === 'added' 
+                    ? 'Added to Wishlist' 
+                    : 'Removed from Wishlist',
+                text: data.message,
+                confirmButtonColor: '#600018',
+            });
+        } else {
+            const error = await response.json();
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: error.message || 'Failed to update the wishlist.',
+                confirmButtonColor: '#600018',
+            });
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        Swal.fire({
+            icon: 'error',
+            title: 'Unexpected Error',
+            text: 'An unexpected error occurred.',
+            confirmButtonColor: '#600018',
+        });
+    }
+});
+
+
 
 
 setTimeout(() => {

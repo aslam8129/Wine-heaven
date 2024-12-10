@@ -6,6 +6,9 @@ const orderSchema = new mongoose.Schema({
         ref: 'Myuser',
         required: true
     },
+    couponOfferPrice:{
+        type:Number
+    },
     items: [{
         productId: {
             type: mongoose.Schema.Types.ObjectId,
@@ -32,7 +35,7 @@ const orderSchema = new mongoose.Schema({
         },
         productStatus:{
             type:String,
-             enum: ['Pending', 'Confirmed', 'Shipped', 'Out for Delivery', 'Delivered', 'Cancelled','Send Return Request','Returned'],
+             enum: ['Order Not Conform','Pending', 'Confirmed', 'Shipped', 'Out for Delivery', 'Delivered', 'Cancelled','Send Return Request','Returned'],
         default: 'Pending'
         }
         
@@ -68,7 +71,7 @@ type:String
     },
     orderStatus: {
         type: String,
-        enum: ['Pending', 'Confirmed', 'Shipped', 'Out for Delivery', 'Delivered', 'Cancelled','Send Return Request','Returned'],
+        enum: ['Order Not Conform','Pending', 'Confirmed', 'Shipped', 'Out for Delivery', 'Delivered', 'Cancelled','Send Return Request','Returned'],
         default: 'Pending'
     },
     paymentStatus: {
@@ -89,7 +92,7 @@ type:String
     },
     paid:{
         type:Boolean,
-        default:false
+        default:true
     }
 });
 

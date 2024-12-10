@@ -3,7 +3,8 @@ const Category = require('../../model/Category')
 const path = require('path');
 const Cart = require('../../model/cartSchema')
 
-const fs = require('fs')
+const fs = require('fs');
+const { log } = require('console');
 
 exports.listProducts = async (req, res) => {
     try {
@@ -50,6 +51,10 @@ exports.addProductPost = async (req, res) => {
     const { name, price, category, stock, status, description,discount } = req.body;
 
     
+
+  
+    
+    
     const existingProduct = await Product.findOne({ name });
     if (existingProduct) {
       req.flash('error', 'This product already exists.');
@@ -77,12 +82,19 @@ exports.addProductPost = async (req, res) => {
       discount,
       description,
       images: imagePaths,
-      priceAfterDiscount:priceAfterDiscount 
+      priceAfterDiscount:priceAfterDiscount, 
+    
     });
 
-    await product.save();
-    console.log(product); 
     
+
+  
+    
+    product.priceAfterDiscount = product.price-(discount/100)*product.price
+
+    console.log( product.priceAfterDiscount);
+    
+    await product.save();
    
     res.status(200).json({success : true, message : 'Product added successfully'});  
   } catch (error) { 
@@ -116,28 +128,32 @@ exports.editProductGet = async (req, res) => {
 
 
 
-const updateCartsWithNewPrices = async (productId) => {
-    const product = await Product.findById(productId);
-    if (!product) return;
+// const updateCartsWithNewPrices = async (productId) => {
+//     const product = await Product.findById(productId);
+//     if (!product) return;
 
-    const carts = await Cart.find({ 'items.productId': productId });
-    for (const cart of carts) {
-        for (const item of cart.items) {
-            if (item.productId.toString() === productId.toString()) {
-                item.productPrice = product.price;
-                item.productDiscountPrice = product.priceAfterDiscount;
-            }
-        }
-        await cart.save();
-    }
-};
+//     const carts = await Cart.find({ 'items.productId': productId });
+//     for (const cart of carts) {
+//         for (const item of cart.items) {
+//             if (item.productId.toString() === productId.toString()) {
+//                 item.productPrice = product.price;
+//                 item.productDiscountPrice = product.priceAfterDiscount;
+//             }
+//         }
+//         await cart.save();
+//     }
+// };
 
 
 exports.updateProductPost = async (req, res) => {
     const productId = req.params.id;
-    const {newImages ,deletedImages} = req.body
-    // const deletedImages = JSON.parse(req.body.deletedImages || '[]');
+    const { croppedImages, deletedImages } = req.body;
 
+    // Parse the arrays
+    const newImages = JSON.parse(croppedImages || '[]');
+    const removedImages = JSON.parse(deletedImages || '[]');
+    console.log(newImages);
+    console.log(removedImages);
     
 
     try {
@@ -150,7 +166,7 @@ exports.updateProductPost = async (req, res) => {
         const price = parseFloat(req.body.price);
         const discount = parseFloat(req.body.discount) || 0;
         const priceAfterDiscount = price - (price * (discount / 100));
-
+       
        
         const updatedFields = {
             name: req.body.name,
@@ -160,30 +176,33 @@ exports.updateProductPost = async (req, res) => {
             priceAfterDiscount: priceAfterDiscount,
             category: req.body.category,
             stock: req.body.stock,
-            status: req.body.status
+            status: req.body.status,
+            priceAfterDiscount : product.price - (product.productAllDiscount/100)*product.price 
         };
+       
+        
 
         Object.assign(product, updatedFields);
 
     
-        let updatedImages = [...product.images]; 
+        // let updatedImages = [...product.images]; 
 
-        if (deletedImages.length > 0) {
+        // if (deletedImages.length > 0) {
             
-            updatedImages = updatedImages.filter(img => !deletedImages.includes(img));
+        //     updatedImages = updatedImages.filter(img => !deletedImages.includes(img));
 
-            for (const image of deletedImages) {
-                try {
-                    const filePath = path.join(__dirname, '../uploads', image);
-                    if (fs.existsSync(filePath)) {
-                        await fs.promises.unlink(filePath);
-                    }
-                } catch (error) {
-                    console.error(`Error deleting image ${image}:`, error);
-                 s
-                }
-            }
-        }
+        //     for (const image of deletedImages) {
+        //         try {
+        //             const filePath = path.join(__dirname, '../uploads', image);
+        //             if (fs.existsSync(filePath)) {
+        //                 await fs.promises.unlink(filePath);
+        //             }
+        //         } catch (error) {
+        //             console.error(`Error deleting image ${image}:`, error);
+        //          s
+        //         }
+        //     }
+        // }
 
         // 2. Add new images
         // if (newImages.length > 0) {
@@ -191,30 +210,33 @@ exports.updateProductPost = async (req, res) => {
         //     updatedImages.push(...newImageFilenames);
         // }
 
-        if (updatedImages.length !== 3) {
+        // if (updatedImages.length !== 3) {
             
-            for (const file of newImages) {
-                try {
-                    const filePath = path.join(__dirname, '../uploads', file.filename);
-                    if (fs.existsSync(filePath)) {
-                        await fs.promises.unlink(filePath);
-                    }
-                } catch (error) {
-                    console.error(`Error cleaning up image ${file.filename}:`, error);
-                }
-            }
+        //     for (const file of newImages) {
+        //         try {
+        //             const filePath = path.join(__dirname, '../uploads', file.filename);
+        //             if (fs.existsSync(filePath)) {
+        //                 await fs.promises.unlink(filePath);
+        //             }
+        //         } catch (error) {
+        //             console.error(`Error cleaning up image ${file.filename}:`, error);
+        //         }
+        //     }
 
-            req.flash('error_msg', 'Product must have exactly 3 images');
-            return res.redirect(`/admin/products/edit/${productId}`);
-        }
+        //     req.flash('error_msg', 'Product must have exactly 3 images');
+        //     return res.redirect(`/admin/products/edit/${productId}`);
+        // }
 
      
-        product.images = updatedImages;
+      //  product.images = updatedImages;
 
         
-        product.updatedAt = new Date();
-
-     
+      //  product.updatedAt = new Date();
+      product.productAllDiscount = product.discount+product.offerDiscout||0
+        product.priceAfterDiscount = product.price - (product.productAllDiscount/100)*product.price  
+        
+        
+        
         await product.save();
 
    

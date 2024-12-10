@@ -3,10 +3,10 @@ const Product = require('../../model/prodectSchema');
 const Wallet = require('../../model/walletModel');
 
 const availableStatusUpdates = {
-    'Pending': ['Confirmed', 'Cancelled'],
-    'Confirmed': ['Shipped', 'Cancelled'],
-    'Shipped': ['Out for Delivery', 'Cancelled'],
-    'Out for Delivery': ['Delivered', 'Cancelled'],
+    'Pending': ['Confirmed'],
+    'Confirmed': ['Shipped'],
+    'Shipped': ['Out for Delivery'],
+    'Out for Delivery': ['Delivered'],
     'Delivered': [],
     'Cancelled': [],
     'Send Return Request':['Returned']
@@ -36,7 +36,7 @@ exports.getAllOrders = async (req, res) => {
             totalPages: totalPages
         });
     } catch (error) {
-        console.error('Error fetching orders:', error);
+       
         req.flash('error', 'Failed to fetch orders');
         res.redirect('/admin/dashboard');
     }
@@ -60,14 +60,23 @@ exports.updateOrderStatus = async (req, res) => {
             return res.redirect('/admin/orders');
         }
 
-        const validStatusUpdates = availableStatusUpdates[item.productStatus] || [];
-        if (!validStatusUpdates.includes(newStatus)) {
-            req.flash('error', 'Invalid status transition');
-            return res.redirect('/admin/orders');
-        }
+        // const validStatusUpdates = availableStatusUpdates[item.productStatus] || [];
+        // if (!validStatusUpdates.includes(newStatus)) {
+        //     req.flash('error', 'Invalid status transition');
+        //     return res.redirect('/admin/orders');
+        // }
 
      
         item.productStatus = newStatus;
+
+
+          const allproductcount =order.items.reduce((acc,value)=>{
+            return acc+=value.productCount
+        },0)
+
+        const alldiscount = order.discount/allproductcount
+
+
 
         if (newStatus === 'Returned') {
             const product = await Product.findById(productId);
@@ -86,13 +95,39 @@ exports.updateOrderStatus = async (req, res) => {
                     });
                 }
 
-                wallet.balance += order.totalAmount; 
+             
+                wallet.balance += item.productPrice*item.productCount-alldiscount*item.productCount; 
+
+              
+                
+                
+                
                 wallet.transaction.push({
-                    wallet_amount: order.totalAmount,
+                    wallet_amount: item.productPrice*item.productCount-alldiscount*item.productCount,
                     order_id: order._id,
                     transactionType: 'Credited',
+                    tracsactionWay:'Return Order',
                     transaction_date: new Date(),
                 });
+
+
+                const allReturnedOrCanceled = order.items.every(
+                    item => item.productStatus === 'Returned' || item.productStatus === 'Cancelled'
+                );
+
+                if (allReturnedOrCanceled) {
+                 
+                    wallet.balance += 100;
+
+                    wallet.transaction.push({
+                        wallet_amount: 100,
+                        order_id: order._id,
+                        transactionType: 'Credited',
+                        tracsactionWay:'Shipping Refund',
+                        transaction_date: new Date(),
+                    });
+                }
+
 
                 await wallet.save();
             }
@@ -103,7 +138,7 @@ exports.updateOrderStatus = async (req, res) => {
         req.flash('success', 'Order status updated successfully');
         res.redirect('/admin/orders');
     } catch (error) {
-        console.error('Error updating order status:', error);
+      
         req.flash('error', 'Failed to update order status');
         res.redirect('/admin/orders');
     }
@@ -117,7 +152,6 @@ exports.getorderDetails = async (req, res) => {
        
         const id = req.params.id
 
-        console.log(id);
         
         const order = await Order.findById( id )
         .populate('shippingAddress')  

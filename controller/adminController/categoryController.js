@@ -155,7 +155,7 @@ exports.editCategory = async (req, res) => {
         req.flash('success', 'Category updated successfully!'); 
         return res.redirect('/category'); 
     } catch (error) {
-        console.log(`error in editCategory post :${error}`); 
+      
         req.flash('error', 'Server Error'); 
         return res.redirect('/category'); 
     }
@@ -168,12 +168,10 @@ exports.editCategory = async (req, res) => {
 exports.deleteCategory = async(req,res)=>{
     try{
      const {id} = req.params;
-     const category = await Category.findById(id);
-     category.isDeleted = true;
-     await category.save();
+   await Category.findByIdAndDelete(id)
      res.redirect('/category')
     }catch(error){
-     console.log(`deleteCategory error :${error}`);
+   return res.redirect('/category')
      
     }
 };

@@ -129,6 +129,7 @@
                     <!-- Product Details -->
                     <div class="flex-grow">
                       <h3 class="text-lg font-medium text-gray-900"><%= item.productId.name %></h3>
+                     
                       <div class="mt-2 flex items-center gap-4">
                         <div class="flex items-center">
                           <input type="number" 
@@ -139,14 +140,18 @@
                                  data-product-id="<%= item.productId._id %>"
                                  data-product-stock="<%= item.productId.stock %>">
                         </div>
-                        <span class="text-sm text-gray-500"><i class="fa-solid fa-indian-rupee-sign"></i><%= item.productPrice.toFixed(2) %></span>
+                       
+                        <span class="text-sm text-gray-500"><i class="fa-solid fa-indian-rupee-sign"></i><%= item.productId.price %></span>
+                        <!-- <p class="text-sm text-gray-500"><%= item.productId.discount %>% off</p>
+                        <p class="text-sm text-gray-500"><%= item.productId.offerDiscout %>% off</p> -->
+                        <p class="text-sm text-gray-500"><%= item.productId.productAllDiscount %>% off</p>
                       </div>
 
                     </div>
 
                     <!-- Price and Actions -->
                     <div class="flex flex-col items-end gap-2">
-                      <span class="text-lg font-medium"><i class="fa-solid fa-indian-rupee-sign"></i><%= (item.productPrice * item.productCount).toFixed(2) %></span>
+                      <span class="text-lg font-medium"><i class="fa-solid fa-indian-rupee-sign"></i><%= (item.productId.priceAfterDiscount * item.productCount).toFixed(2) %></span>
                       <form action="/cart/remove" method="POST" class="remove-form">
                         <input type="hidden" name="productId" value="<%= item.productId._id %>">
                         <button type="submit" class="text-red-600 hover:text-red-800 text-sm">Remove</button>

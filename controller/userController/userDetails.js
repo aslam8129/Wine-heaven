@@ -66,14 +66,9 @@ exports.UpdateDetails = async (req, res) => {
 
 exports.addAddress = async (req,res)=>{
     try{
-        const addressId = req.params.id;
-        let addressData = null;
-            
-        if (addressId) {
-            addressData = await Address.findById(addressId).exec();
-        }
+  
     
-        res.render('user/Addaddress', { address: addressData });
+        res.render('user/Addaddress');
     }catch(error){
 console.log(`error in addAddress ${error}`);
 
@@ -90,26 +85,26 @@ exports.addAddressPost = async (req, res) => {
       await newAddress.save();
   
     
-      console.log('New Address saved:', newAddress);
+  
   
       const email = req.session.user_email;
-      console.log('User email from session:', email);
+    
   
       const user = await User.findOne({ email });
-      console.log('User found:', user);
+     
   
       if (user) {
   
         user.addresses.push(newAddress._id);
         
-        console.log('User before save:', user);
+  
     
         await user.save();
-        
-        console.log('User after save:', user);
-      } else {
-        console.log('No user found with this email');
-      }
+        return res.redirect('/addresses');
+       
+      } 
+       
+    
   
       return res.redirect('/addresses');
     } catch (error) {
@@ -128,8 +123,11 @@ exports.addAddressPost = async (req, res) => {
   exports.getALLaddress = async (req, res) => {
     try {
       const email = req.session.user_email;
+      console.log('address');
+      
   
       if (!email) {
+        
         return res.redirect('/login');  
       }
   

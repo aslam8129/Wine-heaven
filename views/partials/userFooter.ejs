@@ -7,7 +7,7 @@
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <style>
         .bg-burgundy {
-            background-color:#600018
+            background-color: #600018;
         }
         .text-creamy-white {
             color: #F5F5DC;
@@ -15,15 +15,36 @@
         .text-gold {
             color: #FFD700;
         }
+
+        /* Responsive styles for the footer */
+        @media (max-width: 768px) {
+            footer {
+                text-align: center;
+            }
+            footer .container {
+                flex-direction: column; /* Stack the items vertically */
+            }
+            footer .mb-4 {
+                margin-bottom: 1rem; /* Add spacing between stacked elements */
+            }
+        }
+
+        @media (min-width: 769px) and (max-width: 1024px) {
+            footer .container {
+                flex-wrap: wrap; /* Wrap content for medium screens */
+                justify-content: space-around;
+            }
+        }
     </style>
 </head>
-<body class="bg-gray-100 flex flex-col min-h-screen">
+<body style="font-family: 'Garamond';" class="bg-gray-100 flex flex-col min-h-screen">
     <div class="flex-grow"></div>
-    <footer class="bg-burgundy text-creamy-white  py-6 border-t-2 border-white">
+    <footer class="bg-burgundy text-creamy-white py-6 border-t-2 border-white">
         <div class="container mx-auto flex flex-col md:flex-row justify-between items-center">
             <!-- Links -->
             <div class="mb-4 md:mb-0">
-              
+                <!-- You can add footer links here -->
+                <p class="font-bold">Footer Links Placeholder</p>
             </div>
             <!-- Contact Information -->
             <div class="mb-4 md:mb-0">

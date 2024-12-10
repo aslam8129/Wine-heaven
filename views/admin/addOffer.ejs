@@ -4,8 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add Offer</title>
+    <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <script>
+        // Toggle between Category and Product Offer Sections
         function toggleOfferType() {
             const offerType = document.querySelector('input[name="offerType"]:checked').value;
             const categorySection = document.getElementById('categorySection');
@@ -22,43 +24,76 @@
     </script>
 </head>
 <body>
+    <!-- Sidebar -->
     <%- include('../partials/adminSidebar.ejs') %>
     <div class="container mt-5">
-        <h1 class="mb-4 text-center">Add Offer</h1>
+        <h1 class="text-center mb-4">Add Offer</h1>
+
+        <!-- Add Offer Form -->
         <form action="/admin/offers/add" method="POST" class="p-4 border rounded bg-light shadow-sm mx-auto" style="max-width: 600px;">
             <!-- Offer Name -->
-            <div class="mb-4">
+            <div class="mb-3">
                 <label for="offerName" class="form-label fw-bold">Offer Name</label>
-                <input type="text" class="form-control" id="offerName" name="offerName" placeholder="Enter offer name" required>
+                <input 
+                    type="text" 
+                    class="form-control" 
+                    id="offerName" 
+                    name="offerName" 
+                    placeholder="Enter offer name" 
+                    required>
             </div>
 
             <!-- Offer Type -->
-            <div class="mb-4">
-                <label class="form-label fw-bold">Offer Type</label><br>
-                <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="offerType" id="offerTypeCategory" value="category" checked onclick="toggleOfferType()">
+            <div class="mb-3">
+                <label class="form-label fw-bold">Offer Type</label>
+                <div class="form-check">
+                    <input 
+                        class="form-check-input" 
+                        type="radio" 
+                        name="offerType" 
+                        id="offerTypeCategory" 
+                        value="category" 
+                        checked 
+                        onclick="toggleOfferType()">
                     <label class="form-check-label" for="offerTypeCategory">Category</label>
                 </div>
-                <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="offerType" id="offerTypeProduct" value="product" onclick="toggleOfferType()">
+                <div class="form-check">
+                    <input 
+                        class="form-check-input" 
+                        type="radio" 
+                        name="offerType" 
+                        id="offerTypeProduct" 
+                        value="product" 
+                        onclick="toggleOfferType()">
                     <label class="form-check-label" for="offerTypeProduct">Product</label>
                 </div>
             </div>
 
             <!-- Category Selection -->
-            <div id="categorySection" class="mb-4">
+            <div id="categorySection" class="mb-3">
                 <label for="offerCategory" class="form-label fw-bold">Offer Category</label>
-                <select class="form-select" id="offerCategory" name="offerCategory">
+                <select 
+                    class="form-select" 
+                    id="offerCategory" 
+                    name="offerCategory" 
+                    >
+                    <option value="" disabled selected>Select a category</option>
                     <% categories.forEach(category => { %>
                         <option value="<%= category._id %>"><%= category.name %></option>
+                        
                     <% }) %>
                 </select>
             </div>
 
             <!-- Product Selection -->
-            <div id="productSection" class="mb-4" style="display: none;">
+            <div id="productSection" class="mb-3" style="display: none;">
                 <label for="offerProduct" class="form-label fw-bold">Offer Product</label>
-                <select class="form-select" id="offerProduct" name="offerProduct">
+                <select 
+                    class="form-select" 
+                    id="offerProduct" 
+                    name="offerProduct" 
+                    >
+                    <option value="" disabled selected>Select a product</option>
                     <% products.forEach(product => { %>
                         <option value="<%= product._id %>"><%= product.name %></option>
                     <% }) %>
@@ -66,9 +101,17 @@
             </div>
 
             <!-- Discount Percentage -->
-            <div class="mb-4">
+            <div class="mb-3">
                 <label for="discountPercentage" class="form-label fw-bold">Discount Percentage</label>
-                <input type="number" class="form-control" id="discountPercentage" name="discountPercentage" placeholder="Enter discount percentage" required>
+                <input 
+                    type="number" 
+                    class="form-control" 
+                    id="discountPercentage" 
+                    name="discountPercentage" 
+                    placeholder="Enter discount percentage (e.g., 10, 20)" 
+                    min="1" 
+                    max="90" 
+                    required>
             </div>
 
             <!-- Submit Button -->
@@ -77,5 +120,19 @@
             </div>
         </form>
     </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"> </script>
+
+
+
+    <script>
+
+
+const value = document.getElementById('offerCategory')
+const val = value.value;
+console.log(val);
+
+    </script>
 </body>
 </html>

@@ -21,6 +21,10 @@ const walletSchema = new mongoose.Schema({
             type: String,
             enum:['Credited','Debited']
         },
+        tracsactionWay:{
+type:String,
+enum:['Cancel Order' , 'Return Order' , 'Shipping Refund']
+        },
         transaction_date:{
             type:Date,
             required: true,

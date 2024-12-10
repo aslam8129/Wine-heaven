@@ -198,3 +198,65 @@ exports.postWishlist = async (req, res) => {
         });
     }
 };
+
+
+
+exports.updateWishlistt = async (req, res) => {
+    try {
+       
+        const { productId } = req.body;
+        const userId = req.session.userId;
+        
+        
+
+        if (!userId) {
+            return res.status(401).json({
+                message: 'Please login to manage your wishlist',
+            });
+        }
+
+        const product = await Product.findById(productId);
+        if (!product) {
+            return res.status(404).json({ 
+                message: 'Product not found' 
+            });
+        }
+
+        let wishlist = await Wishlist.findOne({ user: userId });
+        if (!wishlist) {
+            wishlist = new Wishlist({ 
+                user: userId, 
+                products: [] 
+            });
+        }
+
+        const productIndex = wishlist.products.findIndex(
+            (prod) => prod.toString() === productId
+        );
+
+        let action;
+        if (productIndex > -1) {
+            // Remove product if already in the wishlist
+            wishlist.products.splice(productIndex, 1);
+            action = 'removed';
+        } else {
+            // Add product to the wishlist
+            wishlist.products.push(productId);
+            action = 'added';
+        }
+
+        await wishlist.save();
+
+        res.status(200).json({
+            message: action === 'added' 
+                ? 'Product added to wishlist' 
+                : 'Product removed from wishlist',
+            action,
+        });
+    } catch (error) {
+        console.error('Wishlist Error:', error);
+        res.status(500).json({
+            message: 'An error occurred while managing your wishlist',
+        });
+    }
+};

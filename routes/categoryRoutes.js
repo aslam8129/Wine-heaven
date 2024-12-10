@@ -2,15 +2,6 @@ const express = require('express');
 const categoryController = require('../controller/adminController/categoryController');
 const {upload} = require('../config/cloudinaryConfig')
 const isAdmin = require('../middlware/admin')
-
-
-// const storage = multer.diskStorage({
-//     destination :'public/uplods/',
-//     filename :(req,file,cb) =>{
-//         cb(null,file.fileldname+'-'+Date.now()+file.originalname);
-//     }
-// })
-// const upload = multer({storage});
 const router = express.Router();
 
 

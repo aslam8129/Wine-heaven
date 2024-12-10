@@ -4,14 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OTP Verification</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <style>
-        .glass-effect {
-            backdrop-filter: blur(10px);
-            background-color: rgba(255, 255, 255, 0.1);
-        }
         .custom-gradient {
-            background: linear-gradient(135deg, #1a0f0f 0%, #600018 50%, #2c1810 100%);
+            background: linear-gradient(135deg, #fffefe 0%, #9d1129 50%, #b42f2f 100%);
         }
         .otp-input {
             background-color: rgba(255, 255, 255, 0.05);
@@ -22,52 +19,56 @@
             outline: none;
             background-color: rgba(255, 255, 255, 0.1);
         }
-        .hover-up:hover {
-            transform: translateY(-2px);
-        }
     </style>
 </head>
-<body class="custom-gradient min-h-screen font-sans">
-    <div class="min-h-screen flex items-center justify-center p-4">
-        <div class="glass-effect rounded-xl p-8 max-w-md w-full">
-            <h3 class="text-3xl font-bold text-white text-center mb-6">
-                Verify Your Email
-            </h3>
-            <p class="text-white text-center mb-8">
-                We've sent a verification code to your email address. Please enter it below.
-            </p>
-            <% if (error_msg) { %>
-                <p style="color:rgb(226, 22, 22);"><%= error_msg %></p>
-            <% } %>
-            <% if (success_msg) { %>
-                <p style="color: green;"><%= success_msg %></p>
-            <% } %>
-            
-            <form action="/verify-otp" method="POST" class="space-y-6">
-                <input type="hidden" name="email" value="<%= email %>">
-                
-                <!-- OTP Input -->
-                <div class="flex justify-center gap-2">
-                    <input type="text" name="otp" maxlength="6"
-                        class="w-full text-center text-xl otp-input rounded-lg py-3 text-white placeholder-white/50 transition-colors"
-                        required>
-                </div>
-                
-                <div class="text-sm text-right">
-                    <p class="text-white">Resend OTP in <span id="timer">30</span> seconds</p>
+<body class="custom-gradient min-h-screen font-sans flex items-center justify-center">
+    <div class="w-full max-w-md">
+        <div class="bg-white/10 backdrop-blur-lg rounded-xl shadow-2xl p-8">
+            <div class="text-center mb-6">
+                <h3 class="text-3xl font-bold text-white mb-4">Verify Your Email</h3>
+                <p class="text-white/80 text-sm">
+                    We've sent a verification code to your email address. 
+                    Please enter it below.
+                </p>
+            </div>
+
+            <form id="otpForm" action="/verify-otp" method="post">
+                <% if (error_msg) { %><p class="text-red-500"><%= error_msg %></p><% } %>
+        <% if (success_msg) { %><p class="text-green-500"><%= success_msg %></p><% } %>
+                <div>
+                    <label class="sr-only" for="otp">Verification Code</label>
+                    <input 
+                        type="text" 
+                        id="otp" 
+                        name="otp" 
+                        maxlength="6"
+                        placeholder="Enter 6-digit code"
+                        class="w-full text-center text-xl otp-input rounded-lg py-3 text-white placeholder-white/50 transition-colors focus:border-[#800020]"
+                        required
+                    >
                 </div>
 
-                <!-- Resend Button -->
-                <button id="resendOtpBtn" type="button" disabled
-                    class="w-full py-3 rounded-lg bg-gray-500 text-white font-semibold transition-all duration-200 cursor-not-allowed">
-                    Resend OTP
-                </button>
+                <div class="flex justify-between items-center text-sm">
+                    <p class="text-white/80">Resend OTP in <span id="timer" class="font-semibold">30</span> seconds</p>
+                </div>
 
-                <!-- Verify Button -->
-                <button type="submit"
-                    class="w-full py-3 rounded-lg bg-[#600018] hover:bg-[#800020] text-white font-semibold transition-all duration-200 hover-up">
-                    Verify Code
-                </button>
+                <div class="space-y-4">
+                    <button 
+                        id="resendOtpBtn"
+                        type="button"
+                        disabled
+                        class="w-full py-3 rounded-lg bg-gray-500 text-white font-semibold transition-all duration-200 cursor-not-allowed"
+                    >
+                        Resend OTP
+                    </button>
+
+                    <button 
+                        type="submit"
+                        class="w-full py-3 rounded-lg bg-[#600018] hover:bg-[#800020] text-white font-semibold transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]"
+                    >
+                        Verify Code
+                    </button>
+                </div>
             </form>
         </div>
     </div>
@@ -99,7 +100,7 @@
         }
 
         // Start timer on page load
-         startTimer();
+        startTimer();
 
         // Resend OTP functionality
         resendOtpBtn.addEventListener('click', async () => {

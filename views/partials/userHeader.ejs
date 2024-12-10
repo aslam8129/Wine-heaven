@@ -6,6 +6,7 @@
     <title>Wine Heaven</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    
     <style>
         .bg-wine {
             background-color: #600018;
@@ -13,17 +14,66 @@
         .hover-trigger:hover .hover-target {
             display: block;
         }
+       
+    .bg-wine {
+        background-color: #600018;
+    }
+    .hover-trigger:hover .hover-target {
+        display: block;
+    }
+    /* Media Query for Small Devices (e.g., Phones) */
+    @media (max-width: 640px) {
+        nav {
+            height: auto;
+            padding: 10px;
+        }
+
+        .hidden.md\\:flex {
+            display: none; /* Hide desktop navigation */
+        }
+
+        #mobile-menu {
+            display: block; /* Show mobile menu */
+        }
+
+        .text-xl {
+            font-size: 1rem; /* Adjust font size for smaller screens */
+        }
+
+        .space-x-8 > * {
+            margin-left: 0;
+            margin-right: 0; /* Remove horizontal spacing */
+        }
+    }
+
+    /* Media Query for Medium Devices (e.g., Tablets) */
+    @media (min-width: 641px) and (max-width: 1024px) {
+        nav {
+            height: auto;
+        }
+
+        .hidden.md\\:flex {
+            display: flex; /* Keep desktop navigation visible */
+        }
+
+        .text-xl {
+            font-size: 1.25rem; /* Slightly reduce font size */
+        }
+    }
+
+
     </style>
 </head>
-<body class="bg-gray-100 border-b border-white">
-    <nav class="bg-wine shadow-lg fixed w-full z-50 top-0 border-b border-white">
+<body style="font-family: 'Garamond';font-weight: bold;;" class="bg-gray-100 border-b border-white ">
+    <nav class="bg-wine shadow-lg fixed w-full z-50 top-0 ">
         <div class="max-w-6xl mx-auto px-4">
             <div class="flex justify-between items-center h-20 ">
                 <!-- Logo -->
                 <div class="flex items-center">
                     <a href="/" class="flex ">
-                        <i class="fas fa-wine-glass-alt text-2xl text-white mr-2"></i>
-                        <span class="text-white text-xl font-semibold">Wine Heaven</span>
+                        <!-- <i class="fas fa-wine-glass-alt text-2xl text-white mr-2"></i> -->
+                        <img class="mt-0" style="  width: 45px; height: 50px;" src="/uplods/czNmcy1wcml2YXRlL3Jhd3BpeGVsX2ltYWdlcy93ZWJzaXRlX2NvbnRlbnQvbHIvdjk4Ny0xM2FfMS5wbmc.png" alt="">
+                        <span class="text-xl text-white mt-4 ml-1 font-semibold">Wine Heaven</span>
                     </a>
                 </div>
 
@@ -108,68 +158,10 @@
             </div>
 
             <!-- Mobile Menu -->
-            <div id="mobile-menu" class="hidden md:hidden pb-4">
-                <div class="flex flex-col space-y-3">
-                    <a href="/" class="text-gray-200 hover:text-white px-2 py-1">
-                        <i class="fas fa-home mr-2"></i> Home
-                    </a>
-                    <a href="/wines" class="text-gray-200 hover:text-white px-2 py-1">
-                        <i class="fas fa-wine-bottle mr-2"></i> Wines
-                    </a>
-                    <a href="/about" class="text-gray-200 hover:text-white px-2 py-1">
-                        <i class="fas fa-info-circle mr-2"></i> About
-                    </a>
-                    <a href="/contact" class="text-gray-200 hover:text-white px-2 py-1">
-                        <i class="fas fa-envelope mr-2"></i> Contact
-                    </a>
-
-                    <!-- Mobile Wishlist -->
-                    <a href="/wishlist" class="text-gray-200 hover:text-white px-2 py-1">
-                        <i class="fas fa-heart mr-2"></i> Wishlist
-                        <% if (locals.wishlistCount && wishlistCount > 0) { %>
-                            <span class="bg-yellow-500 text-xs rounded-full px-2 py-1 ml-2">
-                                <%= wishlistCount %>
-                            </span>
-                        <% } %>
-                    </a>
+          
 
                     <!-- Mobile Search -->
-                    <div class="px-2">
-                        <input type="text" 
-                               placeholder="Search..." 
-                               class="w-full bg-red-900/50 text-white placeholder-gray-300 rounded-full py-2 px-4">
-                    </div>
-
-                    <!-- Mobile Authentication -->
-                    <div class="px-2 pt-2 border-t border-red-900">
-                        <% if (locals.user) { %>
-                            <!-- Mobile User Menu When Logged In -->
-                            <div class="flex items-center space-x-2 mb-2">
-                                <span class="text-white"><%= user.name %></span>
-                            </div>
-                            <div class="flex flex-col space-y-2">
-                                <a href="/profile" class="text-gray-200 hover:text-white">
-                                    <i class="fas fa-user mr-2"></i> Profile
-                                </a>
-                                <a href="/orders" class="text-gray-200 hover:text-white">
-                                    <i class="fas fa-shopping-bag mr-2"></i> Orders
-                                </a>
-                                <a href="/logout" class="text-red-300 hover:text-red-200">
-                                    <i class="fas fa-sign-out-alt mr-2"></i> Logout
-                                </a>
-                            </div>
-                        <% } else { %>
-                            <!-- Mobile Login/Register When Logged Out -->
-                            <div class="flex flex-col space-y-2">
-                                <a href="/login" class="text-white text-center py-2 border border-white rounded-full hover:bg-white hover:text-red-900">
-                                    <i class="fas fa-sign-in-alt mr-1"></i> Login
-                                </a>
-                                <a href="/register" class="bg-white text-red-900 text-center py-2 rounded-full hover:bg-gray-100">
-                                    Register
-                                </a>
-                            </div>
-                        <% } %>
-                    </div>
+                   
                 </div>
             </div>
         </div>

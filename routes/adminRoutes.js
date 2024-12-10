@@ -8,9 +8,11 @@ const ordersList = require('../controller/adminController/orderController')
 const Coupon = require('../controller/adminController/CouponController')
 const salesRiport = require('../controller/adminController/salesReports')
 
+
 router.get('/login',admincontroller.loginGet)
 router.post('/Dashboard',admincontroller.loginPost)
-router.get('/Dashboard',isadmin.adminAuth,admincontroller.dashbordGet)
+router.get('/Dashboard',isadmin.adminAuth,admincontroller.dashboardGet)
+//router.get('/dashboard', 
 router.get('/customers',isadmin.adminAuth,admincontroller.listuser)
 router.post('/block/:id',admincontroller.blockUser);
 router.post('/unblock/:id',admincontroller.unblockUser);
@@ -39,6 +41,7 @@ router.get('/order/:id',ordersList.getorderDetails)
 router.get('/coupons/add', Coupon.getAddCoupon);
 router.get('/coupons', Coupon.getAllCoupons);
 router.post('/coupons',Coupon.addCoupon);
+router.get('/coupon/delete/:id',Coupon.deleteCoupon)
 
 
 
@@ -47,6 +50,7 @@ router.get('/offers/add',Coupon.GetAddOffer)
 router.post('/offers/add',Coupon.PostAddOffer);
 router.post('/offers/deactivate/:id',Coupon.offerActivate)
 router.post('/offers/Activate/:id',Coupon.offerdeactivate)
+router.post('/offers/Delete/:id',Coupon.deleteOffer)
 
 
 

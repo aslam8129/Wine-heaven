@@ -190,17 +190,29 @@
         });
 
         function cropImage() {
-            const canvas = cropper.getCroppedCanvas();
-            canvas.toBlob(function(blob) {
-                const url = URL.createObjectURL(blob);
-                croppedImagesArray.push({ url: url });
-                const imgWrapper = document.createElement('div');
-                imgWrapper.className = 'img-wrapper';
-                imgWrapper.innerHTML = `<img src="${url}" alt="Cropped Image" class="cropped-image"><button type="button" class="delete-button" onclick="removeCroppedImage(this)">X</button>`;
-                document.getElementById('newImages').appendChild(imgWrapper);
-            });
-            closeCropModal();
-        }
+    const canvas = cropper.getCroppedCanvas();
+    canvas.toBlob(function(blob) {
+        const url = URL.createObjectURL(blob);
+
+        // Generate a new unique ID for the image
+        const imageId = `new-${newImageIndex++}`;
+        croppedImagesArray.push({ id: imageId, url: url });
+
+        // Update the frontend to show the new image
+        const imgWrapper = document.createElement('div');
+        imgWrapper.className = 'img-wrapper';
+        imgWrapper.dataset.imageId = imageId; // Save the ID for later use
+        imgWrapper.innerHTML = `
+            <img src="${url}" alt="Cropped Image" class="cropped-image">
+            <button type="button" class="delete-button" onclick="removeCroppedImage(this, '${imageId}')">X</button>
+        `;
+        document.getElementById('newImages').appendChild(imgWrapper);
+    });
+
+    closeCropModal();
+}
+
+
 
         function closeCropModal() {
             document.getElementById('crop-modal').style.display = 'none';
@@ -214,10 +226,13 @@
             wrapper.remove();
         }
 
-        function removeCroppedImage(button) {
-            const wrapper = button.parentElement;
-            wrapper.remove();
-        }
+        function removeCroppedImage(button, imageId) {
+  
+  const wrapper = button.parentElement;
+  wrapper.remove();
+
+  croppedImagesArray = croppedImagesArray.filter(image => image.id !== imageId);
+}
     </script>
 </body>
 </html>

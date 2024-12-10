@@ -15,6 +15,8 @@ exports.addtoCartGet = async (req, res) => {
         }
 
         let cart = await Cart.findOne({ userId }).populate('items.productId');
+       
+        
 
         if (!cart) {
          
@@ -35,12 +37,15 @@ exports.addtoCartGet = async (req, res) => {
                 }
 
                 item.productPrice = product.priceAfterDiscount;
-                item.productDiscountPrice = product.priceAfterDiscount - (product.price * (product.discount / 100)); 
+                item.productDiscountPrice = product.priceAfterDiscount - (product.price * (product.productAllDiscount / 100));
+                
+                 
                 return item;
             })
         );
+        
 
-        await cart.save();
+       
 
        
         const subtotal = cart.items.reduce((sum, item) => sum + (item.productPrice * item.productCount), 0);
@@ -48,7 +53,10 @@ exports.addtoCartGet = async (req, res) => {
             (sum, item) => sum + (item.productPrice - item.productDiscountPrice) * item.productCount,
             0
         );
-        const total = subtotal - discount + 100; 
+        const total = subtotal + 100; 
+        cart.payableAmount = total;
+        await cart.save();
+
 
         res.render('user/addToCart', {
             cart,
@@ -93,14 +101,14 @@ exports.updateQuantity = async (req, res) => {
             const item = cart.items[itemIndex];
             item.productCount = parseInt(quantity, 10);
             item.productPrice = product.priceAfterDiscount;
-            item.productDiscountPrice = product.priceAfterDiscount - (product.priceAfterDiscount* (product.discount / 100));
+            item.productDiscountPrice = product.priceAfterDiscount - (product.priceAfterDiscount* (product.productAllDiscount / 100));
         } else {
           
             cart.items.push({
                 productId,
                 productCount: parseInt(quantity, 10),
                 productPrice: product.priceAfterDiscount,
-                productDiscountPrice: product.priceAfterDiscount - (product.priceAfterDiscount * (product.discount / 100)),
+                productDiscountPrice: product.priceAfterDiscount - (product.priceAfterDiscount * (product.productAllDiscount / 100)),
             });
         }
 
@@ -108,11 +116,11 @@ exports.updateQuantity = async (req, res) => {
 
        
         const subtotal = cart.items.reduce((sum, item) => sum + (item.productPrice * item.productCount), 0);
-        const discount = cart.items.reduce(
-            (sum, item) => sum + (item.productPrice - item.productDiscountPrice) * item.productCount,
-            0
-        );
-        const total = subtotal - discount + 100; 
+       // const discount = cart.items.reduce(
+          //  (sum, item) => sum + (item.productPrice - item.productDiscountPrice) * item.productCount,
+           // 0
+      //  );
+        const total = subtotal + 100; 
 
         cart.payableAmount = total;
         await cart.save();
@@ -120,7 +128,7 @@ exports.updateQuantity = async (req, res) => {
         res.render('user/addToCart', {
             cart,
             subtotal,
-            discount,
+            
             total,
         });
     } catch (error) {
@@ -189,7 +197,7 @@ exports.updateQuantity = async (req, res) => {
                 orderSummary.discount = 
                 orderSummary.total = orderSummary.payableAmount
             }
-            
+          
           
     
             let addresses = user.addresses.filter(address => !address.isDelete);

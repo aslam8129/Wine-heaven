@@ -1,84 +1,130 @@
 <%-include('../partials/userHeader.ejs')%>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.7.32/sweetalert2.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.7.32/sweetalert2.min.js"></script>
 
-<style>
-    .bg-video {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        z-index: -1;
-    }
-    .italianno-regular {
-        font-family: "Italianno", serif;
-        font-weight: 400;
-        font-style: normal;
-    }
+    <style>
+        .bg-video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
+        }
 
-    .overlay {
-        background-color: rgba(0, 0, 0, 0.4);
-    }
-    .bg-gold {
-        background-color:#600018 ;
-        color: white;
-    }
-    .bg-gold:hover {
-        background-color: #800020;
-        transform: translateY(-2px);
-    }
-    .bg-charcoal {
-        background-color: #0a0202;
-        color: white;
-    }
-    .wine-card {
-        backdrop-filter: blur(5px);
-        background-color: rgba(255, 255, 255, 0.95);
-    }
-    .featured-section {
-        background: linear-gradient(45deg, #1a0f0f, #2c1810);
-    }
-    .testimonial-card {
-        background: rgba(255, 255, 255, 0.05);
-        backdrop-filter: blur(10px);
-    }
-    .scroll-indicator {
-        animation: bounce 5s infinite;
-    }
-    @keyframes bounce {
-        0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
-        40% { transform: translateY(-20px); }
-        60% { transform: translateY(-10px); }
-    }
-</style>
+        .bg-goldd {
 
-<!-- Hero Section -->
-<section class="relative h-screen flex items-center justify-center text-center">
-    <video autoplay muted loop class="bg-video">
-        <source src="/uplods/mixkit-pouring-red-wine-from-a-bottle-very-close-view-22734-full-hd.mp4" type="video/mp4">
-    </video>
-   
-    <div class="relative z-10 text-white max-w-4xl px-4">
-        <h1 class="text-6xl font-bold mb-6 leading-tight">Discover the Art of Fine Wine</h1>
-        <p class="text-xl mb-8 font-light">Indulge in exceptional wines crafted with passion and precision</p>
-        <div class="space-x-4">
-            <a href="#categories" class="bg-gold py-4 px-8 rounded-full text-lg transition-all duration-300 inline-block">
-                Explore Collection
-            </a>
-            <a href="#about" class="border-2 border-white py-4 px-8 rounded-full text-lg transition-all duration-300 inline-block hover:bg-white hover:text-gray-900">
-                Our Story
-            </a>
+            background-color: #800020;
+            ;
+            color: white;
+
+
+        }
+
+        .bg-goldd:hover {
+            background-color: #600018;
+            ;
+            transform: translateY(-2px);
+        }
+
+        .overlay {
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+        .bg-gold {
+            background-color: #60001890;
+            color: white;
+        }
+
+        .bg-gold:hover {
+            background-color: #8000209e;
+            transform: translateY(-2px);
+        }
+
+        .bg-charcoal {
+            background-color: #0a0202;
+            color: white;
+        }
+
+        .wine-card {
+            backdrop-filter: blur(5px);
+            background-color: rgba(255, 255, 255, 0.95);
+        }
+
+        .featured-section {
+            background: linear-gradient(45deg, #1a0f0f, #2c1810);
+        }
+
+        .testimonial-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+        }
+
+        .scroll-indicator {
+            animation: bounce 5s infinite;
+        }
+
+        .border-2:hover {
+            background-color: rgba(255, 255, 255, 0.513);
+        }
+
+        @keyframes bounce {
+
+            0%,
+            20%,
+            50%,
+            80%,
+            100% {
+                transform: translateY(0);
+            }
+
+            40% {
+                transform: translateY(-20px);
+            }
+
+            60% {
+                transform: translateY(-10px);
+            }
+        }
+
+        /* .body{ */
+        /* font-family: Georgia, 'Times New Roman', Times, serif; */
+        /* } */
+    </style>
+
+    <!-- Hero Section -->
+    <section style="font-family: 'Garamond';" class="relative h-screen flex items-center justify-center text-center">
+        <video autoplay muted loop class="bg-video">
+            <source src="/uplods/mixkit-pouring-red-wine-from-a-bottle-very-close-view-22734-full-hd.mp4"
+                type="video/mp4">
+        </video>
+
+        <div class="relative z-10 text-white max-w-4xl px-4">
+            <h1 class="text-6xl font-bold mb-6 leading-tight">Discover the Art of Fine Wine</h1>
+            <p class="text-xl mb-8 font-light font-bold ">Indulge in exceptional wines crafted with passion and
+                precision</p>
+            <div class="space-x-4">
+                <a href="#categories"
+                    class="bg-gold py-4 px-8 rounded-full text-lg transition-all duration-300 inline-block">
+                    Explore Collection
+                </a>
+                <a href="#about"
+                    class="border-2 border-white py-4 px-8 rounded-full text-lg transition-all duration-300 inline-block  hover:text-gray-900">
+                    Our Story
+                </a>
+            </div>
+            <div class="absolute bottom-10 ml-64 left-1/2 transform -translate-x-1/2 scroll-indicator">
+                <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                </svg>
+            </div>
         </div>
-        <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 scroll-indicator">
-            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
-            </svg>
-        </div>
-    </div>
-</section>
+    </section>
 
-<!-- Featured Section -->
-<section class="featured-section py-20">
+    <!-- Featured Section -->
+    <!-- <section class="featured-section py-20">
     <div class="container mx-auto px-4">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div class="text-center text-white p-8">
@@ -110,96 +156,219 @@
             </div>
         </div>
     </div>
-</section>
+</section> -->
 
-<!-- Categories Section -->
-<div id="categories" class="bg-charcoal p-8 mx-auto">
-    <div class="container mx-auto xl:max-w-7xl">
-        <h2 class="text-5xl font-bold text-center mb-12 text-gold">Our Collection</h2>
-        <div class="categories-container relative overflow-hidden">
-            <div class="categories-inner flex gap-8 snap-x snap-mandatory scroll-smooth transition-transform duration-500 ease-linear">
-                <% categories.forEach(category => { %>
-                    <div class="flex-shrink-0 wine-card  border-white border-2 rounded-xl shadow-2xl overflow-hidden transform transition-all duration-300 hover:scale-105 snap-center w-72">
-                        <div class="relative h-80 overflow-hidden">
-                            <img src="<%= category.imageUrl %>" alt="<%= category.name %>" class="h-full w-full object-cover" />
-                            <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
+    <!-- Categories Section -->
+    <div id="categories" class="bg-black p-8 mx-auto">
+        <div class="container mx-auto xl:max-w-7xl">
+            <h2 class="text-5xl font-bold text-center mb-12 text-white">Our Collection</h2>
+            <div class="categories-container relative overflow-hidden">
+                <div
+                    class="categories-inner flex gap-8 snap-x snap-mandatory scroll-smooth transition-transform duration-500 ease-linear">
+                    <% categories.forEach(category=> { %>
+                        <div
+                            class="flex-shrink-0 wine-card    rounded-xl shadow-2xl overflow-hidden transform transition-all duration-300 hover:scale-95 snap-center w-72">
+                            <div class="relative h-80 overflow-hidden">
+                                <img src="<%= category.imageUrl %>" alt="<%= category.name %>"
+                                    class="h-full w-full object-cover" />
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
+                                <div class="absolute bottom-0 left-0 right-0 p-6">
+                                    <h3 class="text-2xl font-bold text-white mb-2">
+                                        <%= category.name %>
+                                    </h3>
+                                </div>
+                            </div>
+                            <a href="/categorys/<%= category._id %>" class="block">
+                                <button
+                                    class="bg-goldd w-full py-4 text-white font-semibold transition-all duration-300 hover:bg-opacity-90">
+                                    Explore Collection
+                                </button>
+                            </a>
+                        </div>
+                        <% }); %>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Trending Products -->
+    <div class="bg-white py-16">
+        <div class="container mx-auto xl:max-w-7xl px-4">
+            <h2 class="text-5xl font-bold text-center mb-12 text-black">Featured Wines</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+                <% products.forEach(product=> { %>
+                    <div
+                        class="bg-white text-white rounded-xl shadow-lg border overflow-hidden transform transition-all duration-300 hover:scale-110 relative">
+
+                        <div class="absolute top-0 right-4 text-white z-10 flex space-x-2">
+                            <button id="add-wishlist" onclick="addToWishlist('<%= product._id%>', this)"
+                                class="bg-gold hover:bg-gold text-white p-2 rounded-full transition-all duration-300 mt-4">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" class="text-white"> <!-- Change class here to text-white -->
+                                    <path
+                                        d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z">
+                                    </path>
+                                </svg>
+                            </button>
+                        </div>
+
+                        <div class="absolute top-12 right-4 z-10 flex space-x-2">
+
+
+                            <button id="add-to-cart-btn" onclick="addtocart('<%=product._id%>',this)"
+                                class="bg-gold hover:bg-gold text-white p-2 rounded-full transition-all duration-300 mt-4">
+                                <input id="productId" type="hidden" name="productId" value="<%= product._id %>">
+                                <i class="fas fa-shopping-cart"></i>
+
+                                <circle cx="9" cy="21" r="1"></circle>
+                                <circle cx="20" cy="21" r="1"></circle>
+                                <path d="M1 1h4l1.68 8.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61l1.6-7.17H5.21"></path>
+                                <path d="M7 13h10"></path>
+                                </svg>
+                            </button>
+
+                        </div>
+                        <div class="relative h-[400px]">
+                            <img src="/uploads/<%= product.images[0] %>" alt="<%= product.name %>"
+                                class="h-full w-full object-cover" />
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
                             <div class="absolute bottom-0 left-0 right-0 p-6">
-                                <h3 class="text-2xl font-bold text-white mb-2"><%= category.name %></h3>
+                                <input type="hidden" name="product" id="productId" value="<%=product._id%>">
+                                <h3 class="text-2xl font-bold text-white mb-2">
+                                    <%= product.name %>
+                                </h3>
                             </div>
                         </div>
-                        <a href="/categorys/<%= category._id %>" class="block">
-                            <button class="bg-gold w-full py-4 text-white font-semibold transition-all duration-300 hover:bg-opacity-90">
-                                Explore Collection
+                        <a href="/products/<%= product._id %>" class="block">
+                            <button class="bg-goldd w-full py-4 text-white font-semibold transition-all duration-300 ">
+                                View Product
                             </button>
                         </a>
                     </div>
-                <% }); %>
+                    <% }); %>
             </div>
-        </div>
-    </div>
-</div>
 
-<!-- Trending Products -->
-<div class="bg-black py-16">
-    <div class="container mx-auto xl:max-w-7xl px-4">
-        <h2 class="text-5xl font-bold text-center mb-12 text-gold">Featured Wines</h2>
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-            <% products.forEach(product => { %>
-                <div class="bg-white rounded-xl shadow-lg border  overflow-hidden transform transition-all duration-300 hover:scale-105">
-                    <div class="relative h-[400px]">
-                        <img src="/uploads/<%= product.images[0] %>" alt="<%= product.name %>" class="h-full w-full object-cover" />
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-                        <div class="absolute bottom-0 left-0 right-0 p-6">
-                            <h3 class="text-2xl font-bold text-white mb-2"><%= product.name %></h3>
-                        </div>
-                    </div>
-                    <a href="/products/<%= product._id %>" class="block">
-                        <button class="bg-gold w-full py-4 text-white font-semibold transition-all duration-300 hover:bg-opacity-90">
-                            View Product
-                        </button>
+            <!-- "Show All Wines" Button -->
+            <% if (showAllButton) { %>
+                <div class="text-center mt-8">
+                    <a href="/wines"
+                        class="bg-goldd py-4 px-8 text-white rounded-full text-lg transition-all duration-300 inline-block">
+                        Show All Wines
                     </a>
                 </div>
-            <% }); %>
+                <% } %>
         </div>
-
-        <!-- "Show All Wines" Button -->
-        <% if (showAllButton) { %>
-            <div class="text-center mt-8">
-                <a href="/wines" class="bg-gold py-4 px-8 text-white rounded-full text-lg transition-all duration-300 inline-block">
-                    Show All Wines
-                </a>
-            </div>
-        <% } %>
     </div>
-</div>
+
+    <script>
+async function addtocart(productId, tartget) {
+   
+    try {
+                const response = await fetch('/cartt', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ productId }),
+                });
+
+                if (response.ok) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success',
+                        text: 'Product added to cart successfully!',
+                        confirmButtonColor: '#600018',
+                    });
+                } else {
+                    const error = await response.json();
+                    Swal.fire({
+                        icon: 'info',
+                        //  title: 'Error',
+                        text: error.message || 'Failed to add product to cart.',
+                        confirmButtonColor: '#600018'
+                    });
+                }
+            } catch (error) {
+                console.error("Fetch error:", error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'An unexpected error occurred.',
+                    confirmButtonColor: '#600018'
+                });
+            } 
+    
+    
+}
+
+     async   function addToWishlist(productId, tartget) {
+            try {
+                const response = await fetch('/wishlistt', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ productId }),
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    Swal.fire({
+                        icon: data.action === 'added' ? 'success' : 'info',
+                        title: data.action === 'added'
+                            ? 'Added to Wishlist'
+                            : 'Removed from Wishlist',
+                        text: data.message,
+                        confirmButtonColor: '#600018',
+                    });
+                } else {
+                    const error = await response.json();
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: error.message || 'Failed to update the wishlist.',
+                        confirmButtonColor: '#600018',
+                    });
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Unexpected Error',
+                    text: 'An unexpected error occurred.',
+                    confirmButtonColor: '#600018',
+                });
+            }  
+        }
 
 
-<script>
-    // Automatic scrolling for the categories section
-    const categoriesContainer = document.querySelector('.categories-container');
-    const categoriesInner = document.querySelector('.categories-inner');
-    let scrollAmount = 0;
-    const scrollSpeed = 1.5; // Adjust this value to change the scroll speed
-    let scrollInterval;
 
-    function startAutoScroll() {
-        scrollInterval = setInterval(() => {
-            scrollAmount += scrollSpeed;
-            if (scrollAmount >= categoriesInner.scrollWidth - categoriesContainer.clientWidth) {
-                scrollAmount = 0;
-            }
-            categoriesContainer.scrollLeft = scrollAmount;
-        }, 30); // Adjust the interval to control the smoothness of scrolling
-    }
+        const categoriesContainer = document.querySelector('.categories-container');
+        const categoriesInner = document.querySelector('.categories-inner');
+        let scrollAmount = 0;
+        const scrollSpeed = 1.5;
+        let scrollInterval;
 
-    function stopAutoScroll() {
-        clearInterval(scrollInterval);
-    }
+        function startAutoScroll() {
+            scrollInterval = setInterval(() => {
+                scrollAmount += scrollSpeed;
+                if (scrollAmount >= categoriesInner.scrollWidth - categoriesContainer.clientWidth) {
+                    scrollAmount = 0;
+                }
+                categoriesContainer.scrollLeft = scrollAmount;
+            }, 30); // Adjust the interval to control the smoothness of scrolling
+        }
 
-    categoriesContainer.addEventListener('mouseover', stopAutoScroll);
-    categoriesContainer.addEventListener('mouseout', startAutoScroll);
+        function stopAutoScroll() {
+            clearInterval(scrollInterval);
+        }
 
-    startAutoScroll();
-</script>
+        categoriesContainer.addEventListener('mouseover', stopAutoScroll);
+        categoriesContainer.addEventListener('mouseout', startAutoScroll);
 
-<%-include('../partials/userFooter.ejs')%>
+        startAutoScroll();
+    </script>
+
+    <%-include('../partials/userFooter.ejs')%>

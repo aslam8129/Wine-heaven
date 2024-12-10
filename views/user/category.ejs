@@ -5,10 +5,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Wine Heaven</title>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400..800;1,400..800&family=Italianno&display=swap" rel="stylesheet">
 </head>
 <body>
   
 <style>
+    body{
+       font-family: "EB Garamond", serif;
+    }
   .bg-video {
       position: absolute;
       top: 0;
@@ -78,7 +86,8 @@
 </div>
 <div class="bg-white py-16">
   <div class="container mx-auto xl:max-w-7xl px-4">
-      <h2 class="text-5xl font-bold text-center mb-12"> Wines</h2>
+       
+       <h2 class="text-5xl font-bold text-center mb-12" style="font-family: 'EB Garamond' , serif ;"> Wines</h2>
       <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
           <% products.forEach(product => { %>
               <div class="bg-white rounded-xl shadow-lg overflow-hidden transform transition-all duration-300 hover:scale-105">

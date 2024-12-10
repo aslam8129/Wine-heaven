@@ -27,92 +27,115 @@
     </style>
 </head>
 <body class="bg-gray-100">
-    <%-include('../partials/userHeader.ejs')%>
-    <div class="container mx-auto px-4 py-8 border-2 border-color -wine-primary">
-       
+    <%- include('../partials/userHeader.ejs') %>
+    <div class="flex mt-20">
+        <!-- Sidebar -->
+        <%- include('../partials/userSidebar.ejs') %>
 
-        <div class="max-w-4xl mx-auto wine-card shadow-lg rounded-lg overflow-hidden mt-20">
-            <div class="bg-gray-900 text-white p-6">
-                <div class="flex justify-between items-center">
-                    <h1 class="text-2xl font-bold">My Wallet</h1>
-                    <div class="text-xl font-semibold">
-                        Balance: $<%= wallet && wallet.balance ? wallet.balance.toFixed(2) : '0.00' %>
+        <!-- Main Content -->
+        <div class="flex-grow ml-72 p-8">
+            <div class="max-w-4xl mx-auto wine-card shadow-lg rounded-lg overflow-hidden">
+                <div class="bg-gray-400 text-black p-6">
+                    <div class="flex justify-between items-center">
+                        <h1 class="text-2xl font-bold">My Wallet</h1>
+                        <div class="text-xl font-semibold">
+                            Balance: <i class="fa-solid fa-indian-rupee-sign"></i><%= wallet && wallet.balance ? wallet.balance.toFixed(0) : '0.00' %>.00
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="p-6 ">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6 w-full">
-                    <div class="bg-gray-900 text-white rounded-lg p-4 text-center ">
-                        
-                        <h3 class="text-lg font-semibold">Total Credited</h3>
-                        <p class="text-xl">
-                            $<%= wallet && wallet.transaction ? 
-                                wallet.transaction
-                                .filter(t => t.transactionType === 'Credited')
-                                .reduce((sum, t) => sum + (t.wallet_amount || 0), 0)
-                                .toFixed(2) : '0.00' %>
-                        </p>
+                <div class="p-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                        <div class="bg-gray-300 text-black rounded-lg p-4 text-center">
+                            <h3 class="text-lg font-semibold">Total Credited</h3>
+                            <p class="text-xl">
+                                <i class="fa-solid fa-indian-rupee-sign"></i>
+                                <%= wallet && wallet.transaction ? 
+                                    wallet.transaction
+                                    .filter(t => t.transactionType === 'Credited')
+                                    .reduce((sum, t) => sum + (t.wallet_amount || 0), 0)
+                                    .toFixed(0) : '0.00' %>.00
+                            </p>
+                        </div>
+                        <div class="bg-gray-300 text-black rounded-lg p-4 text-center">
+                            <h3 class="text-lg font-semibold">Total Debited</h3>
+                            <p class="text-xl">
+                                <i class="fa-solid fa-indian-rupee-sign"></i>
+                                <%= wallet && wallet.transaction ? 
+                                    wallet.transaction
+                                    .filter(t => t.transactionType === 'Debited')
+                                    .reduce((sum, t) => sum + (t.wallet_amount || 0), 0)
+                                    .toFixed(0) : '0.00' %>.00
+                            </p>
+                        </div>
                     </div>
-                    <div class="bg-gray-900 text-white rounded-lg p-4 text-center">
-                        <h3 class="text-lg font-semibold">Total Debited</h3>
-                        <p class="text-xl">
-                            $<%= wallet && wallet.transaction ? 
-                                wallet.transaction
-                                .filter(t => t.transactionType === 'Debited')
-                                .reduce((sum, t) => sum + (t.wallet_amount || 0), 0)
-                                .toFixed(2) : '0.00' %>
-                        </p>
-                    </div>
-                  
-                </div>
 
-                <% if (wallet && wallet.transaction && wallet.transaction.length > 0) { %>
-                    <div class="overflow-x-auto">
-                        <table class="w-full bg-white shadow-md rounded-lg overflow-hidden">
-                            <thead class="bg-gray-900 text-white">
-                                <tr>
-                                    <th class="p-3 text-left">Date</th>
-                                    <th class="p-3 text-left">Transaction ID</th>
-                                    <th class="p-3 text-left">Type</th>
-                                    <th class="p-3 text-right">Amount</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <% wallet.transaction
-                                    .sort((a, b) => new Date(b.transaction_date) - new Date(a.transaction_date))
-                                    .forEach(function(transaction) { %>
-                                    <tr class="border-b hover:bg-gray-50">
-                                        <td class="p-3">
-                                            <%= new Date(transaction.transaction_date).toLocaleDateString() %>
-                                        </td>
-                                        <td class="p-3"><%= transaction.order_id || 'N/A' %></td>
-                                        <td class="p-3">
-                                            <span class="<%= 
-                                                transaction.transactionType === 'Credited' 
-                                                ? 'text-green-600' 
-                                                : 'text-red-600' 
-                                            %>">
-                                                <%= transaction.transactionType || 'Unknown' %>
-                                            </span>
-                                        </td>
-                                        <td class="p-3 text-right">
-                                            $<%= transaction.wallet_amount ? transaction.wallet_amount.toFixed(2) : '0.00' %>
-                                        </td>
+                    <% if (wallet && wallet.transaction && wallet.transaction.length > 0) { %>
+                        <div class="overflow-x-auto">
+                            <table class="w-full bg-white shadow-md rounded-lg overflow-hidden">
+                                <thead class="bg-gray-300 text-black">
+                                    <tr>
+                                        <th class="p-3 text-left">Date</th>
+                                        <!-- <th class="p-3 text-left">Transaction ID</th> -->
+                                        <th class="p-3 text-left">Type</th>
+                                        <th class="p-3 text-left">Status</th>
+                                        <th class="p-3 text-right">Amount</th>
                                     </tr>
-                                <% }); %>
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                    <% wallet.transaction
+                                        .sort((a, b) => new Date(b.transaction_date) - new Date(a.transaction_date))
+                                        .forEach(function(transaction) { %>
+                                        <tr class="border-b hover:bg-gray-50">
+                                            <td class="p-3">
+                                                <%= new Date(transaction.transaction_date).toLocaleDateString() %>
+                                            </td>
+                                            <!-- <td class="p-3"><%= transaction.order_id || 'N/A' %></td> -->
+                                            <td class="p-3">
+                                                <span class="<%= 
+                                                    transaction.transactionType === 'Credited' 
+                                                    ? 'text-green-600' 
+                                                    : 'text-red-600' 
+                                                %>">
+                                                    <%= transaction.transactionType || 'Unknown' %>
+                                                </span>
+                                            </td>
+                                            <td class="p-0  ">
+                                                <%= transaction.tracsactionWay %>
+                                            </td>
+                                            <td class="p-3 text-right">
+                                                ₹<%= transaction.wallet_amount ? transaction.wallet_amount.toFixed(0) : '0.00' %>.00
+                                            </td>
+                                        </tr>
+                                    <% }); %>
+                                </tbody>
+                            </table>
+                        </div>
+                    <% } else { %>
+                        <div class="text-center text-gray-500 p-6">
+                            <i class="fas fa-wallet text-4xl mb-4"></i>
+                            <p>No transactions found</p>
+                        </div>
+                    <% } %>
+                    <div class="flex justify-center mt-4">
+                        <% if (page > 1) { %>
+                            <a href="/wallet?page=<%= page - 1 %>&limit=<%= limit %>" class="px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded">Previous</a>
+                        <% } %>
+                        <% for (let i = 1; i <= totalpages; i++) { %>
+                            <a href="/wallet?page=<%= i %>&limit=<%= limit %>" 
+                               class="px-3 py-1 mx-1 <%= i === page ? 'bg-blue-500 text-white' : 'bg-gray-200 hover:bg-gray-300' %> rounded">
+                                <%= i %>
+                            </a>
+                        <% } %>
+                        <% if (page < totalpages) { %>
+                            <a href="/wallet?page=<%= page + 1 %>&limit=<%= limit %>" class="px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded">Next</a>
+                        <% } %>
                     </div>
-                <% } else { %>
-                    <div class="text-center text-gray-500 p-6">
-                        <i class="fas fa-wallet text-4xl mb-4"></i>
-                        <p>No transactions found</p>
-                    </div>
-                <% } %>
+                </div>
             </div>
         </div>
     </div>
-    <%-include('../partials/userFooter.ejs')%>
+   
+    
 </body>
 </html>

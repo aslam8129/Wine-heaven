@@ -38,7 +38,7 @@
                             <th class="py-3 px-6 text-left">Valid Until</th>
                             <th class="py-3 px-6 text-left">Usage Limit</th>
                             <th class="py-3 px-6 text-left">Used Count</th>
-                            <th class="py-3 px-6 text-left">Active</th>
+                            <th class="py-3 px-6 text-left">Delete</th>
                         </tr>
                     </thead>
 
@@ -55,7 +55,7 @@
                                 <td class="py-3 px-6"><%= new Date(coupon.validUntil).toLocaleDateString() %></td>
                                 <td class="py-3 px-6"><%= coupon.usageLimit || 'Unlimited' %></td>
                                 <td class="py-3 px-6"><%= coupon.usedCount %></td>
-                                <td class="py-3 px-6"><%= coupon.isActive ? 'Yes' : 'No' %></td>
+                                <td class="py-3 px-6"><a href="coupon/delete/<%=coupon._id%>">delete</td></a> 
                             </tr>
                         <% }) %>
                     </tbody>
@@ -65,6 +65,33 @@
             <!-- No Coupons Available -->
             <p class="text-center text-gray-600 mt-6">No coupons available.</p>
         <% } %>
+
+        <div class="flex justify-center items-center space-x-2 mt-4">
+            <!-- Previous Button -->
+            <% if (currentPage > 1) { %>
+                <a href="/admin/coupons?page=<%= currentPage - 1 %>&limit=<%= limit %>" 
+                   class="px-4 py-2 text-white bg-gray-500 hover:bg-gray-700 rounded-lg">
+                    Previous
+                </a>
+            <% } %>
+        
+            <!-- Page Numbers -->
+            <% for (let i = 1; i <= totalpage; i++) { %>
+                <a href="/admin/coupons?page=<%= i %>&limit=<%= limit %>" 
+                   class="px-4 py-2 rounded-lg <%= i === currentPage ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300' %>">
+                    <%= i %>
+                </a>
+            <% } %>
+        
+            <!-- Next Button -->
+            <% if (currentPage < totalpage) { %>
+                <a href="/admin/coupons?page=<%= currentPage + 1 %>&limit=<%= limit %>" 
+                   class="px-4 py-2 text-white bg-gray-500 hover:bg-gray-700 rounded-lg">
+                    Next
+                </a>
+            <% } %>
+        </div>
+        
     </div>
 </body>
 </html>

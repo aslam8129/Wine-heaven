@@ -3,15 +3,169 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>dashbord</title>
+    <title>Admin Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
+<body class="bg-gray-50">
     <%- include('../partials/adminSidebar.ejs') %>
+
     <div class="ml-64 p-6">
-        <!-- Add your main content here -->
-        <h1 class="text-3xl font-bold">Welcome to Wine Heaven Admin</h1>
-       
+        <div class="flex justify-between items-center mb-6">
+            <h1 class="text-3xl font-bold text-gray-800">Admin Dashboard</h1>
+            
+            <form action="/admin/dashboard" method="get" class="flex space-x-4">
+                <select name="year" class="p-2 border rounded">
+                    <% years.forEach(year => { %>
+                        <option value="<%= year %>" <%= year === selectedYear ? 'selected' : '' %>>
+                            <%= year %>
+                        </option>
+                    <% }) %>
+                </select>
+                <select name="month" class="p-2 border rounded">
+                    <% months.forEach(month => { %>
+                        <option value="<%= month %>" <%= month === selectedMonth ? 'selected' : '' %>>
+                            <%= new Date(2000, month - 1).toLocaleString('default', { month: 'long' }) %>
+                        </option>
+                    <% }) %>
+                </select>
+                <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                    Apply
+                </button>
+            </form>
+        </div>
+
+        <!-- Total Statistics Cards -->
+        <div class="grid grid-cols-3 gap-6 mb-6">
+            <div class="bg-white p-6 rounded-lg shadow">
+                <h3 class="text-gray-500">Total Revenue</h3>
+                <p class="text-2xl font-bold text-green-600">$<%= totalStats.totalRevenue.toFixed(2) %></p>
+            </div>
+            <div class="bg-white p-6 rounded-lg shadow">
+                <h3 class="text-gray-500">Total Orders</h3>
+                <p class="text-2xl font-bold text-blue-600"><%= totalStats.totalOrders %></p>
+            </div>
+            <div class="bg-white p-6 rounded-lg shadow">
+                <h3 class="text-gray-500"> Users</h3>
+                <p class="text-2xl font-bold text-purple-600"><%= totalStats.totalUsers %></p>
+            </div>
+        </div>
+
+        <!-- Charts -->
+        <div class="grid grid-cols-1 gap-6">
+            <div class="bg-white p-6 rounded-lg shadow">
+                <h2 class="text-xl font-semibold mb-4">Daily Sales</h2>
+                <canvas id="salesChart"></canvas>
+            </div>
+        
+
+        <!-- Tables -->
+        <div class="grid grid-cols-2 gap-6 mt-6">
+            <!-- Top Products -->
+            <div class="bg-white p-6 rounded-lg shadow">
+                <h2 class="text-xl font-semibold mb-4">Top 5 Products</h2>
+                <table class="w-full">
+                    <thead>
+                        <tr class="bg-gray-100">
+                            <th class="p-2 text-left">Product</th>
+                            <th class="p-2 text-right">Quantity</th>
+                            <th class="p-2 text-right">Revenue</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% topProducts.forEach(product => { %>
+                            <tr>
+                                <td class="p-2"><%= product.productDetails.name %></td>
+                                <td class="p-2 text-right"><%= product.totalQuantity %></td>
+                                <td class="p-2 text-right">$<%= product.totalRevenue.toFixed(2) %></td>
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Top Categories -->
+            <div class="bg-white p-6 rounded-lg shadow">
+                <h2 class="text-xl font-semibold mb-4">Top 5 Categories</h2>
+                <table class="w-full">
+                    <thead>
+                        <tr class="bg-gray-100">
+                            <th class="p-2 text-left">Category</th>
+                            <th class="p-2 text-right">Quantity</th>
+                            <th class="p-2 text-right">Revenue</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% topCategories.forEach(category => { %>
+                            <tr>
+                                <td class="p-2"><%= category.categoryDetails.name %></td>
+                                <td class="p-2 text-right"><%= category.totalQuantity %></td>
+                                <td class="p-2 text-right">$<%= category.totalRevenue.toFixed(2) %></td>
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
+
+    <script>
+        // Sales Chart
+        const salesData = <%- JSON.stringify(dailySales) %>;
+        const salesCtx = document.getElementById('salesChart').getContext('2d');
+
+        new Chart(salesCtx, {
+            type: 'line',
+            data: {
+                labels: salesData.map(item => item._id),
+                datasets: [{
+                    label: 'Daily Revenue',
+                    data: salesData.map(item => item.totalRevenue),
+                    borderColor: 'rgb(75, 192, 192)',
+                    tension: 0.1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Revenue ($)'
+                        }
+                    }
+                }
+            }
+        });
+
+        // Users Chart
+        const usersData = <%- JSON.stringify(dailyUsers) %>;
+        const usersCtx = document.getElementById('usersChart').getContext('2d');
+
+        new Chart(usersCtx, {
+            type: 'bar',
+            data: {
+                labels: usersData.map(item => item._id),
+                datasets: [{
+                    label: 'Daily User Registrations',
+                    data: usersData.map(item => item.totalUsers),
+                    backgroundColor: 'rgba(54, 162, 235, 0.5)'
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Number of Users'
+                        }
+                    }
+                }
+            }
+        });
+    </script>
 </body>
 </html>
-   

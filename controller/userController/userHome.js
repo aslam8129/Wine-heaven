@@ -2,7 +2,8 @@
 require('dotenv').config();
 const Product = require('../../model/prodectSchema');
 const Categories = require('../../model/Category');
-const Cart = require('../../model/cartSchema')
+const Cart = require('../../model/cartSchema');
+const Wishlist = require('../../model/whishlist')
 exports.home = async (req, res) => {
     try {
        
@@ -68,8 +69,10 @@ exports.Getproducts = async (req, res) => {
         });
 
         const cart = await Cart.findOne({ userId });
+        const wishlist = await Wishlist.findOne({userId});
 
         const isInCart = cart ? cart.items.some(item => item.productId.toString() === id) : false;
+       
         const validProducts = products.filter(product => product.category && !product.category.isBlocked && !product.category.isDeleted);
 
         res.render('user/product', { product, products:validProducts , isInCart });
@@ -83,62 +86,128 @@ exports.Getproducts = async (req, res) => {
 exports.Allproducts = async (req, res) => {
     try {
        
-        const sortOption = req.query.sort
-        let sortField = {};
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 12; 
+        const skipIndex = (page - 1) * limit;
 
-        switch (sortOption) {
-            case 'priceAsc':
-                sortField = { price: 1 };
-                break;
-            case 'priceDesc':
-                sortField = { price: -1 };
-                break;
-            case 'nameAsc':
-                sortField = { name: 1 };
-                break;
-            case 'nameDesc':
-                sortField = { name: -1 };
-                break;
-        }
+    
+        const searchQuery = req.query.search || '';
+        
+        
+        const categoryFilter = req.query.category ? { category: req.query.category } : {};
 
-      
-        const query = req.query.search || '';
-        let searchCriteria = { isDeleted: false ,isBlocked:false};
-
-        if (query) {
-            searchCriteria = {
-                ...searchCriteria,
-                $or: [
-                    { name: { $regex: query, $options: 'i' } },
-                    { description: { $regex: query, $options: 'i' } }
-                ]
-            };
-        }
+        const minPrice = parseFloat(req.query.minPrice) || 0;
+        const maxPrice = parseFloat(req.query.maxPrice) || Infinity;
 
        
-        const category = req.query.category || '';
-        if (category) {
-            searchCriteria.category = category;
-        }
+        const sortOptions = {
+            'priceAsc': { price: 1 },
+            'priceDesc': { price: -1 },
+            'nameAsc': { name: 1 },
+            'nameDesc': { name: -1 },
+            'default': { createdAt: -1 } 
+        };
+        const sortField = sortOptions[req.query.sort] || sortOptions['default'];
+
+       
+        const searchCriteria = {
+            isDeleted: false,
+            isBlocked: false,
+            price: { $gte: minPrice, $lte: maxPrice },
+            ...categoryFilter,
+            $or: [
+                { name: { $regex: searchQuery, $options: 'i' } },
+                { description: { $regex: searchQuery, $options: 'i' } }
+            ]
+        };
 
        
         const categories = await Categories.find({ isBlocked: false, isDeleted: false });
 
-        
-        let  products = await Product.find(searchCriteria).populate('category').sort(sortField).exec();
+        const totalProducts = await Product.countDocuments(searchCriteria);
+        const products = await Product.find(searchCriteria)
+            .populate('category')
+            .sort(sortField)
+            .skip(skipIndex)
+            .limit(limit)
+            .exec();
 
-          products = products.filter(product => product.category && !product.category.isBlocked && !product.category.isDeleted);
+            const product = products.filter(product =>product.category&& !product.category.isBlocked&& !product.category.isDeleted)
+        const totalPages = Math.ceil(totalProducts / limit);
 
-      
         res.render('user/Allproducts', { 
-            products, 
-            query, 
-            sortOption, 
-            categories, 
-            categoryQuery: category 
+            products:product , 
+            categories,
+            query: req.query,
+            pagination: {
+                currentPage: page,
+                totalPages: totalPages,
+                totalProducts: totalProducts,
+                hasNextPage: page < totalPages,
+                hasPrevPage: page > 1
+            }
         });
     } catch (error) {
-        console.log(`Error in Allproducts: ${error}`);
-        res.status(500).send('Internal Server Error');
+        console.error(`Error in Allproducts: ${error}`);
+        res.status(500).render('error', { message: 'Internal Server Error' });
+    }
+};
+
+
+
+
+
+
+
+exports.cart = async (req, res) => {
+    const { productId } = req.body;
+
+
+    try {
+        if (!req.session.userId) {
+         
+             return res.status(401).json({ success: false, message: 'User not logged in.' });
+        }
+
+        
+
+        let cart = await Cart.findOne({ userId: req.session.userId }).populate('items.productId');
+        const product = await Product.findById(productId);
+
+     
+
+        if (!product) {
+            return res.status(404).json({ success: false, message: 'Product not found.' });
+        }
+        if(product.stock===0){
+            return res.status(400).json({success:false,message:'The product stock left'})
+        }
+
+        if (!cart) {
+            cart = new Cart({
+                userId: req.session.userId,
+                items: [],
+            });
+        }
+        const existingProduct = cart.items.find(item => item.productId._id.toString() === productId);
+        if (existingProduct) {
+            return res.status(400).json({ success: false, message: 'Product already in cart.' });
+        }
+
+        cart.items.push({
+            productId: product._id,
+            productCount: 1,
+            productPrice: product.priceAfterDiscount,
+            productDiscountPrice: product.priceAfterDiscount - (product.priceAfterDiscount * (product.discount / 100)),
+        });
+
+        await cart.save();
+     
+        
+
+        res.status(200).json({ success: true, message: 'Product added successfully' });
+    } catch (error) {
+        console.error("Error adding product to cart:", error);
+        res.status(500).json({ success: false, message: 'Internal server error.' });
     }
 };

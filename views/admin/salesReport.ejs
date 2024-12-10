@@ -69,8 +69,9 @@
 
             <!-- Download Buttons -->
             <div class="flex gap-4 mb-6">
-                <a href="/admin/sales-report/download/excel?startDate=<%= filters.startDate %>&endDate=<%= filters.endDate %>" class="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition">Download Excel</a>
-                <a href="/admin/sales-report/download/pdf?startDate=<%= filters.startDate %>&endDate=<%= filters.endDate %>" class="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 transition">Download PDF</a>
+                <a href="/admin/sales-report/download/excel?startDate=<%= filters.startDate %>&endDate=<%= filters.endDate %>&reportType=<%= filters.reportType %>" class="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition">Download Excel</a>
+                <a href="/admin/sales-report/download/pdf?startDate=<%= filters.startDate %>&endDate=<%= filters.endDate %>&reportType=<%= filters.reportType %>" class="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 transition">Download PDF</a>
+
             </div>
 
             <!-- Orders Table -->
@@ -112,6 +113,7 @@
                 </table>
             </div>
         </div>
+       
     </div>
 
     <!-- Script for Custom Date Fields -->

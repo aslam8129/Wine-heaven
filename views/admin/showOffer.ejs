@@ -1,81 +1,131 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Offers List</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
+
 <body class="bg-gray-100">
 
     <!-- Sidebar -->
     <%- include('../partials/adminSidebar.ejs') %>
 
-    <!-- Main Content -->
-    <div class="ml-64 p-6">
-        <div class="container mx-auto">
-            <h1 class="text-3xl font-bold mb-6">Offers List</h1>
+        <!-- Main Content -->
+        <div class="ml-64 p-6">
+            <div class="container mx-auto">
+                <h1 class="text-3xl font-bold mb-6">Offers List</h1>
 
-            <!-- Add Offer Button -->
-            <a href="/admin/offers/add" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition mb-6 inline-block">Add New Offer</a>
+                <!-- Add Offer Button -->
+                <a href="/admin/offers/add"
+                    class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition mb-6 inline-block">Add
+                    New Offer</a>
 
-            <!-- Offers Table -->
-            <div class="overflow-x-auto bg-white shadow-md rounded-lg">
-                <table class="table-auto w-full text-left border-collapse">
-                    <thead>
-                        <tr class="bg-gray-800 text-white">
-                            <th class="px-4 py-3 border">#</th>
-                            <th class="px-4 py-3 border">Offer Name</th>
-                            <th class="px-4 py-3 border">Type</th>
-                            <th class="px-4 py-3 border">Target</th>
-                            <th class="px-4 py-3 border">Discount</th>
-                            <th class="px-4 py-3 border">Status</th>
-                            <th class="px-4 py-3 border">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-gray-200">
-                        <% offers.forEach((offer, index) => { %>
-                            <tr class="hover:bg-gray-100">
-                                <td class="px-4 py-3 border"><%= index + 1 %></td>
-                                <td class="px-4 py-3 border"><%= offer.offerName %></td>
-                                <td class="px-4 py-3 border"><%= offer.offerCategory ? 'Category' : 'Product' %></td>
-                                <td class="px-4 py-3 border">
-                                    <%= offer.offerCategory ? offer.offerCategory.name : offer.offerProduct.name %>
-                                </td>
-                                <td class="px-4 py-3 border"><%= offer.discountPercentage %>%</td>
-                                <td class="px-4 py-3 border">
-                                    <% if (offer.isActive) { %>
-                                        <span class="bg-green-200 text-green-800 px-2 py-1 rounded text-sm">Active</span>
-                                    <% } else { %>
-                                        <span class="bg-red-200 text-red-800 px-2 py-1 rounded text-sm">Inactive</span>
-                                    <% } %>
-                                </td>
-                                <td class="px-4 py-3 border">
-                                    <div class="flex space-x-2">
-                                        <!-- Delete Form -->
-                                        <form action="/offers/Delete/<%= offer._id %>" method="POST">
-                                            <button type="submit" class="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600 transition text-sm">Delete</button>
-                                        </form>
-
-                                        <!-- Activate/Deactivate Button -->
-                                        <% if (offer.isActive) { %>
-                                            <form action="/admin/offers/deactivate/<%= offer._id %>" method="POST">
-                                                <button type="submit" class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition text-sm">Deactivate</button>
-                                            </form>
-                                        <% } else { %>
-                                            <form action="/admin/offers/activate/<%= offer._id %>" method="POST">
-                                                <button type="submit" class="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600 transition text-sm">Activate</button>
-                                            </form>
-                                        <% } %>
-                                    </div>
-                                </td>
+                <!-- Offers Table -->
+                <div class="overflow-x-auto bg-white shadow-md rounded-lg">
+                    <table class="table-auto w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-gray-800 text-white">
+                                <th class="px-4 py-3 border">#</th>
+                                <th class="px-4 py-3 border">Offer Name</th>
+                                <th class="px-4 py-3 border">Type</th>
+                                <th class="px-4 py-3 border">Target</th>
+                                <th class="px-4 py-3 border">Discount</th>
+                                <th class="px-4 py-3 border">Status</th>
+                                <th class="px-4 py-3 border">Actions</th>
                             </tr>
-                        <% }) %>
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200">
+                            <% offers.forEach((offer, index)=> { %>
+                                <tr class="hover:bg-gray-100">
+                                    <td class="px-4 py-3 border">
+                                        <%= index + 1 %>
+                                    </td>
+                                    <td class="px-4 py-3 border">
+                                        <%= offer.offerName %>
+                                    </td>
+                                    <td class="px-4 py-3 border">
+                                        <%= offer.offerCategory ? 'Category' : 'Product' %>
+                                    </td>
+                                    <td class="px-4 py-3 border">
+                                        <%= offer.offerCategory ? offer.offerCategory.name : offer.offerProduct.name %>
+                                    </td>
+                                    <td class="px-4 py-3 border">
+                                        <%= offer.discountPercentage %>%
+                                    </td>
+                                    <td class="px-4 py-3 border">
+                                        <% if (offer.isActive) { %>
+                                            <span
+                                                class="bg-green-200 text-green-800 px-2 py-1 rounded text-sm">Active</span>
+                                            <% } else { %>
+                                                <span
+                                                    class="bg-red-200 text-red-800 px-2 py-1 rounded text-sm">Inactive</span>
+                                                <% } %>
+                                    </td>
+                                    <td class="px-4 py-3 border">
+                                        <div class="flex space-x-2">
+                                            <!-- Delete Form -->
+                                            <form action="/admin/offers/Delete/<%= offer._id %>" method="POST">
+                                                <button type="submit"
+                                                    class="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600 transition text-sm">Delete</button>
+                                            </form>
+
+                                            <!-- Activate/Deactivate Button -->
+                                            <% if (offer.isActive) { %>
+                                                <form action="/admin/offers/deactivate/<%= offer._id %>" method="POST">
+                                                    <button type="submit"
+                                                        class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition text-sm">Deactivate</button>
+                                                </form>
+                                                <% } else { %>
+                                                    <form action="/admin/offers/activate/<%= offer._id %>"
+                                                        method="POST">
+                                                        <button type="submit"
+                                                            class="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600 transition text-sm">Activate</button>
+                                                    </form>
+                                                    <% } %>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <% }) %>
+
+
+
+                        </tbody>
+                    </table>
+                 
+                </div>
             </div>
+            <div class="flex justify-center mt-6">
+                <!-- Previous Button -->
+                <% if (currentPage > 1) { %>
+                    <a href="/admin/offers?page=<%= currentPage - 1 %>&limit=<%= limit %>"
+                       class="px-4 py-2 mx-1 bg-gray-300 text-black rounded hover:bg-gray-400">
+                        Previous
+                    </a>
+                <% } %>
+            
+                <!-- Page Numbers -->
+                <% for (let i = 1; i <= totalpage; i++) { %>
+                    <a href="/admin/offers?page=<%= i %>&limit=<%= limit %>"
+                       class="px-4 py-2 mx-1 rounded <%= i === currentPage ? 'bg-blue-500 text-white' : 'bg-gray-200 text-black hover:bg-gray-300' %>">
+                        <%= i %>
+                    </a>
+                <% } %>
+            
+                <!-- Next Button -->
+                <% if (currentPage < totalpage) { %>
+                    <a href="/admin/offers?page=<%= currentPage + 1 %>&limit=<%= limit %>"
+                       class="px-4 py-2 mx-1 bg-gray-300 text-black rounded hover:bg-gray-400">
+                        Next
+                    </a>
+                <% } %>
+            </div>
+            
         </div>
-    </div>
+      
 
 </body>
+
 </html>

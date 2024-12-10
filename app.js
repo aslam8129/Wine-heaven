@@ -1,10 +1,10 @@
 const express = require('express');
 const session = require('express-session');
 const flash = require('connect-flash');
-const bodyParser = require('body-parser');
+
 const connectDB = require('./config/db');
 const passport = require('passport');
-const Razorpay = require('razorpay')
+
 require('./config/passport')(passport);
 
 const authRoutes = require('./routes/userRoutes');
