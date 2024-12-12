@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - Memory Lane Interrupted</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes fadeMemory {
+            0%, 100% { opacity: 0.7; }
+            50% { opacity: 1; }
+        }
+        @keyframes frameShake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-gray-100 via-gray-200 to-gray-300 min-h-screen flex items-center justify-center p-4">
+    <div class="text-center max-w-2xl w-full bg-white bg-opacity-80 rounded-2xl shadow-2xl p-8 relative overflow-hidden">
+        <div class="absolute inset-0 opacity-10 bg-[url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><g fill="%23000000" fill-opacity="0.1"><path d="M11 18 C15 20, 25 22, 30 18 C35 14, 45 12, 50 18 C55 24, 65 26, 70 22 C75 18, 85 16, 90 22"/></g></svg>')]"></div>
+        
+        <div class="relative z-10">
+            <svg 
+                class="mx-auto w-64 h-64 mb-6"
+                style="animation: frameShake 2s infinite;"
+                xmlns="http://www.w3.org/2000/svg" 
+                viewBox="0 0 200 200"
+            >
+                <!-- Picture Frame -->
+                <rect 
+                    x="25" y="25" 
+                    width="150" 
+                    height="150" 
+                    fill="#8B4513" 
+                    rx="10"
+                />
+                
+                <!-- Frame Inner Border -->
+                <rect 
+                    x="35" y="35" 
+                    width="130" 
+                    height="130" 
+                    fill="#D2691E" 
+                    rx="5"
+                />
+            
+                
+                <!-- Hanging Wire -->
+                <line 
+                    x1="80" y1="25" 
+                    x2="120" y2="25" 
+                    stroke="#4A4A4A" 
+                    stroke-width="3"
+                />
+            </svg>
+
+            <h1 class="text-6xl font-bold text-gray-800 mb-4">404</h1>
+            <p class="text-2xl text-gray-600 mb-6">Page Lost in Memory</p>
+            <p class="text-xl text-gray-500 mb-8">The page you're looking for has faded away</p>
+            
+            <a href="/" class="inline-block bg-gray-700 hover:bg-gray-600 text-white font-bold py-3 px-6 rounded-full transition duration-300 transform hover:scale-105">
+                Return to Present
+            </a>
+        </div>
+    </div>
+</body>
+</html>

@@ -49,7 +49,7 @@ app.use('/admin', adminRoutes);
 app.use('/category', categoryRoutes);
 app.use(isuser)
 app.use('*',(req,res)=>{
-    res.send('404')
+    res.render('user/404')
 })
 
 const PORT = process.env.PORT || 3005;

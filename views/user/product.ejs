@@ -17,127 +17,134 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.7.32/sweetalert2.min.css" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.7.32/sweetalert2.min.js"></script>
     
-    <style>
-        :root {
-            --color-gold: #800020;
-            --color-gold-hover: #600018;
+<style>
+    :root {
+        --color-gold: #800020;
+        --color-gold-hover: #600018;
+    }
+
+    /* General Styles */
+    .bg-gold {
+        background-color: var(--color-gold);
+    }
+
+    .hover\:bg-gold-hover:hover {
+        background-color: var(--color-gold-hover);
+    }
+
+    .zoom-container {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .zoom-image {
+        transition: transform 0.5s ease;
+    }
+
+    .zoom-image:hover {
+        transform: scale(1.5);
+    }
+
+    /* Custom Scrollbar */
+    .custom-scrollbar::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 3px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: var(--color-gold);
+        border-radius: 3px;
+    }
+
+    .selected-thumbnail {
+        border: 2px solid var(--color-gold);
+    }
+
+    /* Responsive Styles */
+    @media (max-width: 1024px) {
+        /* Tablets and small laptops */
+        .lg\:w-7\/10,
+        .lg\:w-1\/2 {
+            width: 100%;
         }
-        
-     
-        
-       
-        
-        .bg-gold {
-            background-color: var(--color-gold);
-        }
-        
-        .hover\:bg-gold-hover:hover {
-            background-color: var(--color-gold-hover);
+
+        .flex-row {
+            flex-direction: column;
         }
 
-        .zoom-container {
-            position: relative;
-            overflow: hidden;
+        .gap-12 {
+            gap: 6px;
+        }
+    }
+
+    @media (max-width: 768px) {
+        /* Tablets */
+        .text-4xl {
+            font-size: 2rem;
         }
 
-        .zoom-image {
-            transition: transform 0.5s ease;
+        .text-5xl {
+            font-size: 2.5rem;
         }
 
-        .zoom-image:hover {
-            transform: scale(1.5);
+        .gap-12 {
+            gap: 4px;
         }
 
-        .custom-scrollbar::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
+        .ml-20 {
+            margin-left: 0;
         }
 
-        .custom-scrollbar::-webkit-scrollbar-track {
-            background: #f1f1f1;
-            border-radius: 3px;
+        .container {
+            padding: 0 10px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        /* Mobile phones */
+        .text-4xl {
+            font-size: 1.5rem;
         }
 
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: var(--color-gold);
-            border-radius: 3px;
+        .text-2xl {
+            font-size: 1.2rem;
         }
 
-        .selected-thumbnail {
-            border-color: var(--color-gold);
+        .gap-12 {
+            gap: 2px;
         }
 
+        .grid-cols-3 {
+            grid-template-columns: 1fr;
+        }
 
-        @media (max-width: 1024px) {
-    /* For tablets and small laptops */
-    .lg\:w-7\/10 {
-        width: 100%;
-    }
-    .lg\:w-1\/2 {
-        width: 100%;
-    }
-    .flex-row {
-        flex-direction: column;
-    }
-    .gap-12 {
-        gap: 6px;
-    }
-   
-}
+        .w-24 {
+            width: 40px;
+            height: 50px;
+        }
 
-@media (max-width: 768px) {
-    /* For tablets */
-    .text-4xl {
-        font-size: 2rem;
-    }
-    .text-5xl {
-        font-size: 2.5rem;
-    }
-    .gap-12 {
-        gap: 4px;
-    }
-    .ml-20 {
-        margin-left: 0;
-    }
-    .container {
-        padding: 0 16px;
-    }
-}
+        .text-lg {
+            font-size: 1rem;
+        }
 
-@media (max-width: 480px) {
-    /* For mobile phones */
-    .text-4xl {
-        font-size: 1.5rem;
+        .py-4 {
+            padding: 0;
+        }
     }
-    .text-2xl {
-        font-size: 1.2rem;
-    }
-    .gap-12 {
-        gap: 2px;
-    }
-    .grid-cols-3 {
-        grid-template-columns: 1fr;
-    }
-   
-    .w-24 {
-        width: 50px;
-        height: 50px;
-    }
-    .text-lg {
-        font-size: 1rem;
-    }
-    .py-4 {
-        padding: 8px 0;
-    }
-}
+</style>
 
-    </style>
 </head>
 
 <body class="bg-gray-50 body-font min-h-screen">
     <!-- Header Partial -->
+     <div>
     <%- include('../partials/userHeader.ejs') %>
-
+</div>
     <!-- Breadcrumb Navigation -->
     <div class="container mx-auto px-4 py-4">
         <nav class="text-gray-600 text-sm">

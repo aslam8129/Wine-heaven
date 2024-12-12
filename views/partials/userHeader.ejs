@@ -6,95 +6,45 @@
     <title>Wine Heaven</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
-    
     <style>
         .bg-wine {
             background-color: #600018;
         }
-        .hover-trigger:hover .hover-target {
-            display: block;
-        }
-       
-    .bg-wine {
-        background-color: #600018;
-    }
-    .hover-trigger:hover .hover-target {
-        display: block;
-    }
-    /* Media Query for Small Devices (e.g., Phones) */
-    @media (max-width: 640px) {
-        nav {
-            height: auto;
-            padding: 10px;
-        }
-
-        .hidden.md\\:flex {
-            display: none; /* Hide desktop navigation */
-        }
-
-        #mobile-menu {
-            display: block; /* Show mobile menu */
-        }
-
-        .text-xl {
-            font-size: 1rem; /* Adjust font size for smaller screens */
-        }
-
-        .space-x-8 > * {
-            margin-left: 0;
-            margin-right: 0; /* Remove horizontal spacing */
-        }
-    }
-
-    /* Media Query for Medium Devices (e.g., Tablets) */
-    @media (min-width: 641px) and (max-width: 1024px) {
-        nav {
-            height: auto;
-        }
-
-        .hidden.md\\:flex {
-            display: flex; /* Keep desktop navigation visible */
-        }
-
-        .text-xl {
-            font-size: 1.25rem; /* Slightly reduce font size */
-        }
-    }
-
-
     </style>
 </head>
-<body style="font-family: 'Garamond';font-weight: bold;;" class="bg-gray-100 border-b border-white ">
-    <nav class="bg-wine shadow-lg fixed w-full z-50 top-0 ">
+<body style="font-family: 'Garamond'; font-weight: bold;" class="bg-gray-100">
+    <nav class="bg-wine shadow-lg fixed w-full z-50 top-0">
         <div class="max-w-6xl mx-auto px-4">
-            <div class="flex justify-between items-center h-20 ">
+            <div class="flex justify-between items-center h-16">
                 <!-- Logo -->
-                <div class="flex items-center">
-                    <a href="/" class="flex ">
-                        <!-- <i class="fas fa-wine-glass-alt text-2xl text-white mr-2"></i> -->
-                        <img class="mt-0" style="  width: 45px; height: 50px;" src="/uplods/czNmcy1wcml2YXRlL3Jhd3BpeGVsX2ltYWdlcy93ZWJzaXRlX2NvbnRlbnQvbHIvdjk4Ny0xM2FfMS5wbmc.png" alt="">
-                        <span class="text-xl text-white mt-4 ml-1 font-semibold">Wine Heaven</span>
-                    </a>
-                </div>
+                <a href="/" class="flex ">
+                    <!-- <i class="fas fa-wine-glass-alt text-2xl text-white mr-2"></i> -->
+                    <img style="width: 45px; height: 50px;" src="/uplods/czNmcy1wcml2YXRlL3Jhd3BpeGVsX2ltYWdlcy93ZWJzaXRlX2NvbnRlbnQvbHIvdjk4Ny0xM2FfMS5wbmc.png" alt="">
+                    <span class="text-xl text-white mt-6 ml-1 font-semibold">Wine Heaven</span>
+                </a>
 
-                <!-- Desktop Navigation -->
-                 
-                <div class="hidden md:flex items-center space-x-8 ml-20">
-                    <a href="/" class="text-gray-200 hover:text-white">
+                <!-- Menu Button (Mobile) -->
+                <button id="menu-button" class="text-white md:hidden focus:outline-none ">
+                    <i class="fas fa-bars text-2xl"></i>
+                </button>
+
+                <!-- Navigation Links -->
+                <div id="menu" class="hidden md:flex flex-col md:flex-row md:items-center md:space-x-6 mt-10">
+                    <a href="/" class="text-gray-200 hover:text-white flex items-center">
                         <i class="fas fa-home mr-1"></i> Home
                     </a>
-                    <a href="/wines" class="text-gray-200 hover:text-white">
+                    <a href="/wines" class="text-gray-200 hover:text-white flex items-center">
                         <i class="fas fa-wine-bottle mr-1"></i> Wines
                     </a>
-                    <a href="/about" class="text-gray-200 hover:text-white">
+                    <a href="/about" class="text-gray-200 hover:text-white flex items-center">
                         <i class="fas fa-info-circle mr-1"></i> About
                     </a>
-                    <a href="/contact" class="text-gray-200 hover:text-white">
+                    <a href="/contact" class="text-gray-200 hover:text-white flex items-center">
                         <i class="fas fa-envelope mr-1"></i> Contact
                     </a>
-                    
+
                     <!-- Wishlist -->
-                    <a href="/wishlist" class="text-white relative">
+                    <a href="/wishlist" class="text-gray-200 hover:text-white relative flex items-center">
                         <i class="fas fa-heart"></i>
                         <% if (locals.wishlistCount && wishlistCount > 0) { %>
                             <span class="absolute -top-2 -right-2 bg-yellow-500 text-xs rounded-full h-4 w-4 flex items-center justify-center">
@@ -104,7 +54,7 @@
                     </a>
 
                     <!-- Cart -->
-                    <a href="/cart" class="text-white relative">
+                    <a href="/cart" class="text-gray-200 hover:text-white relative flex items-center">
                         <i class="fas fa-shopping-cart"></i>
                         <% if (locals.cartCount && cartCount > 0) { %>
                             <span class="absolute -top-2 -right-2 bg-yellow-500 text-xs rounded-full h-4 w-4 flex items-center justify-center">
@@ -113,55 +63,35 @@
                         <% } %>
                     </a>
 
-                    <!-- Authentication Section -->
-                    <div class="relative">
-                        <% if (locals.user) { %>
-                            <!-- User Menu When Logged In -->
-                            <div class="hover-trigger relative">
-                                <button class="flex items-center text-white space-x-2 focus:outline-none" id="userMenuButton">
-                                    <span class="text-sm"><%= user.name %></span>
-                                    <i class="fas fa-chevron-down text-xs"></i>
-                                </button>
-                                <!-- Dropdown Menu -->
-                                <div class="hover-target hidden absolute right-0 w-48 mt-2 py-2 bg-white rounded-md shadow-xl" id="userMenuDropdown">
-                                    <a href="/profile" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                                        <i class="fas fa-user mr-2"></i> Profile
-                                    </a>
-                                    <a href="/orders" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                                        <i class="fas fa-shopping-bag mr-2"></i> Orders
-                                    </a>
-                                    <div class="border-t border-gray-100 my-1"></div>
-                                    <a href="/logout" class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100">
-                                        <i class="fas fa-sign-out-alt mr-2"></i> Logout
-                                    </a>
-                                </div>
-                            </div>
-                        <% } else { %>
-                            <!-- Login/Register Buttons When Logged Out -->
-                            <div class="flex items-center space-x-4">
-                                <a href="/login" class="text-white hover:text-gray-200">
-                                    <i class="fas fa-sign-in-alt mr-1"></i> Login
+                    <!-- Authentication -->
+                    <% if (locals.user) { %>
+                        <div class="relative group">
+                            <button class="text-gray-200 hover:text-white flex items-center">
+                                <span class="text-sm"><%= user.name %></span>
+                                <i class="fas fa-chevron-down text-xs ml-1"></i>
+                            </button>
+                            <div class="hidden group-hover:block absolute bg-white text-gray-700 right-0 mt-2 w-48 rounded-md shadow-lg">
+                                <a href="/profile" class="block px-4 py-2 hover:bg-gray-100">
+                                    <i class="fas fa-user mr-2"></i> Profile
                                 </a>
-                                <a href="/register" class="bg-white text-red-900 px-4 py-1 rounded-full hover:bg-gray-100">
-                                    Register
+                                <a href="/orders" class="block px-4 py-2 hover:bg-gray-100">
+                                    <i class="fas fa-shopping-bag mr-2"></i> Orders
+                                </a>
+                                <a href="/logout" class="block px-4 py-2 text-red-600 hover:bg-gray-100">
+                                    <i class="fas fa-sign-out-alt mr-2"></i> Logout
                                 </a>
                             </div>
-                        <% } %>
-                    </div>
-
-                <!-- Mobile Menu Button -->
-                <div class="md:hidden">
-                    <button id="mobile-menu-button" class="text-white">
-                        <i class="fas fa-bars text-2xl"></i>
-                    </button>
-                </div>
-            </div>
-
-            <!-- Mobile Menu -->
-          
-
-                    <!-- Mobile Search -->
-                   
+                        </div>
+                    <% } else { %>
+                        <div class="flex items-center space-x-4">
+                            <a href="/login" class="text-white hover:text-gray-200">
+                                <i class="fas fa-sign-in-alt mr-1"></i> Login
+                            </a>
+                            <a href="/register" class="bg-white text-red-900 px-4 py-1 rounded-full hover:bg-gray-100">
+                                Register
+                            </a>
+                        </div>
+                    <% } %>
                 </div>
             </div>
         </div>
@@ -169,38 +99,19 @@
 
     <script>
         // Mobile menu toggle
-        const mobileMenuButton = document.getElementById('mobile-menu-button');
-        const mobileMenu = document.getElementById('mobile-menu');
+        const menuButton = document.getElementById('menu-button');
+        const menu = document.getElementById('menu');
 
-        mobileMenuButton.addEventListener('click', () => {
-            mobileMenu.classList.toggle('hidden');
+        menuButton.addEventListener('click', () => {
+            menu.classList.toggle('hidden');
         });
 
-        // Close mobile menu when clicking outside
+        // Close the menu when clicking outside
         document.addEventListener('click', (event) => {
-            if (!mobileMenuButton.contains(event.target) && !mobileMenu.contains(event.target)) {
-                mobileMenu.classList.add('hidden');
+            if (!menuButton.contains(event.target) && !menu.contains(event.target)) {
+                menu.classList.add('hidden');
             }
         });
-
-    
-    document.addEventListener('DOMContentLoaded', function() {
-        const userMenuButton = document.getElementById('userMenuButton');
-        const userMenuDropdown = document.getElementById('userMenuDropdown');
-
-        userMenuButton.addEventListener('click', function() {
-            userMenuDropdown.classList.toggle('hidden');
-        });
-
-        document.addEventListener('click', function(event) {
-            const isClickInside = userMenuButton.contains(event.target) || userMenuDropdown.contains(event.target);
-            if (!isClickInside) {
-                userMenuDropdown.classList.add('hidden');
-            }
-        });
-    });
-
-
     </script>
 </body>
 </html>
