@@ -20,8 +20,8 @@
 <body class="bg-gray-100 min-h-screen flex flex-col">
     <%- include('../partials/userHeader.ejs') %>
     <div class="flex flex-1 mt-20">
-        <%- include('../partials/userSidebar.ejs') %>
-        <div class="flex-grow bg-gray-100 p-4 mt-5 ml-64">
+        
+        <div class="flex-grow bg-gray-100 p-4 mt-5 ">
             <div class="bg-white shadow-md rounded-lg p-8 max-w-500 w-full">
                 <h1 class="text-2xl font-semibold mb-6 text-gray-800">Add a New Address</h1>
                 <form id="addressForm" action="/add-addres" method="POST" class="space-y-4" onsubmit="return validateForm()">
