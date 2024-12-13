@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orders</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-6 left-0 r-0 m-0">
+
+    <%- include('../partials/userHeader.ejs') %>
+    <h1 class="text-2xl font-bold text-center mb-6 mt-8 ml-0">All Orders</h1>
+
+    <% if (orders.length > 0) { %>
+        <% orders.forEach(order => { %>
+            <div class="bg-white p-4 mb-4 rounded-lg shadow-md">
+                <h3 class="text-lg font-semibold text-gray-700">Order ID: <%= order._id %></h3>
+              <!-- <p class="text-sm text-gray-600 mb-3">Total Items: <%= order.items.reduce((total, item) => total + item.quantity, 0) %></p> -->
+                <div class="space-y-2">
+                    <% order.items.forEach(item => { %>
+                        <div class="flex items-center space-x-4">
+                            <a href="orders/<%= order._id %>">
+                            <img 
+                                                src="/uploads/<%= item.productImage %>" 
+                                                alt="<%= item.productName %>" 
+                                                class="w-24 h-24 object-cover rounded-md"
+                                            >
+                                        </a>
+                            <p class="text-gray-800"><%= item.productId.name %></p>
+                        </div>
+                    <% }) %>
+                </div>
+            </div>
+        <% }) %>
+    <% } else { %>
+        <p class="text-center text-gray-600">No orders found.</p>
+    <% } %>
+
+    <!-- Pagination -->
+    <div class="flex justify-center items-center mt-6 space-x-2">
+        <% if (hasPrevPage) { %>
+            <a href="?page=<%= currentPage - 1 %>&limit=5" class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
+                &laquo; Prev
+            </a>
+        <% } else { %>
+            <span class="px-4 py-2 bg-gray-300 text-gray-500 rounded-lg">&laquo; Prev</span>
+        <% } %>
+
+        <% for (let i = 1; i <= totalPages; i++) { %>
+            <a href="?page=<%= i %>&limit=5" class="px-4 py-2 rounded-lg <%= i === currentPage ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-800' %> hover:bg-blue-500 hover:text-white">
+                <%= i %>
+            </a>
+        <% } %>
+
+        <% if (hasNextPage) { %>
+            <a href="?page=<%= currentPage + 1 %>&limit=5" class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
+                Next &raquo;
+            </a>
+        <% } else { %>
+            <span class="px-4 py-2 bg-gray-300 text-gray-500 rounded-lg">Next &raquo;</span>
+        <% } %>
+    </div>
+</body>
+</html>

@@ -441,6 +441,8 @@ exports.getorderfail = async (req, res) => {
 exports.cancelOrder = async (req, res) => {
     try {
         let { orderId, productId, paymentId, reason } = req.body;
+        
+        
 
         if (!orderId || !productId) {
             return res.status(400).json({
@@ -448,8 +450,11 @@ exports.cancelOrder = async (req, res) => {
                 message: 'Order ID or Product ID is missing',
             });
         }
+        const order = await Order.findById(orderId)
 
-        const order = await Order.findById(orderId).populate('items.productId');
+       
+       
+        
         if (!order) {
             return res.status(404).json({
                 success: false,

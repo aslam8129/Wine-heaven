@@ -1,25 +1,42 @@
-
 <!-- Link to Tailwind CSS -->
 <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
 
-<!-- Sidebar -->
-<div class="sidebar fixed top-0 left-0 bg-gray-800 text-white p-6 w-64 h-screen">
-    <h2 class="text-2xl font-bold mb-6">Wine Heaven</h2>
-    <nav>
-        <a href="/admin/Dashboard" class="block p-3 rounded hover:bg-purple-700">Dashboard</a>
-        <a href="/admin/products" class="block p-3 rounded hover:bg-purple-700">Products</a>
-        <a href="/admin/customers" class="block p-3 rounded hover:bg-purple-700">Customers</a>
-        <a href="/admin/orders" class="block p-3 rounded hover:bg-purple-700">Orders</a>
-        <a href="/admin/coupons" class="block p-3 rounded hover:bg-purple-700">Coupons</a>
-        <a href="/admin/sales-report" class="block p-3 rounded hover:bg-purple-700">sales-report</a>
-        <a href="/admin/offers" class="block p-3 rounded hover:bg-purple-700">Offers</a>
-        <a href="/category" class="block p-3 rounded hover:bg-purple-700">Category</a>
-        <a href="/admin/logout" class="block p-3 mt-4 bg-red-600 rounded hover:bg-red-700">Logout</a>
-    </nav>
+<!-- Responsive Sidebar -->
+<div class="flex flex-col md:flex-row">
+    <!-- Sidebar (hidden on small screens, toggled via button) -->
+    <div id="sidebar" class="fixed top-0 left-0 bg-gray-800 text-white p-6 w-64 h-screen md:block hidden">
+        <h2 class="text-2xl font-bold mb-6">Wine Heaven</h2>
+        <nav>
+            <a href="/admin/Dashboard" class="block p-3 rounded hover:bg-purple-700">Dashboard</a>
+            <a href="/admin/products" class="block p-3 rounded hover:bg-purple-700">Products</a>
+            <a href="/admin/customers" class="block p-3 rounded hover:bg-purple-700">Customers</a>
+            <a href="/admin/orders" class="block p-3 rounded hover:bg-purple-700">Orders</a>
+            <a href="/admin/coupons" class="block p-3 rounded hover:bg-purple-700">Coupons</a>
+            <a href="/admin/sales-report" class="block p-3 rounded hover:bg-purple-700">Sales Report</a>
+            <a href="/admin/offers" class="block p-3 rounded hover:bg-purple-700">Offers</a>
+            <a href="/category" class="block p-3 rounded hover:bg-purple-700">Category</a>
+            <a href="/admin/logout" class="block p-3 mt-4 bg-red-600 rounded hover:bg-red-700">Logout</a>
+        </nav>
+    </div>
+
+    <!-- Header (visible on small screens) -->
+    <header class="bg-gray-800 text-white p-4 w-full md:hidden flex justify-between items-center mt-0">
+        <h2 class="text-xl font-bold">Wine Heaven</h2>
+        <button id="menuToggle" class="p-2 rounded bg-purple-700 hover:bg-purple-800">Menu</button>
+    </header>
+
+    
 </div>
 
-<!-- Main content area -->
+<script>
+    // Toggle Sidebar Visibility
+    const menuToggle = document.getElementById('menuToggle');
+    const sidebar = document.getElementById('sidebar');
 
+    menuToggle.addEventListener('click', () => {
+        sidebar.classList.toggle('hidden');
+    });
+</script>
 
 <style>
     /* Optional: Reset margin and padding for the body */

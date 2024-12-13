@@ -208,60 +208,82 @@ exports.editAddressPostcheckout = async (req,res)=>{
     }
 }
 
+exports.order = async (req, res) => {
+    try {
+        const page = parseInt(req.query.page) || 1; // Current page
+        const limit = parseInt(req.query.limit) || 5; // Items per page
+        const skip = (page - 1) * limit; // Items to skip for pagination
 
+        const userId = req.session.userId;
+
+        // Fetch total order count for the user
+        const totalOrders = await Order.countDocuments({ userId });
+        const totalPages = Math.ceil(totalOrders / limit); // Total pages
+
+        // Fetch paginated orders
+        const orders = await Order.find({ userId })
+            .populate('items.productId', 'name image')
+            .skip(skip)
+            .limit(limit);
+
+        
+        res.render('user/orders', {
+            orders,
+            currentPage: page,
+            totalPages,
+            hasPrevPage: page > 1,
+            hasNextPage: page < totalPages,
+        });
+    } catch (error) {
+      
+        res.status(500).send('Failed to fetch orders');
+    }
+};
 
 
 exports.ordersList = async (req, res) => {
     try {
-        const userId = req.session.userId;
+        const id = req.params.id
 
     
-        if (!userId) {
-            return res.redirect('/login');
-        }
+        console.log(id);
+        
 
-        const page = parseInt(req.query.page) || 1;
-        const limit = parseInt(req.query.limit) || 1; 
-        const skip = (page - 1) * limit;
+      
 
         
-        const ordersCount = await Order.countDocuments({ userId });
+       
 
-        if (ordersCount === 0) {
-            return res.render('user/listOrder', {
-                orders: [],
-                noOrders: true,
-                currentPage: page,
-                totalPages: 0,
-            });
-        }
+        // if (ordersCount === 0) {
+        //     return res.render('user/listOrder', {
+        //         orders: [],
+        //         noOrders: true,
+        //         currentPage: page,
+        //         totalPages: 0,
+        //     });
+        // }
 
 
         // const orders = await Order.find({ userId }) .populate('shippingAddress').populate('items.productId').sort({ createdAt: -1 })
            
-        const orders = await Order.find({ userId })
+        const orders = await Order.findById(id)
         .populate('shippingAddress')
         .populate('items.productId')
-        .sort({ createdAt: -1 })
-           
-            .skip(skip)
-            .limit(limit)
             .exec();
 
           
 
-        const totalPages = Math.ceil(ordersCount / limit);
+     
+
 
         
         res.render('user/listOrder', {
             orders,
-            noOrders: false,
-            currentPage: page,
-            totalPages,
-            limit,
+            // noOrders: false,
+           
         });
     } catch (error) {
-        console.error(`Error in ordersList: ${error.message}`);
+       
         res.status(500).send('Internal Server Error');
     }
 };
@@ -274,9 +296,9 @@ exports.getWallet = async (req, res) => {
     const limit = parseInt(req.query.limit) || 5;
 
     try {
-        console.log(`UserID: ${userId}`);
+        
 
-        // Fetch wallet
+       
         const wallet = await Wallet.findOne({ userID: userId }).exec();
         if (!wallet) {
             return res.render('user/Wallat', { 
@@ -288,14 +310,14 @@ exports.getWallet = async (req, res) => {
             });
         }
 
-        // Calculate pagination data
-        const totalitems = wallet.transaction.length; // Assuming `transactions` is an array
+      
+        const totalitems = wallet.transaction.length; 
         const totalpages = Math.ceil(totalitems / limit);
         const paginatedTransactions = wallet.transaction
             .slice((page - 1) * limit, page * limit)
             .sort((a, b) => new Date(b.transaction_date) - new Date(a.transaction_date));
 
-        // Render wallet with paginated transactions
+       
         res.render('user/Wallat', { 
             wallet: { ...wallet._doc, transactions: paginatedTransactions },
             page,

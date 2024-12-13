@@ -84,7 +84,8 @@ router.post('/api/place-pending-order',faildPayment.updateOrder)
 
 
 
-router.get('/orders',isuser,Order.ordersList);
+router.get('/orders',isuser,Order.order);
+router.get('/orders/:id',isuser,Order.ordersList)
 router.get('/sales-report/download/pdf',invoice.downloadPDF)
 router.post('/orders/cancel',paymentController.cancelOrder)
 router.post('/orders/return',paymentController.returnOrder)

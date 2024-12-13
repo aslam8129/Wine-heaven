@@ -8,40 +8,31 @@
   <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <style>
+    @media (max-width: 768px) {
+      .sidebar {
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+      }
+      .sidebar.open {
+        transform: translateX(0);
+      }
+    }
+  </style>
 </head>
 <body class="bg-gray-100">
-   <!-- <% if (success_msg) { %>
-        <script>
-            Swal.fire({
-                title: 'Success!',
-                text: '<%= success_msg %>',
-                icon: 'success',
-                confirmButtonText: 'OK'
-            });
-        </script>
-    <% } %>
-</div>
+  <!-- Sidebar Toggle Button -->
 
-    <% if (error_msg) { %>
-        <script>
-            Swal.fire({
-                title: 'Error!',
-                text: '<%= error_msg %>',
-                icon: 'error',
-                confirmButtonText: 'OK'
-            });
-        </script>
-    <% } %> -->
   <div class="flex">
     <!-- Sidebar -->
     <%- include('../partials/adminSidebar.ejs') %>
 
     <!-- Main Content -->
-    <div class="flex-1 ml-64 p-6">
+    <div class="flex-1 ml-0 md:ml-64 p-6">
       <header class="bg-white shadow p-4 rounded mb-6">
         <h1 class="text-3xl font-bold text-gray-800 mb-4">Category Management</h1>
         <nav class="text-gray-600">
-          <a href="/categories" class="mr-4 hover:text-black">Home</a>
+          <a href="/category" class="mr-4 hover:text-black">Home</a>
           <a href="/category/add" class="hover:text-black">Add Category</a>
         </nav>
       </header>
@@ -109,7 +100,16 @@
   </div>
 
   <script>
-    function confirmDelete(categoryId) {
+    const menuToggle = document.getElementById('menu-toggle');
+    const sidebar = document.querySelector('.sidebar');
+
+    menuToggle.addEventListener('click', () => {
+      sidebar.classList.toggle('open');
+    });
+
+   
+
+  function confirmDelete(categoryId) {
       Swal.fire({
         title: 'Are you sure?',
         text: 'You won\'t be able to revert this!',
