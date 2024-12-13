@@ -58,7 +58,7 @@ exports.updateWishlist = async (req, res) => {
 
         return res.redirect('back'); 
     } catch (error) {
-        console.error('Wishlist Toggle Error:', error);
+      
         req.flash('error', 'An error occurred while managing your wishlist');
         res.redirect('back'); 
     }
@@ -128,7 +128,7 @@ exports.renderWishlistPage = async (req, res) => {
             hasWishlistItems: wishlistProducts.length > 0
         });
     } catch (error) {
-        console.error('Render Wishlist Error:', error);
+       
         res.status(500).render('error', { 
             message: 'Error loading wishlist',
             error: error.message
@@ -192,7 +192,7 @@ exports.postWishlist = async (req, res) => {
         });
 
     } catch (error) {
-        console.error('Wishlist Toggle Error:', error);
+    
         res.status(500).json({ 
             message: 'Server error processing wishlist' 
         });
@@ -254,7 +254,7 @@ exports.updateWishlistt = async (req, res) => {
             action,
         });
     } catch (error) {
-        console.error('Wishlist Error:', error);
+       
         res.status(500).json({
             message: 'An error occurred while managing your wishlist',
         });

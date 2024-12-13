@@ -12,7 +12,7 @@ exports.loginGet = async (req, res) => {
   try{
     res.render('admin/Adlogin',);
   }catch(error){
-    console.log(`error in adminlogin ${error}`);
+    res.status(500).send('Server error'); 
     
   }
   
@@ -23,7 +23,7 @@ exports.loginGet = async (req, res) => {
 
 exports.dashboardGet = async (req, res) => {
     try {
-        // Get current date and selected parameters
+    
         const currentDate = new Date();
         const selectedYear = parseInt(req.query.year) || currentDate.getFullYear();
         const selectedMonth = parseInt(req.query.month) || (currentDate.getMonth() + 1);
@@ -170,7 +170,7 @@ exports.dashboardGet = async (req, res) => {
             totalStats
         });
     } catch (error) {
-        console.error('Dashboard Error:', error);
+        
         res.status(500).send('Error loading dashboard');
     }
 };
@@ -194,7 +194,7 @@ exports.loginPost = async (req, res) => {
             return res.redirect('/admin/login');
         }
     } catch (error) {
-        console.error('Error during login:', error.message);
+      
         return res.redirect('/admin/login');
     }
 };
@@ -216,7 +216,7 @@ exports.listuser = async (req, res) => {
         
         return res.render('admin/users', { users ,currentPage:page,totalPages:Math.ceil(totelusers/limit)});
     } catch (error) {
-        console.error('Error fetching users:', error.message);
+        
         return res.render('admin/users');
     }
 };
@@ -231,7 +231,7 @@ exports.blockUser = async (req,res)=>{
     res.redirect('/admin/customers');
 
   }catch(error){
-    console.log(error);
+   
     res.status(500).send('An error blocking the user')
   }
 };
@@ -247,7 +247,7 @@ exports.unblockUser = async (req,res)=>{
     await User.findByIdAndUpdate(userId,{isBlocked:false});
     res.redirect('/admin/customers')
   }catch(error){
-    console.log(error);
+    
 res.status(500).send('An error unblocking the user')    
   }
 }
@@ -257,12 +257,12 @@ exports.adlogout= async (req,res) => {
   try {
     req.session.destroy((err) => {
      if(err){
-      console.log(err)
+    
      }
      res.redirect('/admin/login')
     })
   } catch (error) {
-    console.log(error.message)
+    res.status(500).send('Server error'); 
   }
 }
 

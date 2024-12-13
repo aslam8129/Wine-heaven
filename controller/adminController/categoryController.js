@@ -68,7 +68,7 @@ exports.addCategory = async (req, res) => {
                 fs.unlinkSync(tmpFilePath);
             } catch (uploadError) {
             
-                console.error(`Error uploading to Cloudinary: ${uploadError}`);
+               
                 req.flash('error', 'Error uploading image. Please try again.');
                 return res.redirect('/category/add');
             }
@@ -85,7 +85,7 @@ exports.addCategory = async (req, res) => {
         req.flash('success', 'Category added successfully!');
         return res.redirect('/category');
     } catch (error) {
-        console.log(`Error in addCategory: ${error}`);
+       
         req.flash('error', 'An error occurred while adding the category. Please try again.');
         return res.redirect('/category/add'); 
     }
@@ -103,7 +103,7 @@ exports.renderEditpage = async(req,res)=>{
       }
       res.render('admin/editCategory',{category})
     }catch(error){
-   console.log(`render editpage error : ${error}`);
+        res.status(500).send('Server error'); 
    
     }
 }
@@ -186,7 +186,7 @@ exports.blockCategory = async (req,res)=>{
     res.redirect('/category');
 
   }catch(error){
-    console.log(`error in blockCategory :${error}`);
+    res.status(500).send('Server error'); 
     
   }
 };
@@ -203,7 +203,7 @@ exports.unblockCategory = async (req,res)=>{
     await Category.findByIdAndUpdate(categoryId,{isBlocked:false});
     res.redirect('/category')
   }catch(error){
-    console.log(`error in unblockCategory :${error}`);
+    res.status(500).send('Server error'); 
   
   }
 }

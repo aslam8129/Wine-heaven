@@ -3,9 +3,7 @@ const bcrypt = require('bcryptjs');
 const nodemailer = require('nodemailer');
 require('dotenv').config();
 const crypto = require('crypto')
-const Product = require('../../model/prodectSchema');
-const Categories = require('../../model/Category');
-const Address = require('../../model/userAddress');
+
 
 // Function to send OTP
 async function sendOtp(email, otp) {
@@ -27,7 +25,7 @@ async function sendOtp(email, otp) {
 
         await transporter.sendMail(mailOptions);
     } catch (error) {
-        console.error('Error sending OTP:', error);
+      
         throw new Error('Failed to send OTP. Please try again later.');
     }
 }
@@ -44,7 +42,7 @@ exports.signupGet = (req, res) => {
         }
         res.render('user/signup');
     } catch (error) {
-        console.error('Error rendering signup page:', error);
+       
         req.flash('error', 'Something went wrong. Please try again later.');
         res.redirect('/signup');
     }
@@ -65,7 +63,7 @@ exports.signuppost = async (req, res) => {
             req.flash('error', 'User already exists');
             return res.redirect('/signup');
         }
-console.log('9090');
+
 
         const hashedPassword = await bcrypt.hash(password, 12);
         user = new User({
@@ -87,11 +85,11 @@ console.log('9090');
         user.otpExpires = Date.now() + 300000; // 5 minutes from now
         await sendOtp(email, otp);
         await user.save();
-        console.log(otp);
+       
 
         res.redirect(`/verify-otp`);
     } catch (error) {
-        console.error('Error during signup:', error);
+       
         req.flash('error', 'Something went wrong during signup. Please try again.');
         res.redirect('/signup');
     }
@@ -107,7 +105,7 @@ exports.otpGet = (req, res) => {
     try {
         res.render('user/otp', { email: req.session.user_email });
     } catch (error) {
-        res.send('error')
+        res.status(500).send(error.message);
     }
 };
 
@@ -121,7 +119,7 @@ exports.verifyOtp = async (req, res) => {
     try {
         const { otp } = req.body;
         const email =   req.session.user_email
-        // console.log(email);
+      
         const user = await User.findOne({ email });
       
 
@@ -150,7 +148,7 @@ exports.verifyOtp = async (req, res) => {
         req.flash('success', 'OTP verified. You can now log in.');
         res.redirect('/login');
     } catch (error) {
-        console.error('Error verifying OTP:', error);
+      
         req.flash('error', 'Something went wrong during OTP verification. Please try again.');
         res.redirect(`/verify-otp`);
     }
@@ -173,7 +171,7 @@ exports.resendOtp = async (req, res) => {
         user.otpExpires = Date.now() + 300000;
 
 
-        console.log(otp);
+      
         
      
         await sendOtp(email, otp);
@@ -181,7 +179,7 @@ exports.resendOtp = async (req, res) => {
 
         return res.status(200).json({ success: true, message: 'A new OTP has been sent to your email' });
     } catch (error) {
-        console.error('Error resending OTP:', error);
+      
         return res.status(500).json({ success: false, message: 'Failed to resend OTP. Please try again later.' });
     }
 };
@@ -202,7 +200,7 @@ exports.loginGet = (req, res) => {
         }
         res.render('user/login');
     } catch (error) {
-        console.error('Error rendering login page:', error);
+      
         req.flash('error', 'Something went wrong. Please try again later.');
         res.redirect('/login');
     }
@@ -246,7 +244,7 @@ exports.loginPost = async (req, res) => {
         
         return res.redirect('/'); 
     } catch (error) {
-        console.error('Error during login:', error);
+     
         req.flash('error', 'Something went wrong during login. Please try again.');
         return res.redirect('/login'); 
     }
@@ -258,14 +256,14 @@ exports.logout = (req, res) => {
     try {
         req.session.destroy((err) => {
             if (err) {
-                console.error('Error during logout:', err);
+              
                 req.flash('error', 'Failed to logout. Please try again.');
                 return res.redirect('/');
             }
           return  res.redirect('/login');
         });
     } catch (error) {
-        console.error('Error during logout:', error);
+       
         req.flash('error', 'Something went wrong during logout. Please try again.');
       return  res.redirect('/');
     }
@@ -282,7 +280,7 @@ exports.forgetpassword = async(req,res)=>{
     try{
        res.render('user/forgotpassword')
     }catch(error){
-console.log(`error in forgetpassword :${error}`);
+        res.status(500).send(error.message);
 
     }
 }
@@ -307,7 +305,7 @@ exports.forgetpasswordPost = async(req,res)=>{
        const resetLink = `http://localhost:${PORT}/reset-password?token=${token}&email=${email}`;
 
 
-       console.log(resetLink);
+     
        
 
 
@@ -335,7 +333,7 @@ exports.forgetpasswordPost = async(req,res)=>{
         res.redirect('/forgot-password')
        })
     }catch(error){
-console.log(`error in forgetpassswordpost ${error}`);
+        res.status(500).send(error.message);
 
     }
 }
@@ -359,7 +357,7 @@ exports.resetPasswordGet = async (req,res) =>{
       res.render('user/resetpassWord',{token ,email});
 
     }catch(error){
-         console.log(`error in reset password ${error}`);
+        res.status(500).send(error.message);
          
     }
 }
@@ -393,7 +391,7 @@ exports.resentPasswordPost = async (req,res)=>{
        req.flash('success', 'password changed ');
        res.redirect('login')
     }catch(error){
-        console.log(`error in resentpassword post :${error}`);
+        res.status(500).send(error.message);
         
     }
 }

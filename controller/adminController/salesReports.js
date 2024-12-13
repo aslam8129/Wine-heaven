@@ -86,11 +86,6 @@ exports.GetsalesReport = async (req, res) => {
         const orders = await Order.find(dateFilter)
             .populate('userId', 'name email')
             .sort({ createdAt: -1 })
-           
-
-      
-      
-
         const summary = orders.reduce(
             (acc, order) => {
                 acc.totalOrders++;
@@ -103,12 +98,11 @@ exports.GetsalesReport = async (req, res) => {
 
         res.render('admin/salesReport', {
             orders,
-            
             summary,
             filters: { startDate, endDate, reportType },
         });
     } catch (error) {
-        console.error('Sales report error:', error);
+    
         res.status(500).send('Error generating sales report');
     }
 };
@@ -118,9 +112,6 @@ exports.GetsalesReport = async (req, res) => {
 exports.downloadExcel = async (req, res) => {
     try {
         const { startDate, endDate, reportType } = req.query;
-
-     
-
         let start, end;
 
         if (reportType === 'daily') {
@@ -145,10 +136,6 @@ exports.downloadExcel = async (req, res) => {
             end = new Date(new Date(endDate).setHours(23, 59, 59, 999));
         }
 
-       
-       
-
-       
         const orders = await Order.find({
             createdAt: {
                 $gte: start,
@@ -217,22 +204,22 @@ exports.downloadPDF = async (req, res) => {
             });
         }
 
-        // Fetch orders within the specified range
+       
         const orders = await fetchOrdersInRange(start, end);
 
         // Generate PDF
         const pdfDoc = await generateSalesReportPDF(orders, start, end);
 
-        // Set PDF response headers with improved filename
+  
         res.setHeader('Content-Type', 'application/pdf');
         res.setHeader('Content-Disposition', `attachment; filename=sales-report-${formatFilenameDate(start)}-${formatFilenameDate(end)}.pdf`);
 
-        // Pipe the document to the response
+  
         pdfDoc.pipe(res);
         pdfDoc.end();
 
     } catch (error) {
-        console.error('Error generating PDF:', error);
+     
         res.status(500).json({
             error: 'PDF Generation Failed',
             message: 'Unable to generate sales report PDF',
@@ -325,7 +312,7 @@ async function fetchOrdersInRange(start, end) {
     
         
         doc.fillColor('#ECF0F1')
-           .rect(50, doc.y, 550, 20) // Increase the width to accommodate the headers
+           .rect(50, doc.y, 550, 20)
            .fill();
     
         doc.fillColor('#2C3E50');
@@ -385,7 +372,7 @@ function renderOrderRow(doc, order, columnWidths, baseY) {
     details.forEach((detail, index) => {
         doc.text(detail, currentX, baseY, {
             width: columnWidths[index],
-            align: 'left' // Change alignment to 'left'
+            align: 'left' 
         });
         currentX += columnWidths[index];
     });

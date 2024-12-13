@@ -59,14 +59,6 @@ exports.updateOrderStatus = async (req, res) => {
             req.flash('error', 'Product not found in the order');
             return res.redirect('/admin/orders');
         }
-
-        // const validStatusUpdates = availableStatusUpdates[item.productStatus] || [];
-        // if (!validStatusUpdates.includes(newStatus)) {
-        //     req.flash('error', 'Invalid status transition');
-        //     return res.redirect('/admin/orders');
-        // }
-
-     
         item.productStatus = newStatus;
 
 
@@ -97,11 +89,6 @@ exports.updateOrderStatus = async (req, res) => {
 
              
                 wallet.balance += item.productPrice*item.productCount-alldiscount*item.productCount; 
-
-              
-                
-                
-                
                 wallet.transaction.push({
                     wallet_amount: item.productPrice*item.productCount-alldiscount*item.productCount,
                     order_id: order._id,
@@ -151,8 +138,6 @@ exports.getorderDetails = async (req, res) => {
     try {
        
         const id = req.params.id
-
-        
         const order = await Order.findById( id )
         .populate('shippingAddress')  
         .populate({
@@ -161,9 +146,7 @@ exports.getorderDetails = async (req, res) => {
                 path: 'category',  
                 select: 'name' 
             }
-        })
-       
-    ;  
+        });  
 
       
         if (!order || order.length === 0) {
@@ -172,7 +155,6 @@ exports.getorderDetails = async (req, res) => {
 
         res.render('admin/orderDetails', { order: order });  
     } catch (error) {
-        console.error(error);
         res.status(500).send('An error occurred');
     }
 }

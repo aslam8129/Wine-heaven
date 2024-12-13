@@ -6,17 +6,11 @@ const User = require('../../model/userSchema')
 
 exports.paymentFaildOrderId = async (req, res) => {
     try {
-        console.log(`Received orderId: ${req.params.orderId}`);
+       
         const { orderId } = req.params;
-        
-        
-        
         const order = await Order.findById(orderId)
             .populate('items.productId')
             .populate('shippingAddress');
-
-         
-            
 
         if (!order) {
             return res.status(404).json({
@@ -52,11 +46,7 @@ exports.updateOrder = async (req, res) => {
                 message: 'User is not logged in',
             });
         }
-
-        
-       
-
-       
+  
     const latestPendingOrder = await Order.findOne({
         userId: userId,
         orderStatus: 'Pending',
@@ -78,21 +68,8 @@ exports.updateOrder = async (req, res) => {
     latestPendingOrder.orderStatus = 'Confirmed';
     latestPendingOrder.paid = true;
 
-
-
-
-   
-    
     await latestPendingOrder.save();
-
-
-        const cart = await Cart.findOne({ userId }).populate('items.productId');
-     
-  
-
-       
-
-        
+        const cart = await Cart.findOne({ userId }).populate('items.productId');  
         res.json({
             success: true,
             message: 'Order updated successfully',
@@ -100,7 +77,7 @@ exports.updateOrder = async (req, res) => {
         });
         
     } catch (error) {
-        console.error('Error updating order:', error);
+        
         res.status(500).json({
             success: false,
             message: 'Error updating order',

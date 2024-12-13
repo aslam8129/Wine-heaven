@@ -12,7 +12,7 @@ exports.GetuserDeatiolsHome = async (req,res)=>{
     try{
          res.render('user/userdetailsHome')
     }catch(error){
-         console.log(`error in GetuserDetiolsHome`);
+      res.status(500).send(error.message);
          
     }
 }
@@ -25,7 +25,7 @@ exports.GetUserdetails = async (req, res) => {
         
      
         if (!user) {
-            console.log('User not found');
+          
             return res.redirect('/login');
         }
 
@@ -35,7 +35,7 @@ exports.GetUserdetails = async (req, res) => {
         
         res.render('user/user details', { user, updateSuccess });
     } catch (error) {
-        console.log(`Error in GetUserdetails: ${error}`);
+   
         res.status(500).send("Internal Server Error");
     }
 };
@@ -57,8 +57,8 @@ exports.UpdateDetails = async (req, res) => {
         req.session.updateSuccess = true;
         res.redirect('/userprofile');
     } catch (error) {
-        console.log(`Error in UpdateDetails: ${error}`);
-        res.status(500).send("Internal Server Error");
+       
+      res.status(500).send(error.message);
     }
 };
 
@@ -82,11 +82,7 @@ exports.addAddressPost = async (req, res) => {
       Object.assign(newAddress, req.body);
   
     
-      await newAddress.save();
-  
-    
-  
-  
+      await newAddress.save()
       const email = req.session.user_email;
     
   
@@ -96,20 +92,14 @@ exports.addAddressPost = async (req, res) => {
       if (user) {
   
         user.addresses.push(newAddress._id);
-        
-  
-    
+      
         await user.save();
         return res.redirect('/addresses');
        
       } 
        
-    
-  
       return res.redirect('/addresses');
     } catch (error) {
-      
-      console.error('Error saving address or user:', error);
       res.status(500).send(error.message);
     }
   };
@@ -123,7 +113,7 @@ exports.addAddressPost = async (req, res) => {
   exports.getALLaddress = async (req, res) => {
     try {
       const email = req.session.user_email;
-      console.log('address');
+      
       
   
       if (!email) {
@@ -147,7 +137,7 @@ exports.addAddressPost = async (req, res) => {
       res.render('user/showAddress', { addresses: activeAddresses, showAddAddress: false });
   
     } catch (error) {
-      console.log(`Error in getALLaddress: ${error}`);
+
       res.status(500).send('Something went wrong');
     }
   };
@@ -160,7 +150,7 @@ exports.renderEditAddress = async(req,res)=>{
        const address = await Address.findById(req.params.id);
        return res.render('user/addressEdit',{address})
     }catch(error){
-console.log(`error in renderEditAddress :${error}`);
+      res.status(500).send(error.message);
 
     }
 }
@@ -173,7 +163,7 @@ exports.editAddressPost = async (req,res)=>{
      await Address.findByIdAndUpdate(addressId,req.body)
         return res.redirect('/addresses');
     }catch(error){
-        console.log(`error in editAddressPost :${error}`);
+       
         res.status(500).send("Internal Server Error");
         
     }
@@ -197,7 +187,7 @@ exports.deleteAddress = async (req, res) => {
 
       res.redirect('/addresses'); 
   } catch (error) {
-      console.error(error); 
+    
       res.status(500).send('Server error'); 
   }
 };

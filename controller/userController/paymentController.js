@@ -25,7 +25,6 @@ exports.initiatePayment = async (req, res) => {
             });
         }
 
-        console.log("Total amount:", totalAmount); 
         const order = await razorpay.orders.create({
             amount: totalAmount * 100, 
             currency: "INR",
@@ -34,7 +33,7 @@ exports.initiatePayment = async (req, res) => {
 
         res.json({ orderID: order.id });
     } catch (err) {
-        console.error("Error creating Razorpay order:", err);
+       
         res.status(500).json({
             success: false,
             message: "Error initiating payment",
@@ -114,7 +113,7 @@ exports.validateCoupon = async (req, res) => {
             discountType: coupon.discountType,
         });
     } catch (error) {
-        console.error('Coupon validation error:', error);
+       
         return res.status(500).json({
             success: false,
             message: 'Coupon validation failed',
@@ -331,7 +330,7 @@ exports.placeOrder = async (req, res) => {
             orderId: order._id,
         });
     } catch (error) {
-        console.error('Error placing order:', error);
+       
         res.status(500).json({
             success: false,
             message: 'Error placing order',
@@ -403,8 +402,8 @@ exports.getorder = async (req, res) => {
 
         res.render('user/conformOrder', { order: order[0] });  
     } catch (error) {
-        console.error(error);
-        res.status(500).send('An error occurred');
+        
+        res.status(500).send(error.message);
     }
 }
 
@@ -432,8 +431,8 @@ exports.getorderfail = async (req, res) => {
 
         res.render('user/failOrder', { order: order[0] });  
     } catch (error) {
-        console.error(error);
-        res.status(500).send('An error occurred');
+      
+        res.status(500).send(error.message);
     }
 }
 
@@ -548,7 +547,7 @@ exports.cancelOrder = async (req, res) => {
             message: 'Product cancelled successfully, refund issued.',
         });
     } catch (error) {
-        console.error('Error cancelling order:', error);
+       
         res.status(500).json({
             success: false,
             message: 'An error occurred while cancelling the product.',
@@ -601,7 +600,7 @@ exports.returnOrder = async (req, res) => {
             message: 'Return request sent successfully.',
         });
     } catch (error) {
-        console.error('Error processing return request:', error);
+      
         res.status(500).json({
             success: false,
             message: 'An error occurred while processing the return request.',
@@ -609,131 +608,4 @@ exports.returnOrder = async (req, res) => {
     }
 };
 
-
-
-// exports.paymentFaildOrderId = async (req, res) => {
-//     try {
-//         console.log(`Received orderId: ${req.params.orderId}`);
-//         const { orderId } = req.params;
-        
-        
-        
-//         const order = await Order.findById(orderId)
-//             .populate('items.productId')
-//             .populate('shippingAddress');
-
-//             console.log(`order   ${order}`);
-            
-
-//         if (!order) {
-//             return res.status(404).json({
-//                 success: false,
-//                 message: 'Order not found',
-//             });
-//         }
-
-// console.log(`order total amount ${order.totalAmount}`);
-
-//         res.json({
-//             success: true,
-//             totalAmount: order.totalAmount,
-//             items: order.items,
-//             discount: order.discount || 0,
-//         });
-//     } catch (error) {
-//         console.error('Error fetching order:', error);
-//         res.status(500).json({
-//             success: false,
-//             message: 'Internal server error',
-//         });
-//     }
-// };
-
-// exports.updateOrder = async (req, res) => {
-//     try {
-//         console.log('Update order request received');
-
-//         const userId = req.session.userId; // Retrieve userId from session safely
-//         if (!userId) {
-//             return res.status(400).json({
-//                 success: false,
-//                 message: 'User is not logged in',
-//             });
-//         }
-
-//         const {
-//             addressId,
-//             paymentMethod,
-//             couponCode,
-//             razorpay_payment_id,
-//             razorpay_order_id,
-//             razorpay_signature,
-          
-//         } = req.body;
-       
-
-//          // Fetch the latest pending order
-//     const latestPendingOrder = await Order.findOne({
-//         userId: userId,
-//         orderStatus: 'Pending',
-//     }).sort({ updatedAt: -1 });
-
-//     // Check if the order exists
-//     if (!latestPendingOrder) {
-//         console.log('No pending order found for the user.');
-//         return res.status(404).json({ success: false, message: 'No pending order found.' });
-//     }
-
- 
-//     latestPendingOrder.items.forEach(item => {
-//         item.productStatus = 'Confirmed'; 
-//     });
-
-    
-//     latestPendingOrder.paymentStatus = 'Paid';
-//     latestPendingOrder.orderStatus = 'Confirmed';
-//     latestPendingOrder.paid = true;
-
-
-
-
-//     console.log(`oreer updated details ${latestPendingOrder}`);
-    
-//     await latestPendingOrder.save();
-
-
-//         const cart = await Cart.findOne({ userId }).populate('items.productId');
-     
-  
-
-       
-//         for (const item of cart.items) {
-//             const product = await Product.findById(item.productId._id);
-//             if (product) {
-//                 product.stock -= item.productCount;
-//                 await product.save();
-//             } else {
-//                 console.warn(`Product not found for item: ${item.productId._id}`);
-//             }
-//         }
-
-     
-//         await Cart.updateOne({ userId }, { $set: { items: [] } });
-
-        
-//         res.json({
-//             success: true,
-//             message: 'Order updated successfully',
-//             orderId: latestPendingOrder._id,
-//         });
-        
-//     } catch (error) {
-//         console.error('Error updating order:', error);
-//         res.status(500).json({
-//             success: false,
-//             message: 'Error updating order',
-//             details: error.message,
-//         });
-//     }
-// };
 

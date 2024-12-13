@@ -19,28 +19,23 @@ exports.checkAddaddress = async(req,res)=>{
     
         res.render('user/checkAddaddress', { address: addressData });
     }catch(error){
-console.log(`error in addAddress ${error}`);
 
+        res.status(500).send(error.message);
     } 
 }
 
 
 exports.faied = async (req, res) => {
     try {
-        console.log('Payment Failure Request received:', req.body);
+       
         const userId = req.session.userId;
 
         const { 
-            paymentId, 
-            orderId, 
-            code, 
-            description, 
-            reason,
             addressId,
             paymentMethod,
             couponCode,
           
-        } = req.body;
+        } = req.body; 
 
         // Validate required fields
       
@@ -117,7 +112,7 @@ exports.faied = async (req, res) => {
                 product.stock -= item.productCount;
                 await product.save();
             } else {
-                console.warn(`Product not found for item: ${item.productId._id}`);
+               
             }
         }
 
@@ -132,7 +127,7 @@ exports.faied = async (req, res) => {
 
         
     } catch (error) {
-        console.error('Server error processing payment failure:', error);
+        
         res.status(500).json({ 
             error: 'Internal server error processing payment failure',
             details: error.message 
@@ -153,31 +148,30 @@ exports.checkaddAddressPost = async (req, res) => {
       await newAddress.save();
   
     
-      console.log('New Address saved:', newAddress);
   
       const email = req.session.user_email;
-      console.log('User email from session:', email);
+      
   
       const user = await User.findOne({ email });
-      console.log('User found:', user);
+      
   
       if (user) {
   
         user.addresses.push(newAddress._id);
         
-        console.log('User before save:', user);
+       
     
         await user.save();
         
-        console.log('User after save:', user);
+      
       } else {
-        console.log('No user found with this email');
+       
       }
   
       return res.redirect('/checkout');
     } catch (error) {
       
-      console.error('Error saving address or user:', error);
+      
       res.status(500).send(error.message);
     }
   };
@@ -189,7 +183,7 @@ exports.checkaddAddressPost = async (req, res) => {
        const address = await Address.findById(req.params.id);
        return res.render('user/checkoutAddressEdit',{address})
     }catch(error){
-console.log(`error in renderEditAddress :${error}`);
+        res.status(500).send(error.message);
 
     }
 }
@@ -202,7 +196,7 @@ exports.editAddressPostcheckout = async (req,res)=>{
      await Address.findByIdAndUpdate(addressId,req.body)
         return res.redirect('/checkout');
     }catch(error){
-        console.log(`error in editAddressPost :${error}`);
+        
         res.status(500).send("Internal Server Error");
         
     }
@@ -210,17 +204,16 @@ exports.editAddressPostcheckout = async (req,res)=>{
 
 exports.order = async (req, res) => {
     try {
-        const page = parseInt(req.query.page) || 1; // Current page
-        const limit = parseInt(req.query.limit) || 5; // Items per page
-        const skip = (page - 1) * limit; // Items to skip for pagination
+        const page = parseInt(req.query.page) || 1; 
+        const limit = parseInt(req.query.limit) || 5;
+        const skip = (page - 1) * limit; 
 
         const userId = req.session.userId;
 
-        // Fetch total order count for the user
         const totalOrders = await Order.countDocuments({ userId });
-        const totalPages = Math.ceil(totalOrders / limit); // Total pages
+        const totalPages = Math.ceil(totalOrders / limit);
 
-        // Fetch paginated orders
+       
         const orders = await Order.find({ userId })
             .populate('items.productId', 'name image')
             .skip(skip)
@@ -236,7 +229,7 @@ exports.order = async (req, res) => {
         });
     } catch (error) {
       
-        res.status(500).send('Failed to fetch orders');
+        res.status(500).send(error.message);
     }
 };
 
@@ -244,39 +237,11 @@ exports.order = async (req, res) => {
 exports.ordersList = async (req, res) => {
     try {
         const id = req.params.id
-
-    
-        console.log(id);
-        
-
-      
-
-        
-       
-
-        // if (ordersCount === 0) {
-        //     return res.render('user/listOrder', {
-        //         orders: [],
-        //         noOrders: true,
-        //         currentPage: page,
-        //         totalPages: 0,
-        //     });
-        // }
-
-
-        // const orders = await Order.find({ userId }) .populate('shippingAddress').populate('items.productId').sort({ createdAt: -1 })
-           
         const orders = await Order.findById(id)
         .populate('shippingAddress')
         .populate('items.productId')
             .exec();
 
-          
-
-     
-
-
-        
         res.render('user/listOrder', {
             orders,
             // noOrders: false,
@@ -284,7 +249,7 @@ exports.ordersList = async (req, res) => {
         });
     } catch (error) {
        
-        res.status(500).send('Internal Server Error');
+        res.status(500).send(error.message);
     }
 };
 
@@ -297,8 +262,6 @@ exports.getWallet = async (req, res) => {
 
     try {
         
-
-       
         const wallet = await Wallet.findOne({ userID: userId }).exec();
         if (!wallet) {
             return res.render('user/Wallat', { 
@@ -327,7 +290,7 @@ exports.getWallet = async (req, res) => {
             message: null
         });
     } catch (error) {
-        console.error('Error fetching wallet:', error);
+        
         res.render('user/Wallat', { 
             wallet: { balance: 0, transactions: [] },
             page: 1,

@@ -32,7 +32,7 @@ exports.getAllCoupons = async (req, res) => {
 
         });
     } catch (error) {
-        console.error(error);
+        
         res.status(500).send('Server error');
     }
 };
@@ -60,7 +60,7 @@ exports.addCoupon = async (req, res) => {
         await coupon.save();
         res.redirect('/admin/coupons'); 
     } catch (error) {
-        console.error(error);
+  
         res.status(500).send('Server error');
     }
 };
@@ -85,10 +85,7 @@ exports.deleteCoupon = async (req,res)=>{
 
 
 exports.deleteOffer = async (req,res)=>{
-    try{
-       console.log('delete offer');
-       
-        
+    try{    
     const {id}= req.params;
     await Offer.findByIdAndDelete(id)
     res.redirect('/admin/offers')
@@ -124,7 +121,7 @@ res.render('admin/showOffer',{
 
 
 }catch(error){
-
+    res.status(500).send('Server error'); 
 }
 }
 
@@ -134,13 +131,10 @@ exports.GetAddOffer = async (req,res)=>{
 
         const categories = await Category.find({isBlocked:false,isDeleted:false});
         const products = await Product.find({isBlocked:false,isDeleted:false})
-
       
-        
-        
 res.render('admin/addOffer',{categories,products})
     }catch(error){
-
+        res.status(500).send('Server error'); 
     }
 }
 
@@ -160,7 +154,7 @@ exports.PostAddOffer = async (req, res) => {
             });
 
             await offer.save();
-            console.log('Product Offer:', offer);
+        
         } else { 
             offer = new Offer({
                 offerName,
@@ -170,31 +164,14 @@ exports.PostAddOffer = async (req, res) => {
             });
 
             await offer.save();
-            console.log('Category Offer:', offer);
+            
         }
 
  
-        // if (offer.offerType === 'product') {
-           
-        //     const product = await Product.findById(offer.offerProduct);
-        //     if (product) {
-        //         product.offerDiscout = offer.discountPercentage;
-        //         product.priceAfterDiscount = product.price * (1 - offer.discountPercentage+product.discount / 100);
-        //         await product.save();
-        //     }
-        // } else if (offer.offerType === 'category') {
-    
-        //     const products = await Product.find({ category: offer.offerCategory });
-        //     products.forEach(async (product) => {
-        //         product.offerDiscout = offer.discountPercentage;
-        //         product.priceAfterDiscount = product.price * (1 -offer.discountPercentage+product.discount / 100);
-        //         await product.save();
-        //     });
-        // }
-
+       
         res.redirect('/admin/offers');
     } catch (error) {
-        console.log(`Error in adding offer: ${error}`);
+        
         res.status(500).send('Failed to add offer');
     }
 };
@@ -249,7 +226,7 @@ exports.offerdeactivate = async (req, res) => {
     
         res.redirect('/admin/offers');
     } catch (error) {
-        console.error(error);
+      
         res.status(500).send('An error occurred while activating the offer');
     }
 };

@@ -24,7 +24,7 @@ exports.home = async (req, res) => {
             showAllButton: true, 
         });
     } catch (error) {
-        console.error('Error rendering home page:', error);
+      
         req.flash('error', 'Something went wrong. Please try again later.');
         return res.redirect('/login');
     }
@@ -41,7 +41,7 @@ exports.Getcategories = async (req, res) => {
         const category = await Categories.find({isBlocked:false,isBlocked:false})
         res.render('user/category', { products,category });
     } catch (error) {
-        console.error(error);
+      
         res.redirect('/');
     }
 };
@@ -77,7 +77,7 @@ exports.Getproducts = async (req, res) => {
 
         res.render('user/product', { product, products:validProducts , isInCart });
     } catch (error) {
-        console.error('Error fetching products:', error);
+   
         res.redirect('/');
     }
 };
@@ -148,7 +148,7 @@ exports.Allproducts = async (req, res) => {
             }
         });
     } catch (error) {
-        console.error(`Error in Allproducts: ${error}`);
+     
         res.status(500).render('error', { message: 'Internal Server Error' });
     }
 };
@@ -161,15 +161,11 @@ exports.Allproducts = async (req, res) => {
 
 exports.cart = async (req, res) => {
     const { productId } = req.body;
-
-
     try {
         if (!req.session.userId) {
          
              return res.status(401).json({ success: false, message: 'User not logged in.' });
         }
-
-        
 
         let cart = await Cart.findOne({ userId: req.session.userId }).populate('items.productId');
         const product = await Product.findById(productId);
@@ -207,7 +203,7 @@ exports.cart = async (req, res) => {
 
         res.status(200).json({ success: true, message: 'Product added successfully' });
     } catch (error) {
-        console.error("Error adding product to cart:", error);
+      
         res.status(500).json({ success: false, message: 'Internal server error.' });
     }
 };

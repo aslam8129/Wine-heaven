@@ -65,7 +65,7 @@ exports.addtoCartGet = async (req, res) => {
             total,
         });
     } catch (error) {
-        console.error(`Error in addtoCartGet: ${error.message}`);
+        
         res.status(500).send('Internal Server Error');
     }
 };
@@ -132,7 +132,7 @@ exports.updateQuantity = async (req, res) => {
             total,
         });
     } catch (error) {
-        console.error(`Error in updateQuantity: ${error.message}`);
+   
         res.status(500).send('Internal Server Error');
     }
 };
@@ -143,7 +143,7 @@ exports.updateQuantity = async (req, res) => {
             const { productId } = req.body;
             const userId = req.session.userId;
             if (!userId) {
-                return res.send('User not found');
+                return res.redirect('/login');
             }
     
             const cart = await Cart.findOne({ userId }).populate('items.productId');
@@ -160,7 +160,7 @@ exports.updateQuantity = async (req, res) => {
     
             res.render('user/addToCart', { cart, subtotal, discount, total });
         } catch (error) {
-            console.log(`Error in removeFromCart: ${error}`);
+           
             res.status(500).send('Internal Server Error');
         }
     };
@@ -174,7 +174,7 @@ exports.updateQuantity = async (req, res) => {
             const coupon = await Coupon.find();
     
             if (!userId) {
-                return res.send('User not found');
+                return res.redirect('/login');
             } 
             let orderSummary = await Cart.findOne({ userId }).populate('items.productId');
             let user = await User.findOne({ email }).populate('addresses');
@@ -204,7 +204,7 @@ exports.updateQuantity = async (req, res) => {
     
             res.render('user/checkout', { orderSummary, addresses ,coupon});
         } catch (error) {
-            console.error(error);
+          
             res.status(500).send('Internal Server Error');
         }
     };
