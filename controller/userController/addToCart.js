@@ -125,7 +125,7 @@ exports.updateQuantity = async (req, res) => {
         cart.payableAmount = total;
         await cart.save();
 
-        res.render('user/addToCart', {
+        res.render('user/addTocart', {
             cart,
             subtotal,
             
@@ -158,7 +158,7 @@ exports.updateQuantity = async (req, res) => {
             const discount = cart.items.reduce((sum, item) => sum + ((item.productPrice - item.productDiscountPrice) * item.productCount), 0);
             const total = subtotal - discount;
     
-            res.render('user/addToCart', { cart, subtotal, discount, total });
+            res.render('user/addTocart', { cart, subtotal, discount, total });
         } catch (error) {
            
             res.status(500).send('Internal Server Error');
