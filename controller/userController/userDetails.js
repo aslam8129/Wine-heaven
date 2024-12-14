@@ -10,7 +10,7 @@ const Address = require('../../model/userAddress');
 
 exports.GetuserDeatiolsHome = async (req,res)=>{
     try{
-         res.render('user/userdetailsHome')
+         res.render('user/userdetailshome')
     }catch(error){
       res.status(500).send(error.message);
          
