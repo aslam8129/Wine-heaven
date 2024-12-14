@@ -78,7 +78,7 @@ exports.signuppost = async (req, res) => {
         req.session.user_email = email;
         // await user.save();
 
-        req.flash('success', 'Registration successful. Please verify your email to log in.');
+        
 
         const otp = Math.floor(100000 + Math.random() * 900000).toString();
         user.otp = otp;
@@ -86,10 +86,14 @@ exports.signuppost = async (req, res) => {
         await sendOtp(email, otp);
         await user.save();
        
-
+        req.flash('success', 'Registration successful. Please verify your email to log in.');
+        console.log('working');
+        
         res.redirect(`/verify-otp`);
+
     } catch (error) {
-       
+        console.log(error);
+        
         req.flash('error', 'Something went wrong during signup. Please try again.');
         res.redirect('/signup');
     }
@@ -169,11 +173,6 @@ exports.resendOtp = async (req, res) => {
         const otp = Math.floor(100000 + Math.random() * 900000).toString();
         user.otp = otp; 
         user.otpExpires = Date.now() + 300000;
-
-
-      
-        
-     
         await sendOtp(email, otp);
         await user.save();
 
