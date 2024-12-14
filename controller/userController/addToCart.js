@@ -58,7 +58,7 @@ exports.addtoCartGet = async (req, res) => {
         await cart.save();
 
 
-        res.render('user/addToCart', {
+        res.render('user/addTocart', {
             cart,
             subtotal,
             discount,
