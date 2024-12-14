@@ -281,7 +281,7 @@ exports.getWallet = async (req, res) => {
             .sort((a, b) => new Date(b.transaction_date) - new Date(a.transaction_date));
 
        
-        res.render('user/Wallat', { 
+        res.render('user/wallat', { 
             wallet: { ...wallet._doc, transactions: paginatedTransactions },
             page,
             totalpages,
@@ -291,7 +291,7 @@ exports.getWallet = async (req, res) => {
         });
     } catch (error) {
         
-        res.render('user/Wallat', { 
+        res.render('user/wallat', { 
             wallet: { balance: 0, transactions: [] },
             page: 1,
             totalpages: 1,
