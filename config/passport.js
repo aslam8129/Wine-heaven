@@ -3,6 +3,7 @@ const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const mongoose = require('mongoose');
 const keys = require('../config/keys');
 const User = require('../model/userSchema');
+require('dotenv').config();
 
 module.exports = function(passport) {
   passport.serializeUser((user, done) => {
@@ -19,7 +20,8 @@ module.exports = function(passport) {
     new GoogleStrategy({
       clientID: keys.google.clientID,
       clientSecret: keys.google.clientSecret,
-      callbackURL: '/auth/google/callback'
+      //callbackURL: '/auth/google/callback'
+      callbackURL:process.env.GOOGLE_CALLBACK_URL,
     }, (accessToken, refreshToken, profile, done) => {
       const email = profile.emails[0].value; // Get email from the profile
       const name = profile.displayName; // You can also extract first and last name if needed
