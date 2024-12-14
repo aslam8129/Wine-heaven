@@ -10,10 +10,11 @@ const userSchema = new mongoose.Schema({
     isVerified: { type: Boolean, default: false },
     isBlocked: { type: Boolean, default: false },
     googleId: {
-        type: String,
-        unique: true,
-       
-      },
+      type: String,
+      unique: true, 
+      sparse: true, // Applies the unique constraint only to non-null/non-undefined values
+  },
+  
     resetPasswordToken: String,
     resetPasswordExpires: Date,
     addresses: [{type:mongoose.Schema.Types.ObjectId,ref:'Address'}], 

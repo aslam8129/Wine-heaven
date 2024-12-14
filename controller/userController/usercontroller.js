@@ -58,22 +58,23 @@ exports.signuppost = async (req, res) => {
 
       
         let user = await User.findOne({ email });
+console.log(user);
 
-        if (user) {
-            req.flash('error', 'User already exists');
-            return res.redirect('/signup');
-        }
+            if (user) {
+                req.flash('error', 'User already exists');
+                return res.redirect('/signup');
+            }
 
 
-        const hashedPassword = await bcrypt.hash(password, 12);
-        user = new User({
-            name,
-            email,
-            password: hashedPassword,
-            isVerified: false,
-            otp: '',
-            otpExpires: null
-        });
+            const hashedPassword = await bcrypt.hash(password, 12);
+            user = new User({
+                name,
+                email,
+                password: hashedPassword,
+                isVerified: false,
+                otp: '',
+                otpExpires: null,
+            });
 
         req.session.user_email = email;
         // await user.save();
