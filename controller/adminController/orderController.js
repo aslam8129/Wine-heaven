@@ -38,7 +38,7 @@ exports.getAllOrders = async (req, res) => {
     } catch (error) {
        
         req.flash('error', 'Failed to fetch orders');
-        res.redirect('/admin/dashboard');
+      
     }
 };
 
