@@ -84,9 +84,9 @@ exports.GetsalesReport = async (req, res) => {
         }
 
         const orders = await Order.find()
-            .populate('userId', 'name') 
-            .exec()
-            .sort({ createdAt: -1 })
+        .populate('userId', 'name')
+        .sort({ createdAt: -1 })
+        .exec();
         const summary = orders.reduce(
             (acc, order) => {
                 acc.totalOrders++;
