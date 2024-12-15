@@ -20,8 +20,9 @@ exports.getAllOrders = async (req, res) => {
         const skip = (page - 1) * limit;
 
         const orders = await Order.find()
-            .populate('userId')
-            .populate('items.productId')
+        .populate('userId', 'name') // Populates only the 'name' field of the user
+        .populate('items.productId', 'name') // If 'items.productId' needs to be populated too
+        .exec()
             .sort({ createdAt: -1 })
             .skip(skip)
             .limit(limit);

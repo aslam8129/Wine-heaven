@@ -83,8 +83,9 @@ exports.GetsalesReport = async (req, res) => {
                 break;
         }
 
-        const orders = await Order.find(dateFilter)
-            .populate('userId', 'name email')
+        const orders = await Order.find()
+            .populate('userId', 'name') 
+            .exec()
             .sort({ createdAt: -1 })
         const summary = orders.reduce(
             (acc, order) => {

@@ -41,10 +41,11 @@
                                         </td>
                                    
                                         <td class="border px-4 py-2">
-                                            <%= order.userId.name %>
+                                            <%= order.userId ? order.userId.name : 'Unknown User' %>
                                         </td>
+                                        
                                         <td class="border px-4 py-2">
-                                            <%= item.productId.name %>
+                                            <%= item.productId ? item.productId.name : 'Unknown Product' %>
                                         </td>
                                         <td class="border px-4 py-2">
                                             <%= item.productCount %>
