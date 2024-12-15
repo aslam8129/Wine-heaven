@@ -89,7 +89,7 @@ exports.editProductGet = async (req, res) => {
   try {
     const product = await Product.findById(req.params.id).populate('category');
     const categories = await Category.find({isBlocked:false,isDeleted:false}); 
-    res.render('admin/editProduct', { product, categories });
+    res.render('admin/editproduct', { product, categories });
 } catch (err) {
     
     res.status(500).send('Server Error');
