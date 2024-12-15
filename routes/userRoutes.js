@@ -25,6 +25,8 @@ router.get('/forgot-password',authController.forgetpassword);
 router.post('/forgot-password',authController.forgetpasswordPost)
 router.get('/reset-password',authController.resetPasswordGet)
 router.post('/reset-password',authController.resentPasswordPost)
+router.get('/about',isuser,authController.aboutpage)
+router.get('/contact',isuser,authController.contactpage)
 
 
 

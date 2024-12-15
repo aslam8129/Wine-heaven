@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - Wine Haven</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'wine-primary': '#600018',
+                        'wine-secondary': '#ffffff',
+                        'wine-accent': '#000000'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-white text-wine-accent">
+    <!-- Navigation -->
+ 
+        <%- include('../partials/userHeader.ejs') %>
+    
+
+    <!-- About Us Section -->
+    <div class="container mx-auto px-4 py-16 mt-12">
+        <div class="grid md:grid-cols-2 gap-12 items-center">
+            <!-- Text Content -->
+            <div>
+                <h1 class="text-4xl font-bold mb-6 text-wine-primary">Our Story</h1>
+                <p class="text-lg mb-4">
+                    Founded in the heart of wine country, Wine Haven is a passion project born from generations of wine-making expertise. Our journey began with a simple belief: exceptional wine is an art form that connects people.
+                </p>
+                <p class="text-lg mb-4">
+                    We carefully select each bottle from small, family-owned vineyards, ensuring that every sip tells a story of tradition, craftsmanship, and unparalleled quality.
+                </p>
+                <div class="mt-8">
+                    <h2 class="text-2xl font-semibold mb-4 text-wine-primary">Our Commitment</h2>
+                    <ul class="space-y-2">
+                        <li class="flex items-center">
+                            <svg class="w-6 h-6 mr-3 text-wine-primary" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M6.267 3.455a3 3 0 005.466 0A2.5 2.5 0 0116 2.5v1.25a1.25 1.25 0 001.25 1.25h1.5a1.25 1.25 0 001.25-1.25V2.5a2.5 2.5 0 00-3.734-2.157 3 3 0 01-5.466 0A2.5 2.5 0 004 2.5v1.25a1.25 1.25 0 001.25 1.25h1.5a1.25 1.25 0 001.25-1.25V2.5a2.5 2.5 0 00-3.267-2.045z" clip-rule="evenodd"/>
+                                <path d="M10 2.5a2.5 2.5 0 012.5-2.5A2.5 2.5 0 0115 2.5v1.25a1.25 1.25 0 001.25 1.25h1.5A1.25 1.25 0 0019 3.75V2.5a4 4 0 00-4-4 4 4 0 00-4 4v1.25a1.25 1.25 0 001.25 1.25h1.5A1.25 1.25 0 0010 3.75V2.5zM0 10a4 4 0 014-4h12a4 4 0 014 4v6a4 4 0 01-4 4H4a4 4 0 01-4-4v-6zm8-2a2 2 0 10-4 0 2 2 0 004 0zm5 0a2 2 0 10-4 0 2 2 0 004 0zM6 16a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1z"/>
+                            </svg>
+                            Sustainable Sourcing
+                        </li>
+                        <li class="flex items-center">
+                            <svg class="w-6 h-6 mr-3 text-wine-primary" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"/>
+                                <path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z" clip-rule="evenodd"/>
+                            </svg>
+                            Curated Selection
+                        </li>
+                        <li class="flex items-center">
+                            <svg class="w-6 h-6 mr-3 text-wine-primary" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M6 3a1 1 0 011-1h.01a1 1 0 010 2H7a1 1 0 01-1-1zm2 3a1 1 0 00-2 0v1a2 2 0 00-2 2v1a2 2 0 002 2v1a1 1 0 102 0v-1a2 2 0 002-2v-1a2 2 0 00-2-2V6zm4 0a1 1 0 00-2 0v1a2 2 0 00-2 2v1a2 2 0 002 2v1a1 1 0 102 0v-1a2 2 0 002-2v-1a2 2 0 00-2-2V6zm-7 9a1 1 0 011-1h10a1 1 0 110 2H6a1 1 0 01-1-1zm1 3a1 1 0 100 2h10a1 1 0 100-2H6z" clip-rule="evenodd"/>
+                            </svg>
+                            Expert Curation
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Image Section -->
+            <div class="relative">
+                <div class="absolute inset-0 bg-wine-primary opacity-20 rounded-lg"></div>
+                <img src="uplods/pexels-mali-110822.jpg" alt="Wine Vineyard" class="rounded-lg shadow-2xl relative z-10 object-cover w-full h-full">
+            </div>
+        </div>
+    </div>
+
+    <!-- Team Section -->
+    <div class="bg-gray-50 py-16">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-12 text-wine-primary">Our Team</h2>
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Team Member 1 -->
+                <div class="text-center">
+                    <img src="uplods/download (1).jpg" alt="Team Member" class="mx-auto mb-4 rounded-full w-48 h-48 object-cover border-4 border-wine-primary">
+                    <h3 class="text-xl font-semibold text-wine-primary">cristiano ronaldo</h3>
+                    <p class="text-gray-600">Master Sommelier</p>
+                </div>
+                <!-- Team Member 2 -->
+                <div class="text-center">
+                    <img src="uplods/messi-pictures-i2xo8wseuoa6l08n.jpg" alt="Team Member" class="mx-auto mb-4 rounded-full w-48 h-48 object-cover border-4 border-wine-primary">
+                    <h3 class="text-xl font-semibold text-wine-primary">lionel messi</h3>
+                    <p class="text-gray-600">Head Vintner</p>
+                </div>
+                <!-- Team Member 3 -->
+                <div class="text-center">
+                    <img src="uplods/depositphotos_747536012-stock-photo-erling-haaland-manchester-city-celebrates.jpg" alt="Team Member" class="mx-auto mb-4 rounded-full w-48 h-48 object-cover border-4 border-wine-primary">
+                    <h3 class="text-xl font-semibold text-wine-primary">erling haaland</h3>
+                    <p class="text-gray-600">Wine Curator</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <%- include('../partials/userFooter.ejs') %>
+</body>
+</html>

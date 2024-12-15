@@ -417,3 +417,22 @@ exports.resentPasswordPost = async (req,res)=>{
         
     }
 }
+
+
+exports.aboutpage = async(req,res)=>{
+    try{
+res.render('user/aboutpage')
+    }catch(error){
+        res.status(500).send(error.message);
+
+    }
+}
+
+
+exports.contactpage = async(req,res)=>{
+    try{
+res.render('user/contactpage')
+    }catch(error){
+
+    }
+}
