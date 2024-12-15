@@ -164,27 +164,49 @@ exports.verifyOtp = async (req, res) => {
 
 
 
-
 exports.resendOtp = async (req, res) => {
     try {
-        const  email  = req.session.user_email;
+        const email = req.session.user_email;
+        
+        
+        
+   
+        if (!email) {
+            return res.status(400).json({ success: false, message: 'No email found in session' });
+        }
 
         const user = await User.findOne({ email });
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'User not found' });
+        }
 
+      
         const otp = Math.floor(100000 + Math.random() * 900000).toString();
+        
+       
         user.otp = otp; 
-        user.otpExpires = Date.now() + 300000;
-        await sendOtp(email, otp);
-        await user.save();
+        user.otpExpires = Date.now() + 300000; 
+console.log(otp);
 
-        return res.status(200).json({ success: true, message: 'A new OTP has been sent to your email' });
+        
+        await Promise.all([
+            sendOtp(email, otp),
+            user.save()
+        ]);
+
+        return res.status(200).json({ 
+            success: true, 
+            message: 'A new OTP has been sent to your email' 
+        });
+
     } catch (error) {
       
-        return res.status(500).json({ success: false, message: 'Failed to resend OTP. Please try again later.' });
+        return res.status(500).json({ 
+            success: false, 
+            message: 'Failed to resend OTP. Please try again later.' 
+        });
     }
 };
-
-
 
 
 
