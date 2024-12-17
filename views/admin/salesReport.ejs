@@ -116,7 +116,30 @@
                 </table>
             </div>
         </div>
-       
+        <div class="flex justify-center items-center mt-6 space-x-2">
+            <% if (pagination.currentPage > 1) { %>
+                <a class="px-4 py-2 bg-blue-500 text-white rounded shadow hover:bg-blue-600 transition duration-200" 
+                   href="?page=<%= pagination.currentPage - 1 %>&limit=<%= pagination.limit %>&startDate=<%= filters.startDate || '' %>&endDate=<%= filters.endDate || '' %>&reportType=<%= filters.reportType || '' %>">
+                   Previous
+                </a>
+            <% } %>
+            
+            <% for (let i = 1; i <= pagination.totalPages; i++) { %>
+                <a class="px-4 py-2 <%= pagination.currentPage === i ? 'bg-gray-500 text-white' : 'bg-white text-blue-500 border border-blue-500' %> 
+                          rounded shadow hover:bg-blue-100 transition duration-200" 
+                   href="?page=<%= i %>&limit=<%= pagination.limit %>&startDate=<%= filters.startDate || '' %>&endDate=<%= filters.endDate || '' %>&reportType=<%= filters.reportType || '' %>">
+                   <%= i %>
+                </a>
+            <% } %>
+            
+            <% if (pagination.currentPage < pagination.totalPages) { %>
+                <a class="px-4 py-2 bg-blue-500 text-white rounded shadow hover:bg-blue-600 transition duration-200" 
+                   href="?page=<%= pagination.currentPage + 1 %>&limit=<%= pagination.limit %>&startDate=<%= filters.startDate || '' %>&endDate=<%= filters.endDate || '' %>&reportType=<%= filters.reportType || '' %>">
+                   Next
+                </a>
+            <% } %>
+        </div>
+        
     </div>
 
     <!-- Script for Custom Date Fields -->
