@@ -73,7 +73,7 @@
                                             <% if (availableStatusUpdates[item.productStatus] && availableStatusUpdates[item.productStatus].length > 0) { %>
                                                 <form action="/admin/update-order-status" method="POST" class="flex gap-2">
                                                     <input type="hidden" name="orderId" value="<%= order._id %>">
-                                                    <input type="hidden" name="productId" value="<%= item.productId._id %>">
+                                                    <input type="hidden" name="productId" value="<%= item.productId %>">
                                                     <select name="newStatus" class="border rounded px-2 py-1 text-sm">
                                                         <% availableStatusUpdates[item.productStatus].forEach(status => { %>
                                                             <option value="<%= status %>"><%= status %></option>
