@@ -41,17 +41,16 @@
                                         </td>
                                    
                                         <td class="border px-4 py-2">
-                                            <%= order.userId ? order.userId.name : 'Unknown User' %>
+                                            <%= order.userId.name %>
                                         </td>
-                                        
                                         <td class="border px-4 py-2">
-                                            <%= item.productId? item.productId.name : 'Unknown Product' %>
+                                            <%= item.productId.name %>
                                         </td>
                                         <td class="border px-4 py-2">
                                             <%= item.productCount %>
                                         </td>
                                         <td class="border px-4 py-2">
-                                            ₹ <%=item.productId%>
+                                            ₹<%=( item.productId.priceAfterDiscount*item.productCount).toFixed(0) %>
                                         </td>
                                         <td class="border px-4 py-2">
                                             <span class="px-2 py-1 rounded-full text-sm
@@ -73,7 +72,7 @@
                                             <% if (availableStatusUpdates[item.productStatus] && availableStatusUpdates[item.productStatus].length > 0) { %>
                                                 <form action="/admin/update-order-status" method="POST" class="flex gap-2">
                                                     <input type="hidden" name="orderId" value="<%= order._id %>">
-                                                    <input type="hidden" name="productId" value="<%= item.productId._id %>">
+                                                    <input type="hidden" name="productId" value="<%= item.productId %>">
                                                     <select name="newStatus" class="border rounded px-2 py-1 text-sm">
                                                         <% availableStatusUpdates[item.productStatus].forEach(status => { %>
                                                             <option value="<%= status %>"><%= status %></option>
