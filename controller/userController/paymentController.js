@@ -493,7 +493,7 @@ exports.cancelOrder = async (req, res) => {
             let wallet = await Wallet.findOne({ userID: order.userId });
             if (!wallet) {
                 wallet = new Wallet({
-                    userID: order.userId,
+                    userID:userId,
                     balance: 0,
                     transaction: [],
                 });
