@@ -9,14 +9,14 @@ const availableStatusUpdates = {
     'Out for Delivery': ['Delivered'],
     'Delivered': [],
     'Cancelled': [],
-    'Send Return Request':['Returned']
+    'Send Return Request': ['Returned']
 };
 
 
 exports.getAllOrders = async (req, res) => {
     try {
         const page = parseInt(req.query.page) || 1;
-        const limit = 10; 
+        const limit = 10;
         const skip = (page - 1) * limit;
 
         const orders = await Order.find()
@@ -36,9 +36,9 @@ exports.getAllOrders = async (req, res) => {
             totalPages: totalPages
         });
     } catch (error) {
-       
+
         req.flash('error', 'Failed to fetch orders');
-      
+
     }
 };
 
@@ -46,14 +46,14 @@ exports.updateOrderStatus = async (req, res) => {
     try {
         const { orderId, newStatus, productId } = req.body;
 
-        
+
         const order = await Order.findById(orderId);
         if (!order) {
             req.flash('error', 'Order not found');
             return res.redirect('/admin/orders');
         }
 
-      
+
         const item = order.items.find(item => item.productId.toString() === productId);
         if (!item) {
             req.flash('error', 'Product not found in the order');
@@ -62,11 +62,11 @@ exports.updateOrderStatus = async (req, res) => {
         item.productStatus = newStatus;
 
 
-          const allproductcount =order.items.reduce((acc,value)=>{
-            return acc+=value.productCount
-        },0)
+        const allproductcount = order.items.reduce((acc, value) => {
+            return acc += value.productCount
+        }, 0)
 
-        const alldiscount = order.discount/allproductcount
+        const alldiscount = order.discount / allproductcount
 
 
 
@@ -87,13 +87,13 @@ exports.updateOrderStatus = async (req, res) => {
                     });
                 }
 
-             
-                wallet.balance += item.productPrice*item.productCount-alldiscount*item.productCount; 
+
+                wallet.balance += item.productPrice * item.productCount - alldiscount * item.productCount;
                 wallet.transaction.push({
-                    wallet_amount: item.productPrice*item.productCount-alldiscount*item.productCount,
+                    wallet_amount: item.productPrice * item.productCount - alldiscount * item.productCount,
                     order_id: order._id,
                     transactionType: 'Credited',
-                    tracsactionWay:'Return Order',
+                    tracsactionWay: 'Return Order',
                     transaction_date: new Date(),
                 });
 
@@ -103,14 +103,14 @@ exports.updateOrderStatus = async (req, res) => {
                 );
 
                 if (allReturnedOrCanceled) {
-                 
+
                     wallet.balance += 100;
 
                     wallet.transaction.push({
                         wallet_amount: 100,
                         order_id: order._id,
                         transactionType: 'Credited',
-                        tracsactionWay:'Shipping Refund',
+                        tracsactionWay: 'Shipping Refund',
                         transaction_date: new Date(),
                     });
                 }
@@ -125,7 +125,7 @@ exports.updateOrderStatus = async (req, res) => {
         req.flash('success', 'Order status updated successfully');
         res.redirect('/admin/orders');
     } catch (error) {
-      
+
         req.flash('error', 'Failed to update order status');
         res.redirect('/admin/orders');
     }
@@ -136,24 +136,24 @@ exports.updateOrderStatus = async (req, res) => {
 
 exports.getorderDetails = async (req, res) => {
     try {
-       
-        const id = req.params.id
-        const order = await Order.findById( id )
-        .populate('shippingAddress')  
-        .populate({
-            path: 'items.productId',
-            populate: { 
-                path: 'category',  
-                select: 'name' 
-            }
-        });  
 
-      
+        const id = req.params.id
+        const order = await Order.findById(id)
+            .populate('shippingAddress')
+            .populate({
+                path: 'items.productId',
+                populate: {
+                    path: 'category',
+                    select: 'name'
+                }
+            });
+
+
         if (!order || order.length === 0) {
             return res.status(404).send('Order not found');
         }
 
-        res.render('admin/orderDetails', { order: order });  
+        res.render('admin/orderDetails', { order: order });
     } catch (error) {
         res.status(500).send('An error occurred');
     }

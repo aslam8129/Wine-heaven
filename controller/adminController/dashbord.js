@@ -12,14 +12,14 @@ class DashboardController {
             const categories = await this.getTopCategories(dateFilter);
             const salesData = await this.getSalesOverview(dateFilter);
 
-            res.render('admin/dashboard', { 
-                products, 
-                categories, 
+            res.render('admin/dashboard', {
+                products,
+                categories,
                 salesData,
-                filter 
+                filter
             });
         } catch (error) {
-           
+
             res.status(500).render('500');
         }
     }
@@ -28,7 +28,7 @@ class DashboardController {
         const now = new Date();
         let startDate, endDate;
 
-        switch(filter) {
+        switch (filter) {
             case 'yearly':
                 startDate = new Date(now.getFullYear(), 0, 1);
                 endDate = new Date(now.getFullYear(), 11, 31);
@@ -45,7 +45,7 @@ class DashboardController {
     }
 
     async getTopProducts(dateFilter) {
-        const matchStage = dateFilter 
+        const matchStage = dateFilter
             ? { $match: { createdAt: { $gte: dateFilter.startDate, $lte: dateFilter.endDate } } }
             : {};
 
@@ -66,7 +66,7 @@ class DashboardController {
     }
 
     async getTopCategories(dateFilter) {
-        const matchStage = dateFilter 
+        const matchStage = dateFilter
             ? { $match: { createdAt: { $gte: dateFilter.startDate, $lte: dateFilter.endDate } } }
             : {};
 
@@ -105,8 +105,8 @@ class DashboardController {
     }
 
     async getSalesOverview(dateFilter) {
-     
-        const matchStage = dateFilter 
+
+        const matchStage = dateFilter
             ? { $match: { createdAt: { $gte: dateFilter.startDate, $lte: dateFilter.endDate } } }
             : {};
 

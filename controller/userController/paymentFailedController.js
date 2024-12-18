@@ -6,7 +6,7 @@ const User = require('../../model/userSchema')
 
 exports.paymentFaildOrderId = async (req, res) => {
     try {
-       
+
         const { orderId } = req.params;
         const order = await Order.findById(orderId)
             .populate('items.productId')
@@ -27,7 +27,7 @@ exports.paymentFaildOrderId = async (req, res) => {
             discount: order.discount || 0,
         });
     } catch (error) {
-       
+
         res.status(500).json({
             success: false,
             message: 'Internal server error',
@@ -37,47 +37,47 @@ exports.paymentFaildOrderId = async (req, res) => {
 
 exports.updateOrder = async (req, res) => {
     try {
-        
 
-        const userId = req.session.userId; 
+
+        const userId = req.session.userId;
         if (!userId) {
             return res.status(400).json({
                 success: false,
                 message: 'User is not logged in',
             });
         }
-  
-    const latestPendingOrder = await Order.findOne({
-        userId: userId,
-        orderStatus: 'Pending',
-    }).sort({ updatedAt: -1 });
 
-   
-    if (!latestPendingOrder) {
-   
-        return res.status(404).json({ success: false, message: 'No pending order found.' });
-    }
+        const latestPendingOrder = await Order.findOne({
+            userId: userId,
+            orderStatus: 'Pending',
+        }).sort({ updatedAt: -1 });
 
- 
-    latestPendingOrder.items.forEach(item => {
-        item.productStatus = 'Confirmed'; 
-    });
 
-    
-    latestPendingOrder.paymentStatus = 'Paid';
-    latestPendingOrder.orderStatus = 'Confirmed';
-    latestPendingOrder.paid = true;
+        if (!latestPendingOrder) {
 
-    await latestPendingOrder.save();
-        const cart = await Cart.findOne({ userId }).populate('items.productId');  
+            return res.status(404).json({ success: false, message: 'No pending order found.' });
+        }
+
+
+        latestPendingOrder.items.forEach(item => {
+            item.productStatus = 'Confirmed';
+        });
+
+
+        latestPendingOrder.paymentStatus = 'Paid';
+        latestPendingOrder.orderStatus = 'Confirmed';
+        latestPendingOrder.paid = true;
+
+        await latestPendingOrder.save();
+        const cart = await Cart.findOne({ userId }).populate('items.productId');
         res.json({
             success: true,
             message: 'Order updated successfully',
             orderId: latestPendingOrder._id,
         });
-        
+
     } catch (error) {
-        
+
         res.status(500).json({
             success: false,
             message: 'Error updating order',

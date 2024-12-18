@@ -126,7 +126,7 @@ exports.downloadExcel = async (req, res) => {
         let start, end;
         const now = new Date();
 
-        
+
         switch (reportType.toLowerCase()) {
             case 'daily':
                 start = new Date(now.setHours(0, 0, 0, 0));
@@ -279,12 +279,12 @@ exports.downloadPDF = async (req, res) => {
                     break;
                 case 'monthly':
                     start = new Date(now.getFullYear(), now.getMonth(), 1);
-                    end = new Date(now.getFullYear(), now.getMonth() + 1, 0); 
+                    end = new Date(now.getFullYear(), now.getMonth() + 1, 0);
                     end.setHours(23, 59, 59, 999);
                     break;
                 case 'yearly':
                     start = new Date(now.getFullYear(), 0, 1);
-                    end = new Date(now.getFullYear(), 11, 31); 
+                    end = new Date(now.getFullYear(), 11, 31);
                     end.setHours(23, 59, 59, 999);
                     break;
                 default:
@@ -296,7 +296,7 @@ exports.downloadPDF = async (req, res) => {
             return res.status(400).send('Start and end dates could not be determined.');
         }
 
-       
+
         const orders = await Order.find({
             createdAt: {
                 $gte: start,
@@ -304,7 +304,7 @@ exports.downloadPDF = async (req, res) => {
             }
         }).populate('userId', 'name email');
 
-       
+
         const doc = new PDFDocument({ margin: 50 });
 
         // Set headers for the PDF response
@@ -328,8 +328,8 @@ exports.downloadPDF = async (req, res) => {
 
         // Add Table Headers
         const headers = [
-            'Order ID', 'Customer', 'Date', 
-            'Items', 'Total Amount', 'Discount', 
+            'Order ID', 'Customer', 'Date',
+            'Items', 'Total Amount', 'Discount',
             'Final Amount', 'Payment Method', 'Status'
         ];
         const columnWidths = [80, 100, 80, 40, 80, 80, 80, 100, 80];

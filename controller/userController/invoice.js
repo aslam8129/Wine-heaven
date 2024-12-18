@@ -24,21 +24,21 @@ exports.downloadPDF = async (req, res) => {
         res.setHeader('Content-Disposition', `attachment; filename=order-report-${orderId}.pdf`);
         doc.pipe(res);
 
-       
+
         doc.fontSize(20).font('Helvetica-Bold').text('Order Report', { align: 'center' });
         doc.moveDown(1);
 
-      
+
         doc.fontSize(12).font('Helvetica').text(`Order ID: ${order._id}`);
         doc.text(`Customer: ${order.userId.name}`);
         doc.text(`Email: ${order.userId.email}`);
         doc.text(`Total Amount: $${order.totalAmount}`);
         doc.text(`Payment Method: ${order.paymentMethod}`);
-        
+
         doc.text(`Order Coupon Offer: ${order.discount || 0}`);
         doc.moveDown(1);
 
-      
+
         const headers = ['Product Name', 'Price', 'Quantity', 'Final Price'];
         const columnWidths = [200, 80, 80, 100];
 
@@ -55,7 +55,7 @@ exports.downloadPDF = async (req, res) => {
         doc.strokeColor('#000').lineWidth(0.5).moveTo(50, doc.y).lineTo(550, doc.y).stroke();
         doc.moveDown(0.5);
 
-      
+
         if (!order.items || order.items.length === 0) {
             doc.text('No products found in this order.', 50, doc.y, { align: 'left' });
         } else {
@@ -64,7 +64,7 @@ exports.downloadPDF = async (req, res) => {
                 const productPrice = item.productPrice || 0;
                 const quantity = item.productCount || 0;
                 const productDiscount = item.productDiscount || 0;
-                const finalPrice = productPrice*quantity - productDiscount;
+                const finalPrice = productPrice * quantity - productDiscount;
 
                 doc.font('Helvetica').fontSize(9)
                     .text(productName, 50, doc.y, { width: columnWidths[0], align: 'left' })
@@ -79,7 +79,7 @@ exports.downloadPDF = async (req, res) => {
         doc.end();
 
     } catch (error) {
-      
+
         res.status(500).send('Error generating PDF report');
     }
 };

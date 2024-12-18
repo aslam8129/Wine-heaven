@@ -6,25 +6,25 @@ const Cart = require('../../model/cartSchema');
 const Wishlist = require('../../model/whishlist')
 exports.home = async (req, res) => {
     try {
-       
+
         const categories = await Categories.find({ isDeleted: false, isBlocked: false });
 
-        
+
         const products = await Product.find({ isDeleted: false, isBlocked: false })
             .populate('category')
             .limit(8);
 
-    
+
         const validProducts = products.filter(product => product.category && !product.category.isBlocked && !product.category.isDeleted);
 
-     
+
         return res.render('user/home', {
             categories,
             products: validProducts,
-            showAllButton: true, 
+            showAllButton: true,
         });
     } catch (error) {
-      
+
         req.flash('error', 'Something went wrong. Please try again later.');
         return res.redirect('/login');
     }
@@ -37,11 +37,11 @@ exports.home = async (req, res) => {
 exports.Getcategories = async (req, res) => {
     try {
         const { id } = req.params;
-        const products = await Product.find({  category: id,isDeleted:false }).populate('category');
-        const category = await Categories.find({isBlocked:false,isBlocked:false})
-        res.render('user/category', { products,category });
+        const products = await Product.find({ category: id, isDeleted: false }).populate('category');
+        const category = await Categories.find({ isBlocked: false, isBlocked: false })
+        res.render('user/category', { products, category });
     } catch (error) {
-      
+
         res.redirect('/');
     }
 };
@@ -50,17 +50,17 @@ exports.Getcategories = async (req, res) => {
 exports.Getproducts = async (req, res) => {
     try {
         const { id } = req.params;
-        const userId = req.session.userId; 
+        const userId = req.session.userId;
 
 
         const product = await Product.findOne({ _id: id, isDeleted: false, isBlocked: false }).populate('category');
 
         if (!product) {
-       
+
             return res.redirect('/');
         }
 
-       
+
         const products = await Product.find({
             isDeleted: false,
             isBlocked: false,
@@ -69,15 +69,15 @@ exports.Getproducts = async (req, res) => {
         });
 
         const cart = await Cart.findOne({ userId });
-        const wishlist = await Wishlist.findOne({userId});
+        const wishlist = await Wishlist.findOne({ userId });
 
         const isInCart = cart ? cart.items.some(item => item.productId.toString() === id) : false;
-       
+
         const validProducts = products.filter(product => product.category && !product.category.isBlocked && !product.category.isDeleted);
 
-        res.render('user/product', { product, products:validProducts , isInCart });
+        res.render('user/product', { product, products: validProducts, isInCart });
     } catch (error) {
-   
+
         res.redirect('/');
     }
 };
@@ -85,31 +85,31 @@ exports.Getproducts = async (req, res) => {
 
 exports.Allproducts = async (req, res) => {
     try {
-       
+
         const page = parseInt(req.query.page) || 1;
-        const limit = parseInt(req.query.limit) || 12; 
+        const limit = parseInt(req.query.limit) || 12;
         const skipIndex = (page - 1) * limit;
 
-    
+
         const searchQuery = req.query.search || '';
-        
-        
+
+
         const categoryFilter = req.query.category ? { category: req.query.category } : {};
 
         const minPrice = parseFloat(req.query.minPrice) || 0;
         const maxPrice = parseFloat(req.query.maxPrice) || Infinity;
 
-       
+
         const sortOptions = {
             'priceAsc': { price: 1 },
             'priceDesc': { price: -1 },
             'nameAsc': { name: 1 },
             'nameDesc': { name: -1 },
-            'default': { createdAt: -1 } 
+            'default': { createdAt: -1 }
         };
         const sortField = sortOptions[req.query.sort] || sortOptions['default'];
 
-       
+
         const searchCriteria = {
             isDeleted: false,
             isBlocked: false,
@@ -121,7 +121,7 @@ exports.Allproducts = async (req, res) => {
             ]
         };
 
-       
+
         const categories = await Categories.find({ isBlocked: false, isDeleted: false });
 
         const totalProducts = await Product.countDocuments(searchCriteria);
@@ -132,11 +132,11 @@ exports.Allproducts = async (req, res) => {
             .limit(limit)
             .exec();
 
-            const product = products.filter(product =>product.category&& !product.category.isBlocked&& !product.category.isDeleted)
+        const product = products.filter(product => product.category && !product.category.isBlocked && !product.category.isDeleted)
         const totalPages = Math.ceil(totalProducts / limit);
 
-        res.render('user/Allproducts', { 
-            products:product , 
+        res.render('user/Allproducts', {
+            products: product,
             categories,
             query: req.query,
             pagination: {
@@ -148,7 +148,7 @@ exports.Allproducts = async (req, res) => {
             }
         });
     } catch (error) {
-     
+
         res.status(500).render('error', { message: 'Internal Server Error' });
     }
 };
@@ -163,20 +163,20 @@ exports.cart = async (req, res) => {
     const { productId } = req.body;
     try {
         if (!req.session.userId) {
-         
-             return res.status(401).json({ success: false, message: 'User not logged in.' });
+
+            return res.status(401).json({ success: false, message: 'User not logged in.' });
         }
 
         let cart = await Cart.findOne({ userId: req.session.userId }).populate('items.productId');
         const product = await Product.findById(productId);
 
-     
+
 
         if (!product) {
             return res.status(404).json({ success: false, message: 'Product not found.' });
         }
-        if(product.stock===0){
-            return res.status(400).json({success:false,message:'The product stock left'})
+        if (product.stock === 0) {
+            return res.status(400).json({ success: false, message: 'The product stock left' })
         }
 
         if (!cart) {
@@ -198,12 +198,12 @@ exports.cart = async (req, res) => {
         });
 
         await cart.save();
-     
-        
+
+
 
         res.status(200).json({ success: true, message: 'Product added successfully' });
     } catch (error) {
-      
+
         res.status(500).json({ success: false, message: 'Internal server error.' });
     }
 };
