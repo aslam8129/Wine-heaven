@@ -41,17 +41,16 @@
                                         </td>
                                    
                                         <td class="border px-4 py-2">
-                                            <%= order.userId ? order.userId.name : 'Unknown User' %>
+                                            <%= order.userId.name %>
                                         </td>
-                                        
                                         <td class="border px-4 py-2">
-                                            <%= item.productId ? item.productId.name : 'Unknown Product' %>
+                                            <%= item.productId.name %>
                                         </td>
                                         <td class="border px-4 py-2">
                                             <%= item.productCount %>
                                         </td>
                                         <td class="border px-4 py-2">
-                                            ₹ <%=item.productId%>
+                                            ₹<%=( item.productId.priceAfterDiscount*item.productCount).toFixed(0) %>
                                         </td>
                                         <td class="border px-4 py-2">
                                             <span class="px-2 py-1 rounded-full text-sm
