@@ -20,7 +20,7 @@ exports.addtoCartGet = async (req, res) => {
 
         if (!cart) {
 
-            return res.render('user/addToCart', {
+            return res.render('user/addTocart', {
                 cart: { items: [] },
                 subtotal: 0,
                 discount: 0,

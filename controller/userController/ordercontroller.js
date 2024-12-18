@@ -264,7 +264,7 @@ exports.getWallet = async (req, res) => {
 
         const wallet = await Wallet.findOne({ userID: userId }).exec();
         if (!wallet) {
-            return res.render('user/Wallat', {
+            return res.render('user/wallat', {
                 wallet: { balance: 0, transaction: [] },
                 page,
                 totalpages: 1,
