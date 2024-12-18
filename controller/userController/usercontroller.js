@@ -3,7 +3,7 @@ const bcrypt = require('bcryptjs');
 const nodemailer = require('nodemailer');
 require('dotenv').config();
 const crypto = require('crypto')
-
+const Wallet = require('../../model/walletModel')
 
 // Function to send OTP
 async function sendOtp(email, otp) {
@@ -58,7 +58,7 @@ exports.signuppost = async (req, res) => {
 
       
         let user = await User.findOne({ email });
-console.log(user);
+
 
             if (user) {
                 req.flash('error', 'User already exists');
@@ -186,7 +186,7 @@ exports.resendOtp = async (req, res) => {
        
         user.otp = otp; 
         user.otpExpires = Date.now() + 300000; 
-console.log(otp);
+
 
         
         await Promise.all([
@@ -263,7 +263,17 @@ exports.loginPost = async (req, res) => {
         req.session.userId = user._id;
         req.session.user_email = user.email;
         
-        
+          const wallet = await Wallet.findOne({ userID: req.session.userId }).exec();
+          if (!wallet) {
+           
+            wallet = new Wallet({
+                userID: req.session.userId,
+                balance: 0,
+                transaction: []
+            });
+
+            await wallet.save();
+        }
         return res.redirect('/'); 
     } catch (error) {
      

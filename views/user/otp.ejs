@@ -3,38 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OTP Verification</title>
+    <title>OTP Verification - Wine Heaven</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <style>
-        .custom-gradient {
-            background: linear-gradient(135deg, #ffffff 0%, #600018 50%, #000000 100%);
+        body {
+            background: linear-gradient(135deg, #ffffff 0%, #ffffff 50%, #ffffff);
+        }
+        .otp-container {
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
         }
         .otp-input {
             background-color: rgba(255, 255, 255, 0.05);
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
         .otp-input:focus {
-            
             outline: none;
             background-color: rgba(54, 6, 6, 0.1);
         }
     </style>
 </head>
-<body class=" bg-white min-h-screen font-sans flex items-center justify-center">
+<body class="bg-white min-h-screen font-sans flex items-center justify-center px-4 py-8">
     <div class="w-full max-w-md">
-        <div class="bg-gradient-to-br from-[#600018] to-[#000000] rounded-xl shadow-2xl p-8">
-            <div class="text-center mb-6">
-                <h3 class="text-3xl font-bold text-white mb-4">Verify Your Email</h3>
-                <p class="text-white/80 text-sm">
-                    We've sent a verification code to your email address. 
-                    Please enter it below.
-                </p>
+        <div class="bg-white rounded-2xl overflow-hidden otp-container">
+            <div class="bg-gradient-to-br from-[#600018] to-[#000000] p-8 text-white">
+                <div class="flex items-center space-x-4 mb-6">
+                    <img style="width: 60px; height: 75px;" src="/uplods/czNmcy1wcml2YXRlL3Jhd3BpeGVsX2ltYWdlcy93ZWJzaXRlX2NvbnRlbnQvbHIvdjk4Ny0xM2FfMS5wbmc.png" alt="Wine Heaven Logo">
+                    <h1 class="text-2xl font-bold">Wine Heaven</h1>
+                </div>
+
+                <div class="text-center mb-6">
+                    <h3 class="text-3xl font-bold text-white mb-4">Verify Your Email</h3>
+                    <p class="text-white/80 text-sm">
+                        We've sent a verification code to your email address. 
+                        Please enter it below.
+                    </p>
+                </div>
             </div>
 
-            <form id="otpForm" action="/verify-otp" method="post">
-                <% if (error_msg) { %><p class="text-red-500"><%= error_msg %></p><% } %>
-                <% if (success_msg) { %><p class="text-green-500"><%= success_msg %></p><% } %>
+            <form id="otpForm" action="/verify-otp" method="post" class="p-8 space-y-6">
+                <% if (error_msg) { %><p class="text-red-500 text-center"><%= error_msg %></p><% } %>
+                <% if (success_msg) { %><p class="text-green-500 text-center"><%= success_msg %></p><% } %>
+                
                 <div>
                     <label class="sr-only" for="otp">Verification Code</label>
                     <input 
@@ -43,21 +53,21 @@
                         name="otp" 
                         maxlength="6"
                         placeholder="Enter 6-digit code"
-                        class="w-full text-center text-xl otp-input rounded-lg py-3 text-white placeholder-white/50 transition-colors focus:border-[#e94560]"
+                        class="w-full text-center text-xl otp-input rounded-lg py-3 text-black border border-white/20 placeholder-gray-500 transition-colors focus:border-[#e94560]"
                         required
                     >
                 </div>
 
-                <div class="flex justify-between items-center text-sm mt-4">
-                    <p class="text-white/80">Resend OTP in <span id="timer" class="font-semibold">30</span> seconds</p>
+                <div class="flex justify-between items-center text-sm">
+                    <p class="text-[#600020]">Resend OTP in <span id="timer" class="font-semibold">30</span> seconds</p>
                 </div>
 
-                <div class="space-y-4 mt-4">
+                <div class="space-y-4">
                     <button 
                         id="resendOtpBtn"
                         type="button"
                         disabled
-                        class=" bg-gradient-to-br from-[#600018] to-[#600018] w-full py-3 rounded-lg  text-white font-semibold transition-all duration-200 cursor-not-allowed"
+                        class="w-full py-3 rounded-lg bg-gray-300 text-gray-500 font-semibold transition-all duration-200 cursor-not-allowed"
                     >
                         Resend OTP
                     </button>
@@ -82,16 +92,16 @@
         function startTimer() {
             timeLeft = 30;
             resendOtpBtn.disabled = true;
-            resendOtpBtn.classList.add('cursor-not-allowed', 'bg-gray-500');
-            resendOtpBtn.classList.remove('bg-[#600018]');
+            resendOtpBtn.classList.add('cursor-not-allowed', 'bg-gray-300', 'text-gray-500');
+            resendOtpBtn.classList.remove('bg-[#600018]', 'text-white');
 
             const countdown = setInterval(() => {
                 if (timeLeft <= 0) {
                     clearInterval(countdown);
                     timerElement.textContent = "0";
                     resendOtpBtn.disabled = false;
-                    resendOtpBtn.classList.remove('cursor-not-allowed', 'bg-gray-500');
-                    resendOtpBtn.classList.add('bg-[#600018]');
+                    resendOtpBtn.classList.remove('cursor-not-allowed', 'bg-gray-300', 'text-gray-500');
+                    resendOtpBtn.classList.add('bg-[#600018]', 'text-white');
                 } else {
                     timeLeft--;
                     timerElement.textContent = timeLeft;
@@ -99,27 +109,24 @@
             }, 1000);
         }
         startTimer();
-        
-      
 
-resendOtpBtn.addEventListener('click', async () => {
-    startTimer();
-    try {
-        const response = await fetch('/resend-otp', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
+        resendOtpBtn.addEventListener('click', async () => {
+            startTimer();
+            try {
+                const response = await fetch('/resend-otp', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+
+                const result = await response.json();
+                alert(result.message);
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred while resending the OTP');
             }
-           
         });
-
-        const result = await response.json();
-        alert(result.message);
-    } catch (error) {
-        console.error('Error:', error);
-        alert('An error occurred while resending the OTP');
-    }
-});
     </script>
 </body>
 </html>
