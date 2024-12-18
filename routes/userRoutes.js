@@ -11,7 +11,7 @@ const wishlist = require('../controller/userController/wishlist')
 const paymentController = require('../controller/userController/paymentController')
 const invoice = require('../controller/userController/invoice');
 const faildPayment = require('../controller/userController/paymentFailedController')
-
+const { blockusercheckAllRouts } = require('../middlware/blockuser');
 
 router.get('/signup',authController.signupGet);
 router.post('/signup', authController.signuppost);
@@ -25,26 +25,27 @@ router.get('/forgot-password',authController.forgetpassword);
 router.post('/forgot-password',authController.forgetpasswordPost)
 router.get('/reset-password',authController.resetPasswordGet)
 router.post('/reset-password',authController.resentPasswordPost)
-router.get('/about',isuser,authController.aboutpage)
-router.get('/contact',isuser,authController.contactpage)
+router.get('/about',isuser,blockusercheckAllRouts,authController.aboutpage)
+router.get('/contact',isuser,blockusercheckAllRouts,authController.contactpage)
+router.get('/block',authController.blockuserpage)
 
 
 
-router.get('/categorys/:id',isuser, userHome.Getcategories);
-router.get('/products/:id',isuser,userHome.Getproducts); 
-router.get('/',isuser,inlogin.blockuser,userHome.home);
-router.get('/wines',isuser,userHome.Allproducts)
+router.get('/categorys/:id',isuser,blockusercheckAllRouts, userHome.Getcategories);
+router.get('/products/:id',isuser,blockusercheckAllRouts,userHome.Getproducts); 
+router.get('/',isuser,blockusercheckAllRouts,inlogin.blockuser,userHome.home);
+router.get('/wines',isuser,blockusercheckAllRouts,userHome.Allproducts)
 router.post('/cartt',userHome.cart)
 
 
 
 
-router.get('/profile',isuser,inlogin.ensureAuthenticated,userDetails.GetuserDeatiolsHome)
-router.get('/userprofile',isuser,inlogin.ensureAuthenticated,userDetails.GetUserdetails)
+router.get('/profile',blockusercheckAllRouts,isuser,inlogin.ensureAuthenticated,userDetails.GetuserDeatiolsHome)
+router.get('/userprofile',blockusercheckAllRouts,isuser,inlogin.ensureAuthenticated,userDetails.GetUserdetails)
 router.post("/updateDetails",isuser,userDetails.UpdateDetails)
-router.get('/addAddress',isuser,inlogin.ensureAuthenticated,userDetails.addAddress);
+router.get('/addAddress',blockusercheckAllRouts,isuser,inlogin.ensureAuthenticated,userDetails.addAddress);
 router.post('/add-address',isuser,userDetails.addAddressPost)
-router.get('/addresses',isuser,inlogin.ensureAuthenticated,userDetails.getALLaddress) 
+router.get('/addresses',blockusercheckAllRouts,isuser,inlogin.ensureAuthenticated,userDetails.getALLaddress) 
 router.get('/address-edit/:id',isuser,inlogin.ensureAuthenticated,userDetails.renderEditAddress);
 router.post('/addres/edit/:id',isuser,userDetails.editAddressPost);
 router.post('/address-delite/:id',userDetails.deleteAddress)
@@ -52,10 +53,10 @@ router.post('/address-delite/:id',userDetails.deleteAddress)
 
 
 
-router.get('/cart',isuser,addToCart.addtoCartGet)
+router.get('/cart',blockusercheckAllRouts,isuser,addToCart.addtoCartGet)
  router.post('/cart/update',isuser,addToCart.updateQuantity);
 router.post('/cart/remove',isuser,addToCart.removeFromCart)
-router.get('/checkout',isuser,inlogin.ensureAuthenticated,addToCart.getcheckout)
+router.get('/checkout',blockusercheckAllRouts,isuser,inlogin.ensureAuthenticated,addToCart.getcheckout)
 router.post('/placeOrder/:address/:payment',isuser,paymentController.placeOrder)
 router.get('/newaddress',isuser,inlogin.ensureAuthenticated,Order.checkAddaddress);
 router.post('/add-addres',Order.checkaddAddressPost);
@@ -63,7 +64,7 @@ router.get('/editAddress/:id',isuser,inlogin.ensureAuthenticated,Order.renderEdi
 router.post('/address/edit/:id',Order.editAddressPostcheckout)
 
 // router.post('/wishlist',wishlist.updateWishlist);
-router.get('/wishlist',isuser,wishlist.renderWishlistPage)
+router.get('/wishlist',blockusercheckAllRouts,isuser,wishlist.renderWishlistPage)
  router.post('/wishlist/remove',wishlist.postWishlist)
  router.post('/wishlistt',wishlist.updateWishlistt)
 
@@ -86,12 +87,12 @@ router.post('/api/place-pending-order',faildPayment.updateOrder)
 
 
 
-router.get('/orders',isuser,Order.order);
+router.get('/orders',blockusercheckAllRouts,isuser,Order.order);
 router.get('/orders/:id',isuser,Order.ordersList)
 router.get('/sales-report/download/pdf',invoice.downloadPDF)
 router.post('/orders/cancel',paymentController.cancelOrder)
 router.post('/orders/return',paymentController.returnOrder)
-router.get('/wallet',isuser,Order.getWallet)
+router.get('/wallet',blockusercheckAllRouts,isuser,Order.getWallet)
 
 
 module.exports = router;

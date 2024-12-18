@@ -446,3 +446,11 @@ exports.contactpage = async (req, res) => {
 
     }
 }
+
+exports.blockuserpage = async (req,res)=>{
+    try{
+res.render('user/userBlock')
+    }catch(error){
+
+    }
+}

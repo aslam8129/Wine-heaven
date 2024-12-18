@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account Blocked - Wine Heaven</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #ffffff 0%, #ffffff 50%, #ffffff);
+        }
+        .blocked-container {
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center px-4 py-8">
+    <div class="w-full max-w-md">
+        <div class="bg-white rounded-2xl overflow-hidden blocked-container">
+            <div class="bg-gradient-to-br from-[#600018] to-[#000000] p-8 text-white">
+                <div class="flex items-center space-x-4 mb-6">
+                    <img style="width: 60px; height: 75px;" src="/uplods/czNmcy1wcml2YXRlL3Jhd3BpeGVsX2ltYWdlcy93ZWJzaXRlX2NvbnRlbnQvbHIvdjk4Ny0xM2FfMS5wbmc.png" alt="Wine Heaven Logo">
+                    <h1 class="text-2xl font-bold">Wine Heaven</h1>
+                </div>
+
+                <div class="text-center">
+                    <i class="fas fa-ban text-6xl mb-6 text-[#e94560]"></i>
+                    <h2 class="text-3xl font-bold mb-4">Account Blocked</h2>
+                    <p class="text-white/80 text-sm mb-6">
+                        Your account has been temporarily blocked due to suspicious activity.
+                    </p>
+                </div>
+            </div>
+
+            <div class="p-8 space-y-6">
+                <div class="bg-red-50 border border-red-200 p-4 rounded-lg">
+                    <div class="flex items-center">
+                        <i class="fas fa-exclamation-triangle text-red-500 mr-4"></i>
+                        <div>
+                            <!-- <p class="text-red-800 font-semibold"></p> -->
+                            <p class="text-red-600"> Account Blocked ></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-center space-y-4">
+                    <!-- <p class="text-[#600020]">Reason for Block:</p> -->
+                    <p class="text-gray-700"></p>
+                </div>
+
+                <div class="space-y-4">
+                    <a href="/contact-support" class="w-full inline-block text-center py-3 rounded-lg bg-[#600018] hover:bg-[#600020] text-white font-semibold transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]">
+                        Contact Support
+                    </a>
+
+                    <!-- <a href="/login" class="w-full inline-block text-center py-3 rounded-lg border border-[#e94560] text-[#e94560] hover:bg-[#e94560] hover:text-white font-semibold transition-all duration-200">
+                        Return to Login
+                    </a> -->
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

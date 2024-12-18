@@ -16,7 +16,7 @@ exports.blockuser = async (req, res, next) => {
         if (user && user.isBlocked) {
             req.session.destroy((err) => {
                 if (err) {
-                    console.log(err);
+                   
                     return res.redirect('/');
                 }
                 req.flash('error','Your account has been blocked.')
@@ -26,7 +26,11 @@ exports.blockuser = async (req, res, next) => {
            return  next();
         }
     } catch (error) {
-        console.log(error);
+        
         next(error);
     }
 }
+
+
+
+
