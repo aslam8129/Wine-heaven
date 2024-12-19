@@ -33,7 +33,7 @@ router.get('/block',authController.blockuserpage)
 
 router.get('/categorys/:id',isuser,blockusercheckAllRouts, userHome.Getcategories);
 router.get('/products/:id',isuser,blockusercheckAllRouts,userHome.Getproducts); 
-router.get('/',isuser,blockusercheckAllRouts,inlogin.blockuser,userHome.home);
+router.get('/',isuser,inlogin.blockuser,userHome.home);
 router.get('/wines',isuser,blockusercheckAllRouts,userHome.Allproducts)
 router.post('/cartt',userHome.cart)
 

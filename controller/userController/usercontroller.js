@@ -292,7 +292,7 @@ exports.logout = (req, res) => {
                 req.flash('error', 'Failed to logout. Please try again.');
                 return res.redirect('/');
             }
-            return res.redirect('/login');
+            return res.redirect('/');
         });
     } catch (error) {
 

@@ -59,112 +59,169 @@
             </div>
         </div>
 
-        <!-- Tables -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-            <!-- Top Products -->
+        <div class="grid grid-cols-2 gap-6 w-full mt-6"> <!-- Grid with 2 columns -->
             <div class="bg-white p-6 rounded-lg shadow">
-                <h2 class="text-xl font-semibold mb-4">Top 5 Products</h2>
-                <table class="w-full">
-                    <thead>
-                        <tr class="bg-gray-100">
-                            <th class="p-2 text-left">Product</th>
-                            <th class="p-2 text-right">Quantity</th>
-                            <th class="p-2 text-right">Revenue</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <% topProducts.forEach(product => { %>
-                            <tr>
-                                <td class="p-2"><%= product.productDetails.name %></td>
-                                <td class="p-2 text-right"><%= product.totalQuantity %></td>
-                                <td class="p-2 text-right">$<%= product.totalRevenue.toFixed(2) %></td>
-                            </tr>
-                        <% }) %>
-                    </tbody>
-                </table>
+                <h2 class="text-xl font-semibold mb-4">Top Products</h2>
+                <canvas id="productsChart" class="mt-6 w-[300px] h-[200px]"></canvas> <!-- First canvas -->
             </div>
-
-            <!-- Top Categories -->
+        
             <div class="bg-white p-6 rounded-lg shadow">
-                <h2 class="text-xl font-semibold mb-4">Top 5 Categories</h2>
-                <table class="w-full">
-                    <thead>
-                        <tr class="bg-gray-100">
-                            <th class="p-2 text-left">Category</th>
-                            <th class="p-2 text-right">Quantity</th>
-                            <th class="p-2 text-right">Revenue</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <% topCategories.forEach(category => { %>
-                            <tr>
-                                <td class="p-2"><%= category.categoryDetails.name %></td>
-                                <td class="p-2 text-right"><%= category.totalQuantity %></td>
-                                <td class="p-2 text-right">$<%= category.totalRevenue.toFixed(2) %></td>
-                            </tr>
-                        <% }) %>
-                    </tbody>
-                </table>
+                <h2 class="text-xl font-semibold mb-4">Top Categories</h2>
+                <canvas id="categoriesChart" class="mt-6 w-[300px] h-[200px]"></canvas> <!-- Second canvas -->
             </div>
         </div>
-    </div>
+        
+        
 
+<!-- Graph for Categories -->
+
+
+    </div>
+    
     <script>
+        // Helper function to handle chart rendering
+        function renderChart(ctx, chartData, chartOptions) {
+            return new Chart(ctx, {
+                type: chartData.type,
+                data: {
+                    labels: chartData.labels,
+                    datasets: chartData.datasets
+                },
+                options: chartOptions
+            });
+        }
+
         // Sales Chart
         const salesData = <%- JSON.stringify(dailySales) %>;
         const salesCtx = document.getElementById('salesChart').getContext('2d');
-
-        new Chart(salesCtx, {
+        renderChart(salesCtx, {
             type: 'line',
-            data: {
-                labels: salesData.map(item => item._id),
-                datasets: [{
-                    label: 'Daily Revenue',
-                    data: salesData.map(item => item.totalRevenue),
-                    borderColor: 'rgb(75, 192, 192)',
-                    tension: 0.1
-                }]
-            },
-            options: {
-                responsive: true,
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        title: {
-                            display: true,
-                            text: 'Revenue ($)'
-                        }
+            labels: salesData.map(item => item._id),
+            datasets: [{
+                label: 'Daily Revenue',
+                data: salesData.map(item => item.totalRevenue),
+                borderColor: 'rgb(75, 192, 192)',
+                tension: 0.5
+            }]
+        }, {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Revenue ($)'
                     }
                 }
             }
         });
 
-        // Users Chart
-        const usersData = <%- JSON.stringify(dailyUsers) %>;
-        const usersCtx = document.getElementById('usersChart').getContext('2d');
+        // Graph for Top Products (Doughnut)
+        const topProducts = <%- JSON.stringify(topProducts) %>;
+        const productNames = topProducts.map(product => product.productDetails.name);
+        const productQuantities = topProducts.map(product => product.totalQuantity);
+        const productRevenues = topProducts.map(product => product.totalRevenue);
 
-        new Chart(usersCtx, {
-            type: 'bar',
-            data: {
-                labels: usersData.map(item => item._id),
-                datasets: [{
-                    label: 'Daily User Registrations',
-                    data: usersData.map(item => item.totalUsers),
-                    backgroundColor: 'rgba(54, 162, 235, 0.5)'
-                }]
-            },
-            options: {
-                responsive: true,
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        title: {
-                            display: true,
-                            text: 'Number of Users'
-                        }
-                    }
+        renderChart(document.getElementById('productsChart').getContext('2d'), {
+            type: 'doughnut',
+            labels: productNames,
+            datasets: [
+                {
+                    label: 'Quantity',
+                    data: productQuantities,
+                    backgroundColor: [
+    'rgba(240, 128, 128, 0.5)',  // Light Coral
+    'rgba(0, 191, 255, 0.5)',    // Deep Sky Blue
+    'rgba(60, 179, 113, 0.5)',   // Medium Sea Green
+    'rgba(255, 165, 0, 0.5)',    // Orange
+    'rgba(123, 104, 238, 0.5)'   // Medium Slate Blue
+],
+borderColor: [
+    'rgba(240, 128, 128, 1)',    // Coral
+    'rgba(0, 191, 255, 1)',      // Sky Blue
+    'rgba(60, 179, 113, 1)',     // Sea Green
+    'rgba(255, 165, 0, 1)',      // Orange
+    'rgba(123, 104, 238, 1)'     // Slate Blue
+],
+borderWidth: 2,
+
+
+                },
+                {
+                    label: 'Revenue',
+                    data: productRevenues,
+                    backgroundColor: [
+    'rgba(240, 128, 128, 0.5)',  // Light Coral
+    'rgba(0, 191, 255, 0.5)',    // Deep Sky Blue
+    'rgba(60, 179, 113, 0.5)',   // Medium Sea Green
+    'rgba(255, 165, 0, 0.5)',    // Orange
+    'rgba(123, 104, 238, 0.5)'   // Medium Slate Blue
+],
+borderColor: [
+    'rgba(240, 128, 128, 1)',    // Coral
+    'rgba(0, 191, 255, 1)',      // Sky Blue
+    'rgba(60, 179, 113, 1)',     // Sea Green
+    'rgba(255, 165, 0, 1)',      // Orange
+    'rgba(123, 104, 238, 1)'     // Slate Blue
+],
+                    borderWidth: 2,
                 }
-            }
+            ]
+        }, {
+            responsive: true
+        });
+
+        // Graph for Top Categories (Doughnut)
+        const topCategories = <%- JSON.stringify(topCategories) %>;
+        const categoryNames = topCategories.map(category => category.categoryDetails.name);
+        const categoryQuantities = topCategories.map(category => category.totalQuantity);
+        const categoryRevenues = topCategories.map(category => category.totalRevenue);
+
+        renderChart(document.getElementById('categoriesChart').getContext('2d'), {
+            type: 'doughnut',
+            labels: categoryNames,
+            datasets: [
+                {
+                    label: 'Quantity',
+                    data: categoryQuantities,
+                    backgroundColor: [
+    'rgba(240, 128, 128, 0.5)',  // Light Coral
+    'rgba(0, 191, 255, 0.5)',    // Deep Sky Blue
+    'rgba(60, 179, 113, 0.5)',   // Medium Sea Green
+    'rgba(255, 165, 0, 0.5)',    // Orange
+    'rgba(123, 104, 238, 0.5)'   // Medium Slate Blue
+],
+borderColor: [
+    'rgba(240, 128, 128, 1)',    // Coral
+    'rgba(0, 191, 255, 1)',      // Sky Blue
+    'rgba(60, 179, 113, 1)',     // Sea Green
+    'rgba(255, 165, 0, 1)',      // Orange
+    'rgba(123, 104, 238, 1)'     // Slate Blue
+],
+                    borderWidth: 2,
+                },
+                {
+                    label: 'Revenue',
+                    data: categoryRevenues,
+                    backgroundColor: [
+    'rgba(240, 128, 128, 0.5)',  // Light Coral
+    'rgba(0, 191, 255, 0.5)',    // Deep Sky Blue
+    'rgba(60, 179, 113, 0.5)',   // Medium Sea Green
+    'rgba(255, 165, 0, 0.5)',    // Orange
+    'rgba(123, 104, 238, 0.5)'   // Medium Slate Blue
+],
+borderColor: [
+    'rgba(240, 128, 128, 1)',    // Coral
+    'rgba(0, 191, 255, 1)',      // Sky Blue
+    'rgba(60, 179, 113, 1)',     // Sea Green
+    'rgba(255, 165, 0, 1)',      // Orange
+    'rgba(123, 104, 238, 1)'     // Slate Blue
+],
+                    borderWidth: 2,
+                }
+            ]
+        }, {
+            responsive: true
         });
     </script>
 </body>
