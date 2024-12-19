@@ -5,11 +5,15 @@ const blockusercheckAllRouts = async (req, res, next) => {
         const user = await User.findById(req.session.userId);
         
 
+        if (user) {
+           
+    
 
         if (user.isBlocked) {
         
             return res.redirect('/block'); 
         }
+    }
 
         next();
     } catch (error) {
