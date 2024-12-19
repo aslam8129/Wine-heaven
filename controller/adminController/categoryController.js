@@ -47,7 +47,11 @@ exports.addCategory = async (req, res) => {
             return res.redirect('/category/add');
         }
 
-        const existingCategory = await Category.findOne({ name });
+
+        const normalizedCategoryName = name.trim().toUpperCase();
+
+        const existingCategory = await Category.findOne({ name: { $regex: `^${normalizedCategoryName}$`, $options: 'i' } });
+        
         if (existingCategory) {
             req.flash('error', 'This category already exists.');
             return res.redirect('/category/add');

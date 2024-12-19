@@ -49,6 +49,7 @@ router.get('/addresses',blockusercheckAllRouts,isuser,inlogin.ensureAuthenticate
 router.get('/address-edit/:id',isuser,inlogin.ensureAuthenticated,userDetails.renderEditAddress);
 router.post('/addres/edit/:id',isuser,userDetails.editAddressPost);
 router.post('/address-delite/:id',userDetails.deleteAddress)
+router.post('/resetPassword',userHome.resetPassword)
 
 
 

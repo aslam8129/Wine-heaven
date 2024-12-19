@@ -36,6 +36,15 @@
             transform: translateY(-4px);
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
         }
+        .bg-charcoal {
+            background-color:#600018;
+            color: white;
+        }
+        .bg-charcoa {
+            background-color:white;
+            color: #600018;
+        }
+        
     </style>
 </head>
 <body class="bg-gray-50 min-h-screen">
@@ -52,7 +61,7 @@
                         <h1 class="text-3xl font-bold text-gray-800">My Addresses</h1>
                         <p class="text-gray-600 mt-2">Manage your delivery locations</p>
                     </div>
-                    <a href="/addAddress" class="bg-secondary px-6 py-3 rounded-lg font-semibold shadow-md hover:shadow-lg flex items-center gap-2">
+                    <a href="/addAddress" class="bg-secondary bg-green-500 text-white px-6 py-3 rounded-lg font-semibold shadow-md hover:shadow-lg flex items-center gap-2">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
                         </svg>
@@ -101,9 +110,9 @@
                                     <% } %>
                                 </div>
                                 <div class="mt-6 flex gap-3">
-                                    <a href="/address-edit/<%= address._id %>" class="w-full bg-primary py-2 text-center rounded-lg text-sm font-medium">Edit</a>
+                                    <a href="/address-edit/<%= address._id %>" class=" bg-charcoal w-full  py-2 text-center rounded-lg text-sm font-medium">Edit</a>
                                     <form action="/address-delite/<%= address._id %>" method="post" id="delete-form-<%= address._id %>" class="w-full">
-                                        <button type="button" onclick="confirmDelete('<%= address._id %>')" class="w-full border border-gray-300 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50">Delete</button>
+                                        <button type="button" onclick="confirmDelete('<%= address._id %>')" class=" bg-charcoa w-full border  py-2 rounded-lg text-sm font-medium">Delete</button>
                                     </form>
                                 </div>
                             </div>

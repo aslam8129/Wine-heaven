@@ -31,7 +31,7 @@ async function (req, res) {
 
     res.redirect('/');
   } catch (error) {
-    console.error('Error during callback:', error);
+    
     res.status(500).send('Server Error');
   }
 });

@@ -4,6 +4,9 @@ const Product = require('../../model/prodectSchema');
 const Categories = require('../../model/Category');
 const Cart = require('../../model/cartSchema');
 const Wishlist = require('../../model/whishlist')
+const User = require('../../model/userSchema')
+const bcrypt = require('bcryptjs')
+const Offer = require('../../model/offerSchema')
 exports.home = async (req, res) => {
     try {
 
@@ -16,12 +19,15 @@ exports.home = async (req, res) => {
 
 
         const validProducts = products.filter(product => product.category && !product.category.isBlocked && !product.category.isDeleted);
-
+        const offers = await Offer.find({ isActive: true })
+        .populate('offerCategory')
+        .populate('offerProduct');
 
         return res.render('user/home', {
             categories,
             products: validProducts,
             showAllButton: true,
+            offers
         });
     } catch (error) {
 
@@ -205,5 +211,63 @@ exports.cart = async (req, res) => {
     } catch (error) {
 
         res.status(500).json({ success: false, message: 'Internal server error.' });
+    }
+};
+
+
+
+exports.resetPassword = async (req, res) => {
+    try {
+        const { currentPassword, newPassword, confirmNewPassword } = req.body;
+
+        // Fetch the user from the database
+        const user = await User.findById(req.session.userId);
+
+        // Check if the user logged in via Google
+        // if (user.googleId) {
+        //     req.flash('error', 'You logged in with Google, so you cannot reset a password.');
+        //     return res.redirect('/userprofile');
+        // }
+
+        // Verify the current password
+        const isMatch = await bcrypt.compare(currentPassword, user.password);
+        if (!isMatch) {
+            req.flash('error', 'Current password does not match.');
+            return res.redirect('/userprofile');
+        }
+
+        // Check if newPassword and confirmNewPassword match
+        if (newPassword !== confirmNewPassword) {
+            req.flash('error', 'New password and confirm password do not match.');
+            return res.redirect('/userprofile');
+        }
+
+        // Validate the new password length
+        if (newPassword.length < 6) {
+            req.flash('error', 'Password must be at least 6 characters long.');
+            return res.redirect('/userprofile');
+        }
+
+        // Validate password complexity: At least 2 digits and 3 letters
+        const numberCount = (newPassword.match(/\d/g) || []).length;
+        const letterCount = (newPassword.match(/[a-zA-Z]/g) || []).length;
+
+        if (numberCount < 2 || letterCount < 3) {
+            req.flash('error', 'Password must contain at least 2 digits and 3 letters.');
+            return res.redirect('/userprofile');
+        }
+
+        // Hash the new password
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+        // Update the user's password in the database
+        await User.findByIdAndUpdate(req.session.userId, { password: hashedPassword });
+
+        req.flash('success', 'Password updated successfully');
+        res.redirect('/userprofile');
+    } catch (error) {
+        console.error('Error resetting password:', error);
+        req.flash('error', 'An error occurred while resetting the password.');
+        res.redirect('/userprofile');
     }
 };

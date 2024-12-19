@@ -32,9 +32,15 @@ exports.GetUserdetails = async (req, res) => {
 
     const updateSuccess = req.session.updateSuccess;
     delete req.session.updateSuccess;
+    let passwordd = user.password
+   
+    
+    
+    
 
-    res.render('user/user details', { user, updateSuccess });
+    res.render('user/user details', { user, updateSuccess,passwordd });
   } catch (error) {
+console.log(error);
 
     res.status(500).send("Internal Server Error");
   }
@@ -70,7 +76,7 @@ exports.addAddress = async (req, res) => {
 
     res.render('user/Addaddress');
   } catch (error) {
-    console.log(`error in addAddress ${error}`);
+    res.status(500).send(error.message);
 
   }
 }
