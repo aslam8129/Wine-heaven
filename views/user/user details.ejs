@@ -46,8 +46,8 @@
                       
                         <form action="/updateDetails" method="POST" id="editNameForm" onsubmit="return validateName()" class="hidden mt-4">
                             <input type="text" name="name"  maxlength="15"  id="editNameInput" class="border border-gray-300 rounded-md p-2 w-full" value="<%= user.name %>">
-                          
-                            <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded-md mt-2">Save Changes</button>  <span id="nameEr" class="text-red-500 ">Name Maximum Length 15.</span>
+                            <p id="nameEr" class="text-red-500 ">Name Maximum Length 15.</p>
+                            <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded-md mt-2">Save Changes</button>  
                         </form>
                     <% } else { %>
                         <form action="/updateDetails" method="POST" onsubmit="return validateName()" class="flex flex-col md:flex-row">
@@ -74,7 +74,8 @@
                         <button id="editPhoneButton" class="bg-charcoal text-white px-4 py-2 rounded-md mt-2" onclick="enableEditPhone()">Edit</button>
                         <form action="/updateDetails" method="POST" id="editPhoneForm" onsubmit="return validatePhone()" class="hidden mt-4">
                             <input type="text" name="phone" maxlength="10" id="editPhoneInput" class="border border-gray-300 rounded-md p-2 w-full" value="<%= user.phone %>">
-                            <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded-md mt-2">Save Changes</button>  <span id="nameEr" class="text-red-500 ">Number Maximum Length 10.</span>
+                            <p id="nameEr" class="text-red-500 ">Number Maximum Length 10.</p>
+                            <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded-md mt-2">Save Changes</button>  
                         </form>
                     <% } else { %>
                         <form action="/updateDetails" method="POST" onsubmit="return validatePhone()" class="flex flex-col md:flex-row">
