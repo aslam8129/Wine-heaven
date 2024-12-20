@@ -110,7 +110,12 @@
                                         </p>
                                         <p class="text-sm text-gray-600">Quantity: <%= item.productCount %>
                                         </p>
-                                        <p class="text-sm text-gray-600">Price: <i
+                                        <% if(item.productId.productAllDiscount > 0) { %>
+                                            <span class="px-2 py-1 bg-red-50 text-red-600 font-semibold rounded-md text-sm">
+                                             Product Discount <%= item.productId.productAllDiscount %>% OFF
+                                          </span>
+                                          <% } %>
+                                        <p class="text-sm text-gray-600"> Discounted Price: <i
                                                 class="fa-solid fa-indian-rupee-sign"></i>
                                             <%= item.productPrice.toFixed(0) %>
                                         </p>
@@ -164,13 +169,13 @@
                                             <span><i class="fa-solid fa-indian-rupee-sign"></i>100.00</span>
                                         </div>
                                         <div class="flex justify-between" id="discount-container">
-                                            <span>Discount</span>
+                                            <span>Coupon Discount</span>
                                             <span><span id="discount-amount">0.00</span></span>
                                         </div>
                                         <div class="flex justify-between font-bold pt-4 border-t">
                                             <span>Total</span>
                                             <span><i class="fa-solid fa-indian-rupee-sign"></i><span id="total-amount">
-                                                    <%= orderSummary.payableAmount.toFixed(2) %>
+                                                    <%= orderSummary.payableAmount.toFixed(0) %>
                                                 </span></span>
                                         </div>
                                     </div>

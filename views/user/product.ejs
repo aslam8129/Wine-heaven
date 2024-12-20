@@ -193,16 +193,30 @@
                 <h1 class="text-4xl md:text-5xl font-bold main-font mb-2"><%= product.name %></h1>
 
                 <!-- Price Information -->
-                <div class="flex items-center mb-2">
-                    <div class="mt-2 font-medium text-green-700">
-                        <span class="line-through text-gray-500">₹<%= product.price %></span>
-                        <i class="fas fa-rupee-sign "></i> 
-
-                        <%= (product.priceAfterDiscount).toFixed(0) %> .00
+                <div class="flex items-center gap-4 p-2">
+                    <div class="flex items-center space-x-2">
+                        <!-- Original Price -->
+                        <span class="text-gray-500 line-through text-sm">
+                            ₹<%= product.price %>
+                        </span>
+                        
+                        <!-- Discounted Price -->
+                        <span class="text-green-700 font-medium text-lg">
+                            ₹<%= (product.priceAfterDiscount).toFixed(0) %>.00
+                        </span>
                     </div>
-                    <span class="text-red-500 font-bold ml-5">
+                    
+                    <!-- Regular Discount -->
+                    <span class="px-2 py-1 bg-red-50 text-red-600 font-semibold rounded-md text-sm">
                         <%= product.discount %>% OFF
                     </span>
+                    
+                    <!-- Offer Discount (if exists) -->
+                    <% if(product.offerDiscout > 0) { %>
+                        <span class="px-2 py-1 bg-red-50 text-red-600 font-semibold rounded-md text-sm">
+                            Extra Offer Discount <%= product.offerDiscout %>% OFF
+                        </span>
+                    <% } %>
                 </div>
 
                 <!-- Product Status -->

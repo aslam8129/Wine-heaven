@@ -25,7 +25,7 @@
             <div class="bg-white shadow-md rounded-lg   w-full mt-10">
                 <h1 class="text-2xl font-semibold mb-6 text-gray-800">Edit Address</h1>
                 <form id="editAddressForm" action="/addres/edit/<%= address._id %>" method="POST" class="space-y-4" onsubmit="return validateForm()">
-                    <div>
+                    <div>"
                         <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
                         <input type="text" id="name" name="name" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" value="<%= address.name %>" required>
                         <p id="name-error" class="error-message hidden">Name must be at least 3 characters long, cannot start with a space, and must start with an uppercase letter.</p>

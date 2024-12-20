@@ -14,6 +14,14 @@
         .hidden {
             display: none;
         }
+        .bg-charcoal {
+            background-color:#600018;
+            color: white;
+        }
+        .bg-charcoa {
+            background-color:white;
+            color: #600018;
+        }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
@@ -27,27 +35,27 @@
                 <form id="addressForm" action="/add-addres" method="POST" class="space-y-4" onsubmit="return validateForm()">
                     <div>
                         <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
-                        <input type="text" id="name" name="name" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" required>
+                        <input type="text" id="name" name="name" maxlength="15" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" required>
                         <p id="name-error" class="error-message hidden">Name must be at least 3 characters long, cannot start with a space, and must start with an uppercase letter.</p>
                     </div>
                     <div>
                         <label for="mobile" class="block text-sm font-medium text-gray-700">10-digit mobile number</label>
-                        <input type="text" id="mobile" name="mobile" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" required >
+                        <input type="text" id="mobile" name="mobile" maxlength="10" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" required >
                         <p id="mobile-error" class="error-message hidden">Mobile number must be exactly 10 digits and cannot start with 0.</p>
                     </div>
                     <div>
                         <label for="pincode" class="block text-sm font-medium text-gray-700">Pincode</label>
-                        <input type="text" id="pincode" name="pincode" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" required >
+                        <input type="text" id="pincode" name="pincode" maxlength="6" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" required >
                         <p id="pincode-error" class="error-message hidden">Pincode must be exactly 6 digits and cannot start with 0.</p>
                     </div>
                     <div>
                         <label for="address" class="block text-sm font-medium text-gray-700">Address (Area and Street)</label>
-                        <input type="text" id="address" name="address" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" required>
+                        <input type="text" id="address" name="address" maxlength="25" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" required>
                         <p id="address-error" class="error-message hidden">Address must be at least 5 characters long.</p>
                     </div>
                     <div>
                         <label for="city" class="block text-sm font-medium text-gray-700">City/District/Town</label>
-                        <input type="text" id="city" name="city" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" required>
+                        <input type="text" id="city" name="city" maxlength="25" class="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" required>
                         <p id="city-error" class="error-message hidden">City/District/Town must be at least 3 characters long.</p>
                     </div>
                     <div>
@@ -74,7 +82,14 @@
                         </div>
                         <p id="addressType-error" class="error-message hidden">Please select an address type.</p>
                     </div>
-                    <button type="submit" class="w-full py-2 px-4 bg-indigo-600 text-white font-semibold rounded-md shadow-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500">Save</button>
+                        <div class="mt-6 flex gap-3">
+                                  
+                                   
+                                        <button type="submit"  class=" bg-charcoal w-full border  py-2 rounded-lg text-sm font-medium">Save</button>
+                                        <a href="/checkout" class=" bg-charcoal w-full  py-2 text-center rounded-lg text-sm font-medium">Cancel</a>
+                                    
+                                </div>
+                      
                 </form>
             </div>
         </div>
