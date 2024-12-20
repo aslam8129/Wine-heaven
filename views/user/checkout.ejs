@@ -185,54 +185,55 @@
         <script>
 
 
-            let totalAmount = <%= orderSummary.total %>;
-            let originalTotal = <%= orderSummary.total %>;
-            document.getElementById('total-amount').innerText = totalAmount.toFixed(2);
+let totalAmount = <%= orderSummary.total %>;
+let originalTotal = <%= orderSummary.total %>;
+document.getElementById('total-amount').innerText = totalAmount.toFixed(2);
 
+document.getElementById('place-order-form').addEventListener('submit', function (e) {
+    e.preventDefault();
 
-            document.getElementById('place-order-form').addEventListener('submit', function (e) {
-                e.preventDefault();
+    const selectedAddress = document.querySelector('input[name="shipping_address"]:checked');
+    const selectedPayment = document.querySelector('input[name="payment_method"]:checked');
 
-                const selectedAddress = document.querySelector('input[name="shipping_address"]:checked');
-                const selectedPayment = document.querySelector('input[name="payment_method"]:checked');
+    if (!selectedAddress) {
+        Swal.fire({
+            icon: 'error',
+            title: 'No Address Selected',
+            text: 'Please select a shipping address.',
+            confirmButtonColor: '#600018'
+        });
+        return;
+    }
 
-                if (!selectedAddress) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'No Address Selected',
-                        text: 'Please select a shipping address.',
-                        confirmButtonColor: '#600018'
-                    });
-                    return;
-                }
+    if (!selectedPayment) {
+        Swal.fire({
+            icon: 'error',
+            title: 'No Payment Method Selected',
+            text: 'Please select a payment method.',
+            confirmButtonColor: '#600018'
+        });
+        return;
+    }
 
-                if (!selectedPayment) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'No Payment Method Selected',
-                        text: 'Please select a payment method.',
-                        confirmButtonColor: '#600018'
-                    });
-                    return;
-                }
+    const couponCode = document.getElementById('coupon-code').value || '';
+    // Get the current total amount from the display
+    const currentTotal = parseFloat(document.getElementById('total-amount').textContent);
+    
+    const orderData = {
+        addressId: selectedAddress.value,
+        paymentMethod: selectedPayment.value,
+        couponCode: couponCode,
+        totalAmount: currentTotal // Use the current displayed total
+    };
 
-                const couponCode = document.getElementById('coupon-code').value || '';
-                const orderData = {
-                    addressId: selectedAddress.value,
-                    paymentMethod: selectedPayment.value,
-                    couponCode: couponCode,
-                    totalAmount: totalAmount
-                };
+    if (selectedPayment.value === 'Razorpay') {
+        initiateRazorpayPayment(orderData);
+    } else {
+        placeOrder(orderData);
+    }
+});
 
-
-                if (selectedPayment.value === 'Razorpay') {
-                    initiateRazorpayPayment(orderData);
-                } else {
-                    placeOrder(orderData);
-                }
-            });
-
-            function initiateRazorpayPayment(orderData) {
+function initiateRazorpayPayment(orderData) {
     fetch('/payment-render/' + orderData.totalAmount, {
         method: 'POST',
         headers: {
@@ -243,13 +244,12 @@
     .then(paymentData => {
         const options = {
             key: "<%= process.env.RAZOR_KEY_ID %>",
-            amount: orderData.totalAmount * 100,
+            amount: Math.round(orderData.totalAmount * 100), // Ensure amount is rounded
             currency: "INR",
             name: "Wine Heaven",
             description: "Order Payment",
             order_id: paymentData.orderID,
             handler: function (response) {
-                // Success handler
                 orderData.razorpay_payment_id = response.razorpay_payment_id;
                 orderData.razorpay_order_id = response.razorpay_order_id;
                 orderData.razorpay_signature = response.razorpay_signature;
@@ -266,13 +266,11 @@
             console.error('Payment failed event data:', response.error);
 
             const failureDetails = {
-            
                 paymentId: response.error.metadata?.payment_id || '',
                 orderId: response.error.metadata?.order_id || '',
                 code: response.error.code || '',
                 description: response.error.description || '',
                 reason: response.error.reason || 'Unknown failure',
-
                 addressId: orderData.addressId,
                 paymentMethod: orderData.paymentMethod,
                 couponCode: orderData.couponCode,
@@ -297,12 +295,10 @@
             })
             .then(data => {
                 console.log('Server processed payment failure successfully:', data);
-                
                 window.location.href = '/payment-failed';
             })
             .catch(error => {
                 console.error('Error in failure handling fetch:', error);
-              
                 alert('Payment failed. Please try again later.');
             });
         });
@@ -313,211 +309,172 @@
     });
 }
 
-
-            function placeOrder(orderData) {
-                fetch('/api/place-order', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(orderData)
-                })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            window.location.href = "/order-confirmation";
-                        } else {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Order Failed',
-                                text: data.message || 'Failed to place order',
-                                confirmButtonColor: '#600018'
-                            });
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error',
-                            text: 'An error occurred while placing the order',
-                            confirmButtonColor: '#600018'
-                        });
-                    });
-            }
-
-            class CouponManager {
-                constructor() {
-                    this.couponCodeInput = document.getElementById('coupon-code');
-                    this.applyButton = document.getElementById('apply-coupon-btn');
-                    this.removeButton = document.getElementById('remove-coupon-');
-                    this.discountAmountElement = document.getElementById('discount-amount');
-                    this.totalAmountElement = document.getElementById('total-amount');
-                    this.messageElement = document.getElementById('coupon-message');
-                    this.couponAppliedElement = document.getElementById('coupon-applied');
-
-                    this.originalTotal = parseFloat(this.totalAmountElement.textContent.replace(/[^\d.-]/g, ''));
-
-                    this.setupEventListeners();
-                }
-
-                setupEventListeners() {
-                    this.applyButton.addEventListener('click', () => this.applyCoupon());
-                    this.removeButton.addEventListener('click', () => this.removeCoupon());
-                    this.couponCodeInput.addEventListener('input', () => this.resetCouponState());
-                }
-
-                resetCouponState() {
-                    this.clearMessages();
-                    this.enableCouponInput();
-                }
-
-                clearMessages() {
-                    if (this.messageElement) {
-                        this.messageElement.textContent = '';
-                        this.messageElement.classList.add('hidden');
-                    }
-                    if (this.couponAppliedElement) {
-                        this.couponAppliedElement.classList.add('hidden');
-                    }
-                }
-
-                enableCouponInput() {
-                    this.couponCodeInput.disabled = false;
-                    this.applyButton.disabled = false;
-                    this.applyButton.classList.remove('hidden');
-                    this.removeButton.classList.add('hidden');
-                }
-
-                async applyCoupon() {
-                    const couponCode = this.couponCodeInput.value.trim();
-
-                    if (!couponCode) {
-                        this.showError('Please select a coupon');
-                        return;
-                    }
-
-                    try {
-                        const response = await fetch('/api/coupons/validate', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify({
-                                couponCode,
-                                totalAmount: this.originalTotal
-                            })
-                        });
-
-                        const data = await response.json();
-
-                        if (data.success) {
-                            this.applyCouponSuccess(data);
-                        } else {
-                            this.showError(data.message);
-                        }
-                    } catch (error) {
-                        console.error('Coupon Application Error:', error);
-                        this.showError('Error applying coupon');
-                    }
-                }
-
-                applyCouponSuccess(data) {
-    const newTotal = this.originalTotal - data.discount;
-
-  
-    this.discountAmountElement.textContent = `-₹${data.discount.toFixed(0)}`;
-    this.totalAmountElement.textContent = `${newTotal.toFixed(0)}`;
-
-    this.updateRazorpayAmount(newTotal);
-
-  
-    this.couponCodeInput.disabled = true;
-    this.applyButton.classList.add('hidden');
-    this.removeButton.classList.remove('hidden');
-
-    this.showSuccess('Coupon applied successfully');
-}
-
-removeCoupon() {
-  
-    this.totalAmountElement.textContent = `${this.originalTotal.toFixed(0)}`;
-    this.discountAmountElement.textContent = '₹0';
-    this.updateRazorpayAmount(this.originalTotal);
-
-    
-    this.couponCodeInput.disabled = false;
-    this.couponCodeInput.value = '';
-    this.applyButton.classList.remove('hidden');
-    this.removeButton.classList.add('hidden');
-
-  
-    this.clearMessages();
-}
-
-updateRazorpayAmount(newTotal) {
-   
-    if (this.rzp1) {
-        this.rzp1 = null;
-    }
-
-  
-    this.rzp1 = new Razorpay({
-        key: "<%= process.env.RAZOR_KEY_ID %>", 
-        amount: newTotal * 100,  
-        currency: "INR",
-        name: "Wine Heaven",
-        description: "Order Payment",
-        order_id: this.orderID, 
-        handler: (response) => {
-            const orderData = {
-                razorpay_payment_id: response.razorpay_payment_id,
-                razorpay_order_id: response.razorpay_order_id,
-                razorpay_signature: response.razorpay_signature
-            };
-            this.placeOrder(orderData);
+function placeOrder(orderData) {
+    fetch('/api/place-order', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
         },
-        theme: {
-            color: "#600018"
+        body: JSON.stringify(orderData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            window.location.href = "/order-confirmation";
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Order Failed',
+                text: data.message || 'Failed to place order',
+                confirmButtonColor: '#600018'
+            });
         }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'An error occurred while placing the order',
+            confirmButtonColor: '#600018'
+        });
     });
-
-    // Show success message with the updated payment amount
-    this.showSuccess(`Payment amount updated to ₹${newTotal.toFixed(0)}`);
 }
 
-triggerPayment() {
-    if (this.rzp1) {
-        this.rzp1.open();
-    } else {
-        this.showError('Payment instance not initialized');
+class CouponManager {
+    constructor() {
+        this.couponCodeInput = document.getElementById('coupon-code');
+        this.applyButton = document.getElementById('apply-coupon-btn');
+        this.removeButton = document.getElementById('remove-coupon-');
+        this.discountAmountElement = document.getElementById('discount-amount');
+        this.totalAmountElement = document.getElementById('total-amount');
+        this.messageElement = document.getElementById('coupon-message');
+        this.couponAppliedElement = document.getElementById('coupon-applied');
+        
+        this.originalTotal = parseFloat(this.totalAmountElement.textContent.replace(/[^\d.-]/g, ''));
+        
+        this.setupEventListeners();
+    }
+
+    setupEventListeners() {
+        this.applyButton.addEventListener('click', () => this.applyCoupon());
+        this.removeButton.addEventListener('click', () => this.removeCoupon());
+        this.couponCodeInput.addEventListener('input', () => this.resetCouponState());
+    }
+
+    resetCouponState() {
+        this.clearMessages();
+        this.enableCouponInput();
+    }
+
+    clearMessages() {
+        if (this.messageElement) {
+            this.messageElement.textContent = '';
+            this.messageElement.classList.add('hidden');
+        }
+        if (this.couponAppliedElement) {
+            this.couponAppliedElement.classList.add('hidden');
+        }
+    }
+
+    enableCouponInput() {
+        this.couponCodeInput.disabled = false;
+        this.applyButton.disabled = false;
+        this.applyButton.classList.remove('hidden');
+        this.removeButton.classList.add('hidden');
+    }
+
+    async applyCoupon() {
+        const couponCode = this.couponCodeInput.value.trim();
+
+        if (!couponCode) {
+            this.showError('Please select a coupon');
+            return;
+        }
+
+        try {
+            const response = await fetch('/api/coupons/validate', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    couponCode,
+                    totalAmount: this.originalTotal
+                })
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                this.applyCouponSuccess(data);
+            } else {
+                this.showError(data.message);
+            }
+        } catch (error) {
+            console.error('Coupon Application Error:', error);
+            this.showError('Error applying coupon');
+        }
+    }
+
+    applyCouponSuccess(data) {
+        const newTotal = this.originalTotal - data.discount;
+        
+        // Update the display values
+        this.discountAmountElement.textContent = `-₹${data.discount.toFixed(0)}`;
+        this.totalAmountElement.textContent = `${newTotal.toFixed(0)}`;
+        
+        // Store the new total in the window object
+        window.currentTotal = newTotal;
+        
+        // Disable and update UI elements
+        this.couponCodeInput.disabled = true;
+        this.applyButton.classList.add('hidden');
+        this.removeButton.classList.remove('hidden');
+
+        this.showSuccess('Coupon applied successfully');
+    }
+
+    removeCoupon() {
+        // Reset to original total
+        this.totalAmountElement.textContent = `${this.originalTotal.toFixed(0)}`;
+        this.discountAmountElement.textContent = '₹0';
+        
+        // Update the stored total
+        window.currentTotal = this.originalTotal;
+        
+        // Reset UI elements
+        this.couponCodeInput.disabled = false;
+        this.couponCodeInput.value = '';
+        this.applyButton.classList.remove('hidden');
+        this.removeButton.classList.add('hidden');
+
+        this.clearMessages();
+    }
+
+    showError(message) {
+        if (this.messageElement) {
+            this.messageElement.textContent = message;
+            this.messageElement.className = 'mt-2 text-sm text-red-600';
+            this.messageElement.classList.remove('hidden');
+        }
+    }
+
+    showSuccess(message) {
+        if (this.messageElement) {
+            this.messageElement.textContent = message;
+            this.messageElement.className = 'mt-2 text-sm text-green-600';
+            this.messageElement.classList.remove('hidden');
+        }
+        if (this.couponAppliedElement) {
+            this.couponAppliedElement.classList.remove('hidden');
+        }
     }
 }
 
-showError(message) {
-    if (this.messageElement) {
-        this.messageElement.textContent = message;
-        this.messageElement.className = 'mt-2 text-sm text-red-600';
-        this.messageElement.classList.remove('hidden');
-    }
-}
-
-showSuccess(message) {
-    if (this.messageElement) {
-        this.messageElement.textContent = message;
-        this.messageElement.className = 'mt-2 text-sm text-green-600';
-        this.messageElement.classList.remove('hidden');
-    }
-    if (this.couponAppliedElement) {
-        this.couponAppliedElement.classList.remove('hidden');
-    }
-}
-}
-
-            
-           document.addEventListener('DOMContentLoaded', () => {
-               new CouponManager();
-           });
+document.addEventListener('DOMContentLoaded', () => {
+    new CouponManager();
+}); 
         </script>
 
         <%- include('../partials/userFooter.ejs') %>

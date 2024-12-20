@@ -171,6 +171,17 @@
   <%- include('../partials/userFooter.ejs') %>
 
   <script>
+
+
+window.onload = function () {
+        // Check if the reload flag is set
+        if (localStorage.getItem('reloadCartPage') === 'true') {
+            localStorage.removeItem('reloadCartPage'); // Clear the flag
+            window.location.reload(); // Reload the cart page
+        }
+    };
+
+
     document.addEventListener('DOMContentLoaded', () => {
       const quantityInputs = document.querySelectorAll('.quantity-input');
 

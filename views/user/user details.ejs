@@ -97,11 +97,11 @@
                 <% if (success_msg) { %>
                     <p id="successMsg" class="text-green-500 text-center"><%= success_msg %></p>
                 <% } %>
-                <button id="resetPasswordButton" class="bg-blue-500 text-white px-4 py-2 rounded-md mt-4" onclick="showResetPasswordForm()">Reset Password</button>
+                <button id="resetPasswordButton" class="bg-charcoal text-white px-4 py-2 rounded-md mt-4" onclick="showResetPasswordForm()">Reset Password</button>
 
                 <!-- Password Reset Form (Hidden by default) -->
                 <form action="/resetPassword" method="POST" id="resetPasswordForm" class="hidden mt-4">
-                    <label for="currentPassword" class="block text-sm font-medium text-gray-700">Current Password</label>
+                    <label for="currentPassword" class="block text-sm font-medium text-gray-1000">Current Password</label>
                     <input 
                         type="password" 
                         name="currentPassword" 
@@ -111,7 +111,7 @@
                         required
                     >
                 
-                    <label for="newPassword" class="block text-sm font-medium text-gray-700 mt-4">New Password</label>
+                    <label for="newPassword" class="block text-sm font-medium text-gray-1000 mt-4">New Password</label>
                     <input 
                         type="password" 
                         name="newPassword" 
@@ -121,7 +121,7 @@
                         required
                     >
                 
-                    <label for="confirmNewPassword" class="block text-sm font-medium text-gray-700 mt-4">Confirm New Password</label>
+                    <label for="confirmNewPassword" class="block text-sm font-medium text-gray-1000 mt-4">Confirm New Password</label>
                     <input 
                         type="password" 
                         name="confirmNewPassword" 
@@ -137,6 +137,13 @@
                     >
                         Save New Password
                     </button>
+                    <button 
+                    type="button" 
+                    class="bg-red-500 text-white px-4 py-2 rounded-md mt-4"
+                    onclick="cancelResetPasswordForm()"
+                >
+                    Cancel
+                </button>
                 </form>
                 
                
@@ -169,6 +176,11 @@
 
 <script>
 
+    
+ function cancelResetPasswordForm() {
+            document.getElementById('resetPasswordForm').classList.add('hidden');
+            document.getElementById('resetPasswordButton').classList.remove('hidden');
+        }
 
 function validateName() {
         const nameInput = document.querySelector('input[name="name"]');
@@ -194,7 +206,7 @@ function validateName() {
        
         if (errorMsg) errorMsg.style.display = 'none';
         if (successMsg) successMsg.style.display = 'none';
-    }, 60000); // 60000 milliseconds = 1 minute
+    }, 3000); 
 </script>
 
     <script>

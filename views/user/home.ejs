@@ -3,6 +3,10 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.7.32/sweetalert2.min.js"></script>
 
     <style>
+       .smooth-scroll {
+    scroll-behavior: smooth;
+  }
+
         .bg-video {
             position: absolute;
             top: 0;
@@ -114,12 +118,14 @@
                     Our Story
                 </a>
             </div>
-            <div class="absolute bottom-10  left-1/2 transform -translate-x-1/2 scroll-indicator animate-bounce">
+            <a href="#produc" id="scrollLink">
+            <div class="absolute bottom- -100  left-1/2 transform -translate-x-1/2 scroll-indicator animate-bounce">
                 <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M19 14l-7 7m0 0l-7-7m7 7V3" />
                 </svg>
             </div>
+        </a>
         </div>
     </section>
 
@@ -153,12 +159,14 @@
                         <% }); %>
                 </div>
             </div>
-        </div>
+        </div >
     </div>
 
 
     <!-- Trending Products -->
-    <div class="bg-white py-16">
+     <div id="produc"></div>
+     <div ></div>
+    <div class="  py-16 " >
         <div class="container mx-auto xl:max-w-7xl px-4">
             <h2 class="text-5xl font-bold text-center mb-12 text-black">Featured Wines</h2>
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
@@ -228,6 +236,36 @@
     </div>
 
     <script>
+
+function smoothScrollTo(target, duration) {
+        const targetElement = document.querySelector(target);
+        const targetPosition = targetElement.getBoundingClientRect().top;
+        const startPosition = window.pageYOffset;
+        const startTime = performance.now();
+
+        function scrollAnimation(currentTime) {
+            const timeElapsed = currentTime - startTime;
+            const run = easeInOut(timeElapsed, startPosition, targetPosition, duration);
+            window.scrollTo(0, run);
+            if (timeElapsed < duration) {
+                requestAnimationFrame(scrollAnimation);
+            }
+        }
+
+        function easeInOut(t, b, c, d) {
+            let tAdjusted = t / (d / 2);
+            if (tAdjusted < 1) return (c / 2) * tAdjusted * tAdjusted + b;
+            tAdjusted--;
+            return (-c / 2) * (tAdjusted * (tAdjusted - 2) - 1) + b;
+        }
+
+        requestAnimationFrame(scrollAnimation);
+    }
+
+    document.getElementById('scrollLink').addEventListener('click', function(event) {
+        event.preventDefault();
+        smoothScrollTo('#produc', 2000); // Duration in milliseconds (1000ms = 1 second)
+    });
 async function addtocart(productId, tartget) {
    
     try {

@@ -237,10 +237,13 @@ exports.order = async (req, res) => {
 exports.ordersList = async (req, res) => {
     try {
         const id = req.params.id
+      
+        
         const orders = await Order.findById(id)
-            .populate('shippingAddress')
-            .populate('items.productId')
-            .exec();
+        .populate('shippingAddress')
+        .populate('items.productId')
+        .exec();
+    
 
         res.render('user/listOrder', {
             orders,

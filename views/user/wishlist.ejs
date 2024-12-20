@@ -97,6 +97,8 @@
     </div>
 
     <script>
+
+localStorage.setItem('reloadCartPage', 'true');
         async function removeFromWishlist(productId) {
             try {
                 const response = await fetch('/wishlist/remove', {
