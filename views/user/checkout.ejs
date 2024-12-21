@@ -57,10 +57,12 @@
                                 </label>
 
                                 <!-- Edit Address Link -->
-                                <a href="/editAddress/<%= address._id %>"
-                                    class="text-blue-600 hover:text-blue-700 text-sm ml-4">
-                                    Edit
-                                </a>
+                                <a 
+                                href="/editAddress/<%= address._id %>" 
+                                class="text-blue-600 hover:text-blue-700 text-sm mt-0 font-medium px-4 py-2 rounded-md border border-blue-600 hover:bg-blue-100 transition duration-300 ease-in-out"
+                              >
+                                Edit
+                              </a>
                             </div>
                             <% }); %>
                     </div>
@@ -115,10 +117,20 @@
                                              Product Discount <%= item.productId.productAllDiscount %>% OFF
                                           </span>
                                           <% } %>
-                                        <p class="text-sm text-gray-600"> Discounted Price: <i
+                                        
+                                            <p class="text-gray-500 text-sm">Discounted Price:
+                                                <%if(item.productId.discount>0 ){%>
+                                                 <i
                                                 class="fa-solid fa-indian-rupee-sign"></i>
-                                            <%= item.productPrice.toFixed(0) %>
-                                        </p>
+                                             
+                                                    <span class="line-through">₹<%= item.productId.price*item.productCount %></span>
+                                                    <%}%>
+                                                 
+                                                <span class="font-semibold rounded-md">₹<%= (item.productId.priceAfterDiscount*item.productCount).toFixed(0) %>.00</span>
+                                            </p>
+                                            
+                                        <!-- Discounted Price -->
+                                        
                                     </div>
                                 </div>
                                 <% }); %>

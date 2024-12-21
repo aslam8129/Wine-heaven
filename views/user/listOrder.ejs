@@ -144,8 +144,12 @@
                                                     <span class="line-through text-gray-500 mr-2">₹<%= item.productId.price*item.productCount %></span>
                                                     <div class="flex items-center">
                                                         <i class="fas fa-rupee-sign mr-1"></i>
-                                                        <%= (item.productId.priceAfterDiscount * item.productCount).toFixed(2) %> 
-                                                        <p class="text-sm text-green-500 ml-2"><%= item.productId.discount %>% off</p>
+                                                        
+                                                        <%= (Number(item.productPrice) * Number(item.productCount)).toFixed(0) %>.00 %> 
+                                                        <%if(item.productId.discount>0){%>
+                                                            <p class="text-sm text-green-500 ml-2"><%= item.productId.discount %>% off</p>
+                                                            <%}%>
+                                                       
                                                     </div>
                                                 </div>
                                                 <span class="inline-block mt-2 status-badge <%= 
@@ -210,10 +214,10 @@
                                         </div>
                                         <% if (orders.discount > 0) { %>
                                             <div class="flex justify-between text-sm text-green-600">
-                                                <span>Discount</span>
+                                                <span>Coupon Discount</span>
                                                 <span>
                                                     -<i class="fas fa-rupee-sign"></i> 
-                                                    <%= orders.discount.toFixed(2) %>
+                                                    <%= orders.discount.toFixed(0) %>.00
                                                 </span>
                                             </div>
                                         <% } %>
@@ -222,7 +226,7 @@
                                                 <span class="text-gray-900">Total</span>
                                                 <span class="text-gray-900">
                                                     <i class="fas fa-rupee-sign"></i> 
-                                                    <%= (orders.totalAmount-orders.discount).toFixed(2) %>
+                                                    <%= (orders.totalAmount).toFixed(0) %>.00
                                                 </span>
                                             </div>
                                         </div>

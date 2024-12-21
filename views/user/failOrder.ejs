@@ -37,9 +37,9 @@
                                 <h3 class="font-medium"><%= item.productName %></h3>
                                 <p class="text-gray-800">category :<%= item.productId.category.name %></p>
                                 <p class="text-gray-600">Quantity: <%= item.productCount %></p>
-                                <p class="text-gray-800">
-                                    <span class="line-through text-gray-500">₹<%= item.productId.price %></span>
-                                    <span class="ml-2 text-gray-600">₹<%= item.productPrice.toFixed(0) %>.00</span>
+                                <p class="text-gray-800">Price :
+                                    <span class="line-through text-gray-500">₹<%= item.productId.price*item.productCount %></span>
+                                    <span class="ml-2 text-gray-600">₹<%= (item.productPrice*item.productCount).toFixed(0) %>.00</span>
                                 </p>
                                 
                             </div>
@@ -55,22 +55,22 @@
             <div class="space-y-3 mb-6">
                 <div class="flex justify-between">
                     <span class="text-gray-600">Subtotal</span>
-                    <span class="font-medium">₹<%= order.totalAmount + order.discount -100 .toFixed(2)%></span>
+                    <span class="font-medium">₹<%= order.totalAmount + order.discount -100 .toFixed(0)%></span>
                 </div>
                 <div class="space-y-3 mb-6">
                     <div class="flex justify-between">
                         <span class="text-red-600">Shipping</span>
-                        <span class="font-medium text-red-600">₹ 100</span>
+                        <span class="font-medium text-red-600">₹ 100.00</span>
                     </div>
                 <% if(order.discount > 0) { %>
                     <div class="flex justify-between">
                         <span class="text-gray-600">Discount</span>
-                        <span class="font-medium text-green-600">-₹<%= order.discount %></span>
+                        <span class="font-medium text-green-600">-₹<%= order.discount.toFixed(0) %>.00</span>
                     </div>
                 <% } %>
                 <div class="flex justify-between text-lg font-semibold">
                     <span>Total</span>
-                    <span>₹<%= order.totalAmount .toFixed(0) %></span>
+                    <span>₹<%= order.totalAmount .toFixed(0) %>.00</span>
                 </div>
             </div>
 

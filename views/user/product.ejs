@@ -207,10 +207,11 @@
                     </div>
                     
                     <!-- Regular Discount -->
+                    <% if(product.discount > 0) { %>
                     <span class="px-2 py-1 bg-red-50 text-red-600 font-semibold rounded-md text-sm">
                         <%= product.discount %>% OFF
                     </span>
-                    
+                    <% } %>
                     <!-- Offer Discount (if exists) -->
                     <% if(product.offerDiscout > 0) { %>
                         <span class="px-2 py-1 bg-red-50 text-red-600 font-semibold rounded-md text-sm">
@@ -219,12 +220,6 @@
                     <% } %>
                 </div>
 
-                <!-- Product Status -->
-                <!-- <div class="mb-6">
-                    <span class="text-xl font-bold <%= product.status === 'available' ? 'text-green-500' : 'text-red-900' %>">
-                        Status: <%= product.status %>
-                    </span>
-                </div> -->
 
                 <!-- Product Description -->
                 <div class="mb-3">

@@ -61,9 +61,14 @@ exports.validateCoupon = async (req, res) => {
                 message: 'Invalid or expired coupon code',
             });
         }
-
         const todayDate = new Date();
-        if (todayDate > coupon.validUntil) {
+        const validUntil = new Date(coupon.validUntil);
+        
+        
+        const today = new Date(todayDate.setHours(0, 0, 0, 0));
+        const validUntilDate = new Date(validUntil.setHours(0, 0, 0, 0));
+        
+        if (today > validUntilDate) {
             return res.status(400).json({
                 success: false,
                 message: 'Coupon has expired',
@@ -170,12 +175,18 @@ exports.placeOrder = async (req, res) => {
             }
 
             const todayDate = new Date();
-            if (todayDate > coupon.validUntil) {
-                return res.status(400).json({
-                    success: false,
-                    message: 'Coupon has expired',
-                });
-            }
+        const validUntil = new Date(coupon.validUntil);
+        
+        
+        const today = new Date(todayDate.setHours(0, 0, 0, 0));
+        const validUntilDate = new Date(validUntil.setHours(0, 0, 0, 0));
+        
+        if (today > validUntilDate) {
+            return res.status(400).json({
+                success: false,
+                message: 'Coupon has expired',
+            });
+        }
 
             if (coupon.usageLimit !== null && coupon.usedCount >= coupon.usageLimit) {
                 return res.status(400).json({
@@ -210,6 +221,8 @@ exports.placeOrder = async (req, res) => {
         }
 
         const finalAmount = totalAmount - discount;
+      
+        
         if (paymentMethod === 'Cash on Delivery') {
             if (finalAmount > 1000) {
                 return res.status(400).json({

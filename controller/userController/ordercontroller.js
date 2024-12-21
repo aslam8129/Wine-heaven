@@ -243,7 +243,7 @@ exports.ordersList = async (req, res) => {
         .populate('shippingAddress')
         .populate('items.productId')
         .exec();
-    
+;
 
         res.render('user/listOrder', {
             orders,
