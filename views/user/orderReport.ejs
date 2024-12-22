@@ -1,0 +1,64 @@
+<!-- views/orderReport.ejs -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Order Report</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+        .total {
+            text-align: right;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Order Report</h1>
+    <p><strong>Order ID:</strong> <%= order._id %></p>
+    <p><strong>Customer:</strong> <%= order.userId.name %></p>
+    <p><strong>Email:</strong> <%= order.userId.email %></p>
+    <p><strong>Total Amount:</strong> $<%= order.totalAmount %></p>
+    <p><strong>Payment Method:</strong> <%= order.paymentMethod %></p>
+    <p><strong>Order Coupon Offer:</strong> <%= order.discount || 0 %></p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Product Name</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Final Price</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% order.items.forEach(item => { %>
+            <tr>
+                <td><%= item.productId.name || 'N/A' %></td>
+                <td>$<%= item.productPrice.toFixed(2) %></td>
+                <td><%= item.productCount %></td>
+                <td>$<%= (item.productPrice * item.productCount - item.productDiscount).toFixed(2) %></td>
+            </tr>
+            <% }) %>
+        </tbody>
+    </table>
+</body>
+</html>

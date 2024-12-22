@@ -217,7 +217,8 @@ exports.order = async (req, res) => {
         const orders = await Order.find({ userId })
             .populate('items.productId', 'name image')
             .skip(skip)
-            .limit(limit);
+            .limit(limit)
+            .sort({ createdAt: -1 }); 
 
 
         res.render('user/orders', {
