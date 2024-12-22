@@ -13,7 +13,8 @@
         <div class="max-w-2xl mx-auto bg-white rounded-lg shadow-md">
             <div class="p-6">
                 <h1 class="text-2xl font-bold mb-6">Add Coupon</h1>
-
+                <% if (error_msg) { %><p class="items-center text-red-500"><%= error_msg %></p><% } %>
+                <% if (success_msg) { %><p class=" items-center text-green-500"><%= success_msg %></p><% } %>
                 <% if (errors && errors.length > 0) { %>
                     <div class="bg-red-50 border-l-4 border-red-500 p-4 mb-6">
                         <div class="flex">
@@ -25,7 +26,7 @@
                             <div class="ml-3">
                                 <ul class="list-disc list-inside">
                                     <% errors.forEach(error => { %>
-                                        <li class="text-red-700"><%= error.msg %></li>
+                                        <li class="text-red-700 mb-6"><%= error.msg %></li>
                                     <% }) %>
                                 </ul>
                             </div>
@@ -33,7 +34,7 @@
                     </div>
                 <% } %>
 
-                <form id="couponForm" action="/admin/coupons" method="POST" class="space-y-6">
+                <form id="couponForm" action="/admin/coupons" method="POST" class="space-y-6 mt-6">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <!-- Coupon Code -->
                         <div class="space-y-2">
@@ -106,22 +107,6 @@
                             <p id="minimumPurchaseError" class="hidden text-red-500 text-sm">Must be non-negative</p>
                         </div>
 
-                        <!-- Maximum Discount -->
-                        <!-- <div class="space-y-2">
-                            <label for="maximumDiscount" class="block text-sm font-medium text-gray-700">
-                                Maximum Discount
-                            </label>
-                            <input type="number" 
-                                id="maximumDiscount" 
-                                name="maximumDiscount" 
-                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 sm:text-sm"
-                                min="0" 
-                                step="0.01"
-                                placeholder="Optional"
-                            >
-                            <p id="maximumDiscountError" class="hidden text-red-500 text-sm">Must be non-negative</p>
-                        </div> -->
-
                         <!-- Valid From -->
                         <div class="space-y-2">
                             <label for="validFrom" class="block text-sm font-medium text-gray-700">
@@ -158,13 +143,15 @@
                                 Usage Limit
                             </label>
                             <input type="number" 
-                                id="usageLimit" 
+                                id="usageLimit"
+                                max="20" 
                                 name="usageLimit" 
                                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 sm:text-sm"
                                 min="1"
                                 placeholder="Optional"
+                                required
                             >
-                            <p id="usageLimitError" class="hidden text-red-500 text-sm">Must be at least 1</p>
+                            <p id="usageLimitError" class="hidden text-red-500 text-sm">Must be at least 1    and Maximum count 20</p>
                         </div>
                     </div>
 
@@ -185,7 +172,18 @@
         document.addEventListener('DOMContentLoaded', function() {
             const form = document.getElementById('couponForm');
             const inputs = form.querySelectorAll('input, select');
-
+            
+            // Get today's date in YYYY-MM-DD format
+            const today = new Date().toISOString().split('T')[0];
+            
+            // Set the minimum date for validFrom and validUntil to today's date
+            const validFrom = document.getElementById('validFrom');
+            const validUntil = document.getElementById('validUntil');
+    
+            validFrom.setAttribute('min', today);
+            validUntil.setAttribute('min', today);
+    
+            // Function to show error messages
             function showError(input, show) {
                 const errorElement = document.getElementById(`${input.id}Error`);
                 if (errorElement) {
@@ -193,10 +191,11 @@
                 }
                 input.classList.toggle('border-red-500', show);
             }
-
+    
+            // Validate individual fields
             function validateField(input) {
                 let isValid = true;
-
+    
                 switch(input.id) {
                     case 'code':
                         isValid = /^[A-Za-z0-9]{4,12}$/.test(input.value);
@@ -204,43 +203,40 @@
                     case 'discountAmount':
                         const type = document.getElementById('discountType').value;
                         if (type === 'percentage') {
-                            isValid = input.value > 0 && input.value <= 99;
+                            isValid = input.value > 0 && input.value <= 80;
                         } else {
                             isValid = input.value > 0;
                         }
                         break;
                     case 'validUntil':
-                        const validFrom = document.getElementById('validFrom').value;
-                        if (validFrom && input.value) {
-                            isValid = new Date(input.value) >= new Date(validFrom);
+                        const validFromValue = document.getElementById('validFrom').value;
+                        if (validFromValue && input.value) {
+                            isValid = new Date(input.value) >= new Date(validFromValue);
                         }
                         break;
                     default:
                         isValid = input.checkValidity();
                 }
-
+    
                 showError(input, !isValid);
                 return isValid;
             }
-
+    
             // Set up date constraints
-            const validFrom = document.getElementById('validFrom');
-            const validUntil = document.getElementById('validUntil');
-
             validFrom.addEventListener('change', function() {
                 validUntil.min = this.value;
                 validateField(validUntil);
             });
-
+    
             validUntil.addEventListener('change', function() {
                 validFrom.max = this.value;
                 validateField(validFrom);
             });
-
+    
             // Set up discount type constraints
             const discountType = document.getElementById('discountType');
             const discountAmount = document.getElementById('discountAmount');
-
+    
             discountType.addEventListener('change', function() {
                 if (this.value === 'percentage') {
                     discountAmount.max = '99';
@@ -251,13 +247,13 @@
                 }
                 validateField(discountAmount);
             });
-
+    
             // Real-time validation
             inputs.forEach(input => {
                 input.addEventListener('input', () => validateField(input));
                 input.addEventListener('blur', () => validateField(input));
             });
-
+    
             // Form submission validation
             form.addEventListener('submit', function(event) {
                 let isValid = true;
@@ -267,12 +263,13 @@
                         isValid = false;
                     }
                 });
-
+    
                 if (!isValid) {
                     event.preventDefault();
                 }
             });
         });
     </script>
+    
 </body>
 </html>

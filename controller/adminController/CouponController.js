@@ -46,6 +46,26 @@ exports.addCoupon = async (req, res) => {
     try {
         const { code, discountType, discountAmount, minimumPurchase, maximumDiscount, validFrom, validUntil, usageLimit } = req.body;
 
+
+        if(discountType === 'fixed'){
+            console.log('vannee');
+            
+            if(minimumPurchase/2<discountAmount){
+                req.flash('error', 'The discount amount for fixed type must not exceed 50% of the minimum purchase. ');
+                return res.redirect('/admin/coupons/add');
+            }
+
+        }
+
+
+    const existingCoupon = await Coupon.findOne({ code: code.toUpperCase() });
+    if (existingCoupon) {
+        req.flash('error', 'Coupon code already exists');
+        return res.redirect('/admin/coupons/add');
+    }
+
+
+
         const coupon = new Coupon({
             code: code.toUpperCase(),
             discountType,
@@ -60,6 +80,7 @@ exports.addCoupon = async (req, res) => {
         await coupon.save();
         res.redirect('/admin/coupons');
     } catch (error) {
+
 
         res.status(500).send('Server error');
     }

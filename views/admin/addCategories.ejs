@@ -55,7 +55,7 @@
         <form id="form-category" action="/category/add" method="POST" enctype="multipart/form-data" onsubmit="return validateForm()">
             <div class="mb-4">
                 <label for="name" class="block text-gray-700">Category Name:</label>
-                <input type="text" id="name" name="name" class="border border-gray-300 rounded-md p-2 w-full">
+                <input type="text" id="name" name="name" maxlength="22" class="border border-gray-300 rounded-md p-2 w-full">
                 <p id="name-error" class="text-red-500 text-sm mt-1 hidden">Category name must be at least 3 characters long, cannot start with a space, and must start with an uppercase letter.</p>
             </div>
             <div class="mb-4">

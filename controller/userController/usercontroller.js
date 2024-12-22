@@ -325,7 +325,8 @@ exports.forgetpasswordPost = async (req, res) => {
         const user = await User.findOne({ email });
 
         if (!user) {
-            return res.status(404).send('Email not found');
+            req.flash('error', 'Email not found.');
+            return res.redirect('/forgot-password')
 
         }
 

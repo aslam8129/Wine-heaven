@@ -73,12 +73,12 @@
         <form id="productForm" enctype="multipart/form-data">
             <div class="mb-4">
                 <label for="name" class="block">Product Name</label>
-                <input id="name" type="text" name="name" required class="w-full border p-2">
-                <p id="name-error" class="error-message hidden">Product name must start with an uppercase letter and be at least 4 characters long.</p>
+                <input id="name" type="text" name="name" maxlength="50" required class="w-full border p-2">
+                <p id="name-error" class="error-message hidden">Product name must start with an uppercase letter and be at least 4 characters long .</p>
             </div>
             <div class="mb-4">
                 <label for="price" class="block">Price</label>
-                <input id="price" type="number" name="price" required class="w-full border p-2">
+                <input id="price" type="number" name="price" max="50000" required class="w-full border p-2">
                 <p id="price-error" class="error-message hidden">Price must be greater than 0.</p>
             </div>
             <div class="mb-4">
@@ -89,20 +89,21 @@
                         <option value="<%= category._id %>"><%= category.name %></option>
                     <% }) %>
                 </select>
+                <p id="category-error" class="error-message hidden">Category is required.</p>
             </div>
             <div class="mb-4">
                 <label for="stock" class="block">Stock</label>
-                <input id="stock" type="number" name="stock" required class="w-full border p-2">
+                <input id="stock" type="number" max="1000" name="stock" required class="w-full border p-2">
                 <p id="stock-error" class="error-message hidden">Stock must be 0 or greater.</p>
             </div>
             <div class="mb-4">
                 <label for="discount" class="block">Discount</label>
                 <input id="discount" type="number" name="discount" class="w-full border p-2">
-                <p id="discount-error" class="error-message hidden">Discount must be 0 or greater.</p>
+                <p id="discount-error" class="error-message hidden">Discount must be 0 or greater and less than or equal to 90.</p>
             </div>
             <div class="mb-4">
                 <label for="description" class="block">Description</label>
-                <textarea id="description" name="description" rows="4" required class="w-full border p-2"></textarea>
+                <textarea id="description" maxlength="250" name="description" rows="4" required class="w-full border p-2"></textarea>
                 <p id="description-error" class="error-message hidden">Description must be at least 10 characters long.</p>
             </div>
             <div class="mb-4">
@@ -174,11 +175,9 @@
             .then(data => {
                 console.log(data);
                 window.location.href = '/admin/products';
-                // Handle the response data
             })
             .catch(error => {
                 console.error(error);
-                // Handle the error
             });
         });
 
@@ -243,17 +242,18 @@
             const discount = document.getElementById('discount').value;
             const description = document.getElementById('description').value;
             const stock = document.getElementById('stock').value;
+            const category = document.getElementById('category').value;
 
             const nameError = document.getElementById('name-error');
             const priceError = document.getElementById('price-error');
             const discountError = document.getElementById('discount-error');
             const descriptionError = document.getElementById('description-error');
             const stockError = document.getElementById('stock-error');
+            const categoryError = document.getElementById('category-error');
 
             // Product name validation
             if (!/^[A-Z]/.test(name) || name.length < 4) {
                 nameError.classList.remove('hidden');
-                
                 isValid = false;
             } else {
                 nameError.classList.add('hidden');
@@ -268,7 +268,7 @@
             }
 
             // Discount validation
-            if (discount < 0) {
+            if (discount < 0 || discount > 90) {
                 discountError.classList.remove('hidden');
                 isValid = false;
             } else {
@@ -289,6 +289,14 @@
                 isValid = false;
             } else {
                 stockError.classList.add('hidden');
+            }
+
+            // Category validation
+            if (!category) {
+                categoryError.classList.remove('hidden');
+                isValid = false;
+            } else {
+                categoryError.classList.add('hidden');
             }
 
             return isValid;

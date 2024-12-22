@@ -69,6 +69,9 @@
         <%- include('../partials/adminSidebar.ejs') %>
         <div class=" ml-0 md:ml-64">
         <h2 class="text-2xl font-semibold mb-4">Edit Product</h2>
+
+        <% if (error_msg) { %><p class="text-red-500"><%= error_msg %></p><% } %>
+        <% if (success_msg) { %><p class="text-green-500"><%= success_msg %></p><% } %>
         <form action="/admin/products/edit/<%= product._id %>" method="POST" enctype="multipart/form-data" id="productForm">
             <div class="mb-4">
                 <label for="name" class="block">Product Name</label>

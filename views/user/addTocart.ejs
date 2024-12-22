@@ -149,8 +149,10 @@
                       
                       <!-- Discounted Price -->
                       <span class="text-green-600 font-semibold rounded-md text-sm">
-                          ₹<%= (item.productId.priceAfterDiscount).toFixed(0) %>.00
-                      </span>
+                        ₹<%= new Intl.NumberFormat('en-IN').format(item.productId && item.productId.priceAfterDiscount ? item.productId.priceAfterDiscount.toFixed(0) : 0) %>.00
+                    </span>
+                    
+                    
                         <!-- <p class="text-sm text-gray-500"><%= item.productId.discount %>% off</p>
                         <p class="text-sm text-gray-500"><%= item.productId.offerDiscout %>% off</p> -->
                         <% if(item.productId.discount > 0) { %>
