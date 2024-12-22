@@ -11,7 +11,6 @@ const userSchema = new mongoose.Schema({
     isBlocked: { type: Boolean, default: false },
     googleId: {
       type: String,
-      unique: true, 
       sparse: true, // Applies the unique constraint only to non-null/non-undefined values
   },
   
