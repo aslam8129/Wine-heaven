@@ -11,88 +11,87 @@
     <%- include('../partials/adminSidebar.ejs') %>
 
     <!-- Main Container -->
-    <div class="max-w-7xl mx-auto p-6 ml-0 md:ml-64">
-        
-        <!-- Title -->
-        <h1 class="text-3xl font-bold text-center mb-6">All Coupons</h1>
+    <div class="ml-0 md:ml-64 p-6">
+        <div class="container mx-auto">
+            <!-- Title -->
+            <h1 class="text-3xl font-bold mb-6">All Coupons</h1>
 
-        <!-- Add Coupon Button -->
-        <div class="flex justify-end mb-4">
-            <a href="/admin/coupons/add" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition">
-                Add Coupon
+            <!-- Add Coupon Button -->
+            <a href="/admin/coupons/add" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition mb-6 inline-block">
+                Add New Coupon
             </a>
-        </div>
 
-        <!-- Coupon Table -->
-        <% if (coupons.length > 0) { %>
-            <div class="overflow-x-auto bg-white rounded-lg shadow-md">
-                <table class="min-w-full table-auto">
-                    <!-- Table Head -->
-                    <thead class="bg-gray-200 text-gray-600">
-                        <tr>
-                            <th class="py-3 px-6 text-left">Code</th>
-                            <th class="py-3 px-6 text-left">Discount Type</th>
-                            <th class="py-3 px-6 text-left">Discount Amount</th>
-                            <th class="py-3 px-6 text-left">Minimum Purchase</th>
-                            <!-- <th class="py-3 px-6 text-left">Maximum Discount</th> -->
-                            <th class="py-3 px-6 text-left">Valid From</th>
-                            <th class="py-3 px-6 text-left">Valid Until</th>
-                            <th class="py-3 px-6 text-left">Usage Limit</th>
-                            <th class="py-3 px-6 text-left">Used Count</th>
-                            <th class="py-3 px-6 text-left">Delete</th>
-                        </tr>
-                    </thead>
-
-                    <!-- Table Body -->
-                    <tbody class="text-gray-700">
-                        <% coupons.forEach(coupon => { %>
-                            <tr class="hover:bg-gray-50">
-                                <td class="py-3 px-6"><%= coupon.code %></td>
-                                <td class="py-3 px-6"><%= coupon.discountType %></td>
-                                <td class="py-3 px-6"><%= coupon.discountAmount %></td>
-                                <td class="py-3 px-6"><%= coupon.minimumPurchase || 'N/A' %></td>
-                                <!-- <td class="py-3 px-6"><%= coupon.maximumDiscount || 'N/A' %></td> -->
-                                <td class="py-3 px-6"><%= new Date(coupon.validFrom).toLocaleDateString() %></td>
-                                <td class="py-3 px-6"><%= new Date(coupon.validUntil).toLocaleDateString() %></td>
-                                <td class="py-3 px-6"><%= coupon.usageLimit || 'Unlimited' %></td>
-                                <td class="py-3 px-6"><%= coupon.usedCount %></td>
-                                <td class="py-3 px-6"><a href="coupon/delete/<%=coupon._id%>">delete</td></a> 
+            <!-- Coupon Table -->
+            <% if (coupons.length > 0) { %>
+                <div class="overflow-x-auto bg-white shadow-md rounded-lg">
+                    <table class="table-auto w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-gray-800 text-white">
+                                <th class="px-4 py-3 border">Code</th>
+                                <th class="px-4 py-3 border">Discount Type</th>
+                                <th class="px-4 py-3 border">Discount Amount</th>
+                                <th class="px-4 py-3 border">Minimum Purchase</th>
+                                <th class="px-4 py-3 border">Valid From</th>
+                                <th class="px-4 py-3 border">Valid Until</th>
+                                <th class="px-4 py-3 border">Usage Limit</th>
+                                <th class="px-4 py-3 border">Used Count</th>
+                                <th class="px-4 py-3 border">Actions</th>
                             </tr>
-                        <% }) %>
-                    </tbody>
-                </table>
-            </div>
-        <% } else { %>
-            <!-- No Coupons Available -->
-            <p class="text-center text-gray-600 mt-6">No coupons available.</p>
-        <% } %>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200">
+                            <% coupons.forEach(coupon => { %>
+                                <tr class="hover:bg-gray-100">
+                                    <td class="px-4 py-3 border"><%= coupon.code %></td>
+                                    <td class="px-4 py-3 border"><%= coupon.discountType %></td>
+                                    <td class="px-4 py-3 border"><%= coupon.discountAmount %></td>
+                                    <td class="px-4 py-3 border"><%= coupon.minimumPurchase || 'N/A' %></td>
+                                    <td class="px-4 py-3 border"><%= new Date(coupon.validFrom).toLocaleDateString() %></td>
+                                    <td class="px-4 py-3 border"><%= new Date(coupon.validUntil).toLocaleDateString() %></td>
+                                    <td class="px-4 py-3 border"><%= coupon.usageLimit || 'Unlimited' %></td>
+                                    <td class="px-4 py-3 border"><%= coupon.usedCount %></td>
+                                    <td class="px-4 py-3 border">
+                                        <div class="flex space-x-2">
+                                            <a href="coupon/delete/<%= coupon._id %>" 
+                                               class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition text-sm">Delete</a>
+                                               
+                                               <a href="coupon/edit/<%= coupon._id %>" 
+                                                class="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600 transition text-sm">Edit</a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            <% }) %>
+                        </tbody>
+                    </table>
+                </div>
+            <% } else { %>
+                <!-- No Coupons Available -->
+                <p class="text-center text-gray-600 mt-6">No coupons available.</p>
+            <% } %>
 
-        <div class="flex justify-center items-center space-x-2 mt-4">
-            <!-- Previous Button -->
-            <% if (currentPage > 1) { %>
-                <a href="/admin/coupons?page=<%= currentPage - 1 %>&limit=<%= limit %>" 
-                   class="px-4 py-2 text-white bg-gray-500 hover:bg-gray-700 rounded-lg">
-                    Previous
-                </a>
-            <% } %>
-        
-            <!-- Page Numbers -->
-            <% for (let i = 1; i <= totalpage; i++) { %>
-                <a href="/admin/coupons?page=<%= i %>&limit=<%= limit %>" 
-                   class="px-4 py-2 rounded-lg <%= i === currentPage ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300' %>">
-                    <%= i %>
-                </a>
-            <% } %>
-        
-            <!-- Next Button -->
-            <% if (currentPage < totalpage) { %>
-                <a href="/admin/coupons?page=<%= currentPage + 1 %>&limit=<%= limit %>" 
-                   class="px-4 py-2 text-white bg-gray-500 hover:bg-gray-700 rounded-lg">
-                    Next
-                </a>
-            <% } %>
+            <!-- Pagination -->
+            <div class="flex justify-center mt-6">
+                <% if (currentPage > 1) { %>
+                    <a href="/admin/coupons?page=<%= currentPage - 1 %>&limit=<%= limit %>"
+                       class="px-4 py-2 mx-1 bg-gray-300 text-black rounded hover:bg-gray-400">
+                        Previous
+                    </a>
+                <% } %>
+
+                <% for (let i = 1; i <= totalpage; i++) { %>
+                    <a href="/admin/coupons?page=<%= i %>&limit=<%= limit %>"
+                       class="px-4 py-2 mx-1 rounded <%= i === currentPage ? 'bg-blue-500 text-white' : 'bg-gray-200 text-black hover:bg-gray-300' %>">
+                        <%= i %>
+                    </a>
+                <% } %>
+
+                <% if (currentPage < totalpage) { %>
+                    <a href="/admin/coupons?page=<%= currentPage + 1 %>&limit=<%= limit %>"
+                       class="px-4 py-2 mx-1 bg-gray-300 text-black rounded hover:bg-gray-400">
+                        Next
+                    </a>
+                <% } %>
+            </div>
         </div>
-        
     </div>
 </body>
 </html>

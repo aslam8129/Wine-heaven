@@ -51,6 +51,10 @@ router.post('/offers/add',Coupon.PostAddOffer);
 router.post('/offers/deactivate/:id',Coupon.offerActivate)
 router.post('/offers/Activate/:id',Coupon.offerdeactivate)
 router.post('/offers/Delete/:id',Coupon.deleteOffer)
+router.get('/coupon/edit/:id',Coupon.getEditCoupon)
+router.post('/coupon/edit/:id',Coupon.postEditCoupon)
+router.get('/offerEdit/:id',Coupon.getEditOffer)
+router.post('/offers/edit/:id',Coupon.postEditOffer)
 
 
 

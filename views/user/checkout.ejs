@@ -116,7 +116,12 @@
                                             <span class="px-2 py-1 bg-red-50 text-red-600 font-semibold rounded-md text-sm">
                                              Product Discount <%= item.productId.productAllDiscount %>% OFF
                                           </span>
-                                          <% } %>
+                                          <% }else if(item.productId.discount>0 ){ %>
+                                            <span class="px-2 py-1 bg-red-50 text-red-600 font-semibold rounded-md text-sm">
+                                                Product Discount <%= item.productId.discount%>% OFF
+                                             </span>
+
+                                        <%}%>
                                         
                                             <p class="text-gray-500 text-sm">Discounted Price:
                                                 <%if(item.productId.discount>0 ){%>

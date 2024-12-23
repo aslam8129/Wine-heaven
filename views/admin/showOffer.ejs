@@ -85,12 +85,19 @@
                                                             class="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600 transition text-sm">Activate</button>
                                                     </form>
                                                     <% } %>
+                                                    <a href="/admin/offerEdit/<%= offer._id %>">
+                                                    <button 
+                                                    class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 transition text-sm"
+                                                    aria-label="Edit">
+                                                    Edit
+                                                  </button>
+                                                </a>
                                         </div>
                                     </td>
                                 </tr>
                                 <% }) %>
 
-
+                              
 
                         </tbody>
                     </table>

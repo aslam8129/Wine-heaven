@@ -19,6 +19,13 @@
     <%- include('../partials/adminSidebar.ejs') %>
     <div class="bg-white shadow-md rounded-lg p-6 w-full max-w-md">
         <h2 class="text-2xl font-semibold text-gray-800 mb-4">Edit Category</h2>
+
+        <% if (error_msg) { %>
+            <p class="text-red-500 text-center"><%= error_msg %></p>
+        <% } %>
+        <% if (success_msg) { %>
+            <p class="text-green-500 text-center"><%= success_msg %></p>
+        <% } %>
         <form id="categoryform" action="/category/edit/<%= category._id %>" method="POST" enctype="multipart/form-data" onsubmit="return validateForm()">
             <div class="mb-4">
                 <label for="name" class="block text-gray-700">Category Name:</label>

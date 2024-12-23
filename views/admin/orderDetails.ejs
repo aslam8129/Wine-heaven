@@ -26,7 +26,14 @@
                                 <h3 class="font-medium"><%= item.productName %></h3>
                                 <p class="text-gray-800">Category: <%= item.productId.category.name %></p>
                                 <p class="text-gray-600">Quantity: <%= item.productCount %></p>
-                                <p class="text-gray-800">₹<%= (  item.productPrice).toFixed(0) %>.00</p>
+                                 <span class="text-gray-500 line-through text-sm">
+                          ₹<%= item.productId.price %>
+                      </span>
+                      <span></span>
+                      <!-- Discounted Price -->
+                      <span class="text-green-600 font-semibold rounded-md text-sm">
+                        ₹<%= new Intl.NumberFormat('en-IN').format(item.productId && item.productId.priceAfterDiscount ? item.productId.priceAfterDiscount.toFixed(0) : 0) %>.00
+                    </span>
 
                             </div>
                             <div class="text-sm px-3 py-1 rounded-full <%= item.productStatus === 'Pending' ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800' %>">

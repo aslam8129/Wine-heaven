@@ -48,7 +48,7 @@ exports.addCoupon = async (req, res) => {
 
 
         if(discountType === 'fixed'){
-            console.log('vannee');
+        
             
             if(minimumPurchase/2<discountAmount){
                 req.flash('error', 'The discount amount for fixed type must not exceed 50% of the minimum purchase. ');
@@ -226,7 +226,6 @@ exports.offerdeactivate = async (req, res) => {
                 let price = product.price * (product.productAllDiscount / 100)
                 product.priceAfterDiscount = product.price - price
 
-                //   product.priceAfterDiscount = product.price * (1 - offer.discountPercentage / 100);
                 await product.save();
             }
         } else if (offer.offerType === 'category') {
@@ -240,7 +239,6 @@ exports.offerdeactivate = async (req, res) => {
 
                 product.priceAfterDiscount = product.price - price
 
-                //product.priceAfterDiscount = product.price * (1 - offer.discountPercentage / 100);
                 await product.save();
             });
         }
@@ -277,7 +275,7 @@ exports.offerActivate = async (req, res) => {
             if (product) {
                 product.offerDiscout = 0;
                 product.productAllDiscount = product.discount
-                //   product.priceAfterDiscount = product.price- product.price*(product.discount/100);
+            
                 let price = product.price * (product.productAllDiscount / 100)
                 product.priceAfterDiscount = product.price - price
                 await product.save();
@@ -288,7 +286,7 @@ exports.offerActivate = async (req, res) => {
             products.forEach(async (product) => {
                 product.offerDiscout = 0;
                 product.productAllDiscount = product.discount
-                //  product.priceAfterDiscount = product.price- product.price*(product.discount/100);
+     
                 let price = product.price * (product.productAllDiscount / 100)
                 product.priceAfterDiscount = product.price - price
 
@@ -308,3 +306,83 @@ exports.offerActivate = async (req, res) => {
 
 
 
+exports.getEditCoupon = async (req,res)=>{
+   
+    
+    try{
+
+
+        const id = req.params.id
+
+        const coupon = await Coupon.findById(id)
+      
+
+        res.render('admin/editCoupon',{coupon})
+
+
+    }catch(error){
+
+    }
+}
+
+
+exports.postEditCoupon = async (req, res) => {
+    try {
+
+
+
+        const couponid = req.params.id;
+
+        if(req.body.discountType === 'fixed'){
+        
+            
+            if(req.body.minimumPurchase/2<req.body.discountAmount){
+                req.flash('error', 'The discount amount for fixed type must not exceed 50% of the minimum purchase. ');
+                return res.redirect('back');
+            }
+
+        }
+
+        await Coupon.findByIdAndUpdate(couponid,req.body)
+        res.redirect('/admin/coupons')
+    }catch(error){
+        console.log(error);
+        
+    }
+      
+};
+
+
+
+exports.getEditOffer = async(req,res)=>{
+    try{
+        const id = req.params.id
+        const offer = await Offer.findById(id)
+
+        res.render('admin/editOffer',{offer})
+
+    }catch(error){
+console.log(error);
+
+    }
+}
+
+
+exports.postEditOffer = async (req,res)=>{
+    try{
+
+        const id = req.params.id
+
+
+        await Offer.findByIdAndUpdate(id,req.body)
+
+        res.redirect("/admin/offers")
+
+        console.log(req.body);
+        
+
+    }catch(error){
+console.log(error);
+
+    }
+}
