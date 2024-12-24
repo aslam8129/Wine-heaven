@@ -335,7 +335,7 @@ exports.forgetpasswordPost = async (req, res) => {
         user.resetPasswordExpires = Date.now() + 3600000  // 1 house
         await user.save();
         const PORT = process.env.PORT || 3005;
-        const resetLink = `http://localhost:${PORT}/reset-password?token=${token}&email=${email}`;
+        const resetLink = `https://wineheaven.store/reset-password?token=${token}&email=${email}`;
 
 
 
