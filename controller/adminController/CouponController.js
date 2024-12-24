@@ -359,6 +359,11 @@ exports.getEditOffer = async(req,res)=>{
         const id = req.params.id
         const offer = await Offer.findById(id)
 
+        if(offer.isActive){
+            req.flash('error', 'this offer active canot edit. ');
+           res.redirect('/admin/offers')
+        }
+
         res.render('admin/editOffer',{offer})
 
     }catch(error){

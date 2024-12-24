@@ -28,6 +28,12 @@
     <%- include('../partials/adminSidebar.ejs') %>
     <div class="container mt-5">
         <h1 class="text-center mb-4">Add Offer</h1>
+        <% if (error_msg) { %>
+            <p class="text-red-500 text-center"><%= error_msg %></p>
+        <% } %>
+        <% if (success_msg) { %>
+            <p class="text-green-500 text-center"><%= success_msg %></p>
+        <% } %>
 
         <!-- Add Offer Form -->
         <form action="/admin/offers/add" method="POST" class="p-4 border rounded bg-light shadow-sm mx-auto" style="max-width: 600px;">

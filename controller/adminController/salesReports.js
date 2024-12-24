@@ -120,7 +120,8 @@ exports.downloadExcel = async (req, res) => {
         const { startDate, endDate, reportType } = req.query;
 
         if (!reportType || !['daily', 'weekly', 'monthly', 'yearly', 'custom'].includes(reportType.toLowerCase())) {
-            return res.status(400).json({ error: 'Invalid or missing report type. Valid types: daily, weekly, monthly, yearly, custom.' });
+            req.flash('error', 'Report type is required.. ');
+            return res.redirect('/admin/sales-report');
         }
 
         let start, end;
@@ -288,7 +289,8 @@ exports.downloadPDF = async (req, res) => {
                     end.setHours(23, 59, 59, 999);
                     break;
                 default:
-                    return res.status(400).send('Report type is required.');
+                    req.flash('error', 'Report type is required.. ');
+                   return res.redirect('/admin/sales-report');
             }
         }
 
