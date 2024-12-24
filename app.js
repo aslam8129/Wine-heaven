@@ -12,6 +12,7 @@ const adminRoutes = require('./routes/adminRoutes');
 const categoryRoutes = require('./routes/categoryRoutes');
 const googleRoutes = require('./routes/googleAuthRoutes');
 const isuser = require('./middlware/user')
+const isadmin = require('./middlware/admin')
 
 const path = require('path');
 const nocache = require('nocache');
@@ -49,6 +50,7 @@ app.use('/', authRoutes);
 app.use('/admin', adminRoutes);
 app.use('/category', categoryRoutes);
 app.use(isuser)
+app.use(isadmin)
 
 app.use('*',(req,res)=>{
     res.render('user/404')

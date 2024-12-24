@@ -11,19 +11,19 @@ const salesRiport = require('../controller/adminController/salesReports')
 
 router.get('/login',admincontroller.loginGet)
 router.post('/Dashboard',admincontroller.loginPost)
-router.get('/Dashboard',isadmin.adminAuth,admincontroller.dashboardGet)
+router.get('/Dashboard',isadmin,admincontroller.dashboardGet)
 //router.get('/dashboard', 
-router.get('/customers',isadmin.adminAuth,admincontroller.listuser)
+router.get('/customers',isadmin,admincontroller.listuser)
 router.post('/block/:id',admincontroller.blockUser);
 router.post('/unblock/:id',admincontroller.unblockUser);
 router.get('/logout',admincontroller.adlogout)  
 
 
 
-router.get('/products',isadmin.adminAuth,prodectController.listProducts)
-router.get('/products/add',isadmin.adminAuth,prodectController.GETaddproduct)
+router.get('/products',isadmin,prodectController.listProducts)
+router.get('/products/add',isadmin,prodectController.GETaddproduct)
 router.post('/products/add',uploads,prodectController.addProductPost);
-router.get('/products/edit/:id',isadmin.adminAuth,prodectController.editProductGet)
+router.get('/products/edit/:id',isadmin,prodectController.editProductGet)
 router.post('/products/edit/:id',uploads, prodectController.updateProductPost)
 router.post('/products/block/:id',prodectController.Blockedproduct)
 
@@ -32,35 +32,35 @@ router.post('/products/block/:id',prodectController.Blockedproduct)
 
 
 
-router.get('/orders',ordersList.getAllOrders);
+router.get('/orders',isadmin,ordersList.getAllOrders);
 router.post('/update-order-status',ordersList.updateOrderStatus);
-router.get('/order/:id',ordersList.getorderDetails)
+router.get('/order/:id',isadmin,ordersList.getorderDetails)
 
 
 
-router.get('/coupons/add', Coupon.getAddCoupon);
-router.get('/coupons', Coupon.getAllCoupons);
+router.get('/coupons/add',isadmin, Coupon.getAddCoupon);
+router.get('/coupons',isadmin, Coupon.getAllCoupons);
 router.post('/coupons',Coupon.addCoupon);
-router.get('/coupon/delete/:id',Coupon.deleteCoupon)
+router.get('/coupon/delete/:id',isadmin,Coupon.deleteCoupon)
 
 
 
-router.get('/offers',Coupon.GetOffers);
-router.get('/offers/add',Coupon.GetAddOffer)
+router.get('/offers',isadmin,Coupon.GetOffers);
+router.get('/offers/add',isadmin,Coupon.GetAddOffer)
 router.post('/offers/add',Coupon.PostAddOffer);
 router.post('/offers/deactivate/:id',Coupon.offerActivate)
 router.post('/offers/Activate/:id',Coupon.offerdeactivate)
 router.post('/offers/Delete/:id',Coupon.deleteOffer)
-router.get('/coupon/edit/:id',Coupon.getEditCoupon)
+router.get('/coupon/edit/:id',isadmin,Coupon.getEditCoupon)
 router.post('/coupon/edit/:id',Coupon.postEditCoupon)
-router.get('/offerEdit/:id',Coupon.getEditOffer)
+router.get('/offerEdit/:id',isadmin,Coupon.getEditOffer)
 router.post('/offers/edit/:id',Coupon.postEditOffer)
 
 
 
 
 
-router.get('/sales-report',salesRiport.GetsalesReport)
-router.get('/sales-report/download/excel',salesRiport.downloadExcel);
-router.get('/sales-report/download/pdf',salesRiport.downloadPDF)
+router.get('/sales-report',isadmin,salesRiport.GetsalesReport)
+router.get('/sales-report/download/excel',isadmin,salesRiport.downloadExcel);
+router.get('/sales-report/download/pdf',isadmin,salesRiport.downloadPDF)
 module.exports = router;       
