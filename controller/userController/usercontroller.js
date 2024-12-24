@@ -387,7 +387,7 @@ exports.resetPasswordGet = async (req, res) => {
             return res.status(400).send('password reset token is invalid')
         }
 
-        res.render('user/resetpassWord', { token, email });
+        res.render('user/resetpassword', { token, email });
 
     } catch (error) {
         res.status(500).send(error.message);
